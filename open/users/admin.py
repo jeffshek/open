@@ -7,9 +7,11 @@ from open.users.forms import UserChangeForm, UserCreationForm
 User = get_user_model()
 
 
+admin.site.site_header = "Open Admin"
+
+
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
-
     form = UserChangeForm
     add_form = UserCreationForm
     fieldsets = (("User", {"fields": ("name",)}),) + auth_admin.UserAdmin.fieldsets
