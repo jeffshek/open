@@ -19,7 +19,7 @@ services:
       - ./.envs/.local/.django
     ports:
       - "8008:8008"
-    command: /start.sh
+    command: /local_django_start.sh
 
   postgres:
     build:

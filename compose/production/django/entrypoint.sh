@@ -1,7 +1,6 @@
 #!/bin/sh
 
 set -o errexit
-set -o pipefail
 set -o nounset
 
 # N.B. If only .env files supported variable expansion...
