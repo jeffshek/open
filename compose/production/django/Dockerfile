@@ -39,11 +39,6 @@ RUN sed -i 's/\r//' /start-celerybeat
 RUN chmod +x /start-celerybeat
 RUN chown django /start-celerybeat
 
-COPY ./compose/production/django/celery/flower/start /start-flower
-RUN sed -i 's/\r//' /start-flower
-RUN chmod +x /start-flower
-COPY . /app
-
 RUN chown -R django /app
 
 USER django
