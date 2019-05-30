@@ -277,6 +277,3 @@ ACCOUNT_ADAPTER = "open.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "open.users.adapters.SocialAccountAdapter"
 
-
-# Your stuff...
-# ------------------------------------------------------------------------------
