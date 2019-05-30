@@ -315,3 +315,6 @@ tags
 # don't show the env variable secrets
 .env
 .envs/*
+
+# don't allow gcp keys
+gcp.json

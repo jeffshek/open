@@ -13,7 +13,7 @@ services:
       - redis
     env_file:
       - ./.envs/.production/.django
-    command: /start
+    command: /start.sh
 
   traefik:
     build:
@@ -34,10 +34,10 @@ services:
   celeryworker:
     <<: *django
     image: open_production_celeryworker
-    command: /start-celeryworker
+    command: /start-celeryworker.sh
 
   celerybeat:
     <<: *django
     image: open_production_celerybeat
-    command: /start-celerybeat
+    command: /start-celerybeat.sh
 

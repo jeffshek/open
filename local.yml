@@ -18,8 +18,8 @@ services:
     env_file:
       - ./.envs/.local/.django
     ports:
-      - "8000:8000"
-    command: /start
+      - "8008:8008"
+    command: /start.sh
 
   postgres:
     build:
@@ -48,7 +48,7 @@ services:
       - postgres
       - mailhog
     ports: []
-    command: /start-celeryworker
+    command: /start-celeryworker.sh
 
   celerybeat:
     <<: *django
@@ -58,4 +58,4 @@ services:
       - postgres
       - mailhog
     ports: []
-    command: /start-celerybeat
+    command: /start-celerybeat.sh
