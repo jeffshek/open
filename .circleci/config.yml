@@ -7,6 +7,8 @@ jobs:
         environment:
           DATABASE_URL: postgres://open_user_backend@localhost:5432/open
           USE_DOCKER: yes
+          CELERY_BROKER_URL: redis://redis:6379/0
+          REDIS_URL: redis://redis:6379/0
       - image: circleci/postgres:9.6.2
         environment:
           POSTGRES_USER: open_user_backend
