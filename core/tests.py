@@ -13,7 +13,6 @@ User = get_user_model()
 class TestGeneratedStringView(TestCase):
     URL = reverse(WriteUpResourceEndpoints.GENERATED_SENTENCE)
 
-    # test_this_point!
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

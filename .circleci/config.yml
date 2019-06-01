@@ -1,0 +1,34 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:3.6
+        environment:
+          DATABASE_URL: postgres://open_user_backend@localhost:5432/open
+          USE_DOCKER: yes
+      - image: circleci/postgres:9.6.2
+        environment:
+          POSTGRES_USER: open_user_backend
+          POSTGRES_DB: open
+    steps:
+      - checkout
+      - restore_cache:
+          key: requirements-{{ checksum "requirements/base.txt" }}
+      - run:
+          command: |
+            sudo apt-get update
+            virtualenv venv
+            . venv/bin/activate
+            pip install -U pip setuptools
+            pip install -r requirements/production.txt
+            pip install -r requirements/local.txt
+      - save_cache:
+          key: requirements-{{ checksum "requirements/base.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run Django Tests
+          command: |
+            . venv/bin/activate
+            python manage.py test
