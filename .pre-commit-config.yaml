@@ -1,0 +1,29 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v1.3.0
+    language: python
+    language_version: python3
+    hooks:
+    -   id: check-added-large-files
+    -   id: check-merge-conflict
+    -   id: check-json
+    -   id: trailing-whitespace
+        files: \.(py|sh|yaml|txt)$
+    -   id: requirements-txt-fixer
+    -   id: check-xml
+    -   id: debug-statements
+        files: \.py$
+    -   id: end-of-file-fixer
+        files: \.(py|sh)$
+    -   id: flake8  # flake8 catch not used variables
+        files: \.py$
+        args: ['--ignore=E128,W503']
+    -   id: name-tests-test
+        files: tests/.+\.py$
+        args: ['--django']  # Use args: ['--django'] to match test*.py instead.
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      args: [--line-length=88, --safe]
+      language_version: python3.6
