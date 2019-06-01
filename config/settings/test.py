@@ -55,5 +55,8 @@ EMAIL_HOST = "localhost"
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
 
+
+CELERY_TASK_ALWAYS_EAGER = True
+
 # Your stuff...
 # ------------------------------------------------------------------------------

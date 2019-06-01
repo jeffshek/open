@@ -7,7 +7,7 @@ from open.users.forms import UserChangeForm, UserCreationForm
 User = get_user_model()
 
 
-admin.site.site_header = "Open Admin"
+admin.site.site_header = "Open Control Panel"
 
 
 @admin.register(User)

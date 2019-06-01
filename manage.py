@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 import os
 import sys
+import logging
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+
+    if "test" in sys.argv:
+        logging.disable(logging.CRITICAL)
+        os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings.test"
 
     try:
         from django.core.management import execute_from_command_line
