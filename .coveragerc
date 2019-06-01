@@ -1,5 +1,5 @@
 [run]
 include = open/*
-omit = *migrations*, *tests*, *scripts*, *open/templates*
+omit = *migrations*, *tests*, *scripts*, *open/templates*, *venv*
 plugins =
     django_coverage_plugin
