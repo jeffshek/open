@@ -34,3 +34,9 @@ jobs:
           command: |
             . venv/bin/activate
             python manage.py test
+      - run:
+          name: Run Coveralls Test Coverage
+          command: |
+            . venv/bin/activate
+            coverage run manage.py test
+            coveralls
