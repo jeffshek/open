@@ -68,10 +68,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
 ]
-LOCAL_APPS = [
-    "open.users.apps.UsersConfig",
-    # Your stuff: custom apps go here
-]
+LOCAL_APPS = ["open.users.apps.UsersConfig", "open.core"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -277,3 +274,7 @@ ACCOUNT_ADAPTER = "open.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "open.users.adapters.SocialAccountAdapter"
 
 CLOUDFLARE_API_KEY = env("CLOUDFLARE_API_KEY", default="nah-this-isnt-it")
+CLOUDFLARE_SENRIGAN_ZONE_ID = env(
+    "CLOUDFLARE_SENRIGAN_ZONE_ID", default="nah-this-isnt-it"
+)
+CLOUDFLARE_EMAIL = env("CLOUDFLARE_EMAIL", default="no-this-isnt-shared@gmail.com")
