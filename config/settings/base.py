@@ -4,9 +4,7 @@ Base settings to build other settings files upon.
 
 import environ
 
-ROOT_DIR = (
-    environ.Path(__file__) - 3
-)  # (open/config/settings/base.py - 3 = open/)
+ROOT_DIR = environ.Path(__file__) - 3  # (open/config/settings/base.py - 3 = open/)
 APPS_DIR = ROOT_DIR.path("open")
 
 env = environ.Env()
@@ -278,3 +276,4 @@ ACCOUNT_ADAPTER = "open.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "open.users.adapters.SocialAccountAdapter"
 
+CLOUDFLARE_API_KEY = env("CLOUDFLARE_API_KEY", default="nah-this-isnt-it")

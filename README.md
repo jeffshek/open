@@ -5,7 +5,7 @@
 ![CookieCutter](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)
 
 Hi. This my personal repo I'm using to contain all my open source ideas. It serves as my justification to try out new 
-ideas, but with an overengineered infrastructure to support scaling and doing things "my way".
+ideas, but with an overengineered infrastructure and libraries to support scaling and doing things "my way".
 
 If you're familiar with Django, this will be very similar. Unfortunately due to time constraints, I can't offer free
  support.  
