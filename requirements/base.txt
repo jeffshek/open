@@ -9,9 +9,12 @@ django-model-utils==3.1.2  # https://github.com/jazzband/django-model-utils
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 djangorestframework==3.9.4  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
+numpy==1.16.4
+pandas==0.24.2
 Pillow==6.0.0  # https://github.com/python-pillow/Pillow
 python-coveralls==2.9.1
 python-slugify==3.0.2  # https://github.com/un33k/python-slugify
 pytz==2019.1  # https://github.com/stub42/pytz
 PyYAML==5.1
 redis==3.2.1  # https://github.com/antirez/redis
+XlsxWriter==1.1.8

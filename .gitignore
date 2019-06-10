@@ -318,3 +318,6 @@ tags
 
 # don't allow gcp keys
 gcp.json
+gcp_app.json
+
+exports/
