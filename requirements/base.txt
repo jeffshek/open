@@ -17,3 +17,4 @@ python-slugify==3.0.2  # https://github.com/un33k/python-slugify
 pytz==2019.1  # https://github.com/stub42/pytz
 PyYAML==5.1
 redis==3.2.1  # https://github.com/antirez/redis
+XlsxWriter==1.1.8
