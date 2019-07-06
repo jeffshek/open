@@ -9,8 +9,6 @@ services:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: open_production_django
-    depends_on:
-      - redis
     env_file:
       - ./.envs/.production/.django
     command: /start.sh
