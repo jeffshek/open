@@ -16,17 +16,6 @@ defaultEntryPoints = ["http", "https"]
       certFile = "/etc/traefik/certs/open.cert"
       keyFile = "/etc/traefik/certs/open.key"
 
-# Enable ACME (Let's Encrypt): automatic SSL
-[acme]
-# Email address used for registration
-email = "jeff@senrigan.io"
-storage = "/etc/traefik/acme/acme.json"
-entryPoint = "https"
-onDemand = false
-OnHostRule = true
-  # Use a HTTP-01 acme challenge rather than TLS-SNI-01 challenge
-  [acme.httpChallenge]
-  entryPoint = "http"
 
 [file]
 [backends]
