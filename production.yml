@@ -17,19 +17,33 @@ services:
     volumes:
       - .:/app
 
-  traefik:
+  caddy:
     build:
       context: .
-      dockerfile: ./compose/production/traefik/Dockerfile
-    image: open_production_traefik
+      dockerfile: ./compose/production/caddy/Dockerfile
     depends_on:
       - django
     volumes:
-      - production_traefik:/etc/traefik/acme
-      - ./.envs/.production/.certs:/etc/traefik/certs
+      - caddy:/root/.caddy
+#    env_file:
+#      - ./.envs/.production/.caddy
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
+
+#  traefik:
+#    build:
+#      context: .
+#      dockerfile: ./compose/production/traefik/Dockerfile
+#    image: open_production_traefik
+#    depends_on:
+#      - django
+#    volumes:
+#      - production_traefik:/etc/traefik/acme
+#      - ./.envs/.production/.certs:/etc/traefik/certs
+#    ports:
+#      - "0.0.0.0:80:80"
+#      - "0.0.0.0:443:443"
 
 
 #  celeryworker:

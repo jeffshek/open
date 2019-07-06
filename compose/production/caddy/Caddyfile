@@ -1,0 +1,14 @@
+http://open.senrigan.io, 35.227.244.108:80, 35.227.244.108:443
+ {
+    # TODO - Add IP for Load Balancer Healthchecks
+    # Make Sure All LB IPs are Reserved
+    proxy / django:5000 {
+        header_upstream Host {host}
+        header_upstream X-Real-IP {remote}
+        header_upstream X-Forwarded-Proto {scheme}
+    }
+    log stdout
+    errors stdout
+    gzip
+    tls off # tls/ssl then is turned off between the load balancer and web services for ssl termination
+}
