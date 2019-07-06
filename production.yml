@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: gcr.io/proven-record-242223/github.com/jeffshek/open:latest
+    image: gcr.io/proven-record-242223/github.com/jeffshek/open
     env_file:
       - ./.envs/.production/.django
     command: /start.sh
@@ -26,6 +26,7 @@ services:
       - django
     volumes:
       - production_traefik:/etc/traefik/acme
+      - ./.envs/.production/.certs:/etc/traefik/certs
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"

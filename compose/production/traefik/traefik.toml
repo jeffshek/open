@@ -12,6 +12,9 @@ defaultEntryPoints = ["http", "https"]
   [entryPoints.https]
   address = ":443"
     [entryPoints.https.tls]
+      [[entryPoints.https.tls.certificates]]
+      certFile = "/etc/traefik/certs/open.cert"
+      keyFile = "/etc/traefik/certs/open.key"
 
 # Enable ACME (Let's Encrypt): automatic SSL
 [acme]
