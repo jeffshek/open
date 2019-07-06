@@ -13,7 +13,7 @@ services:
       - ./.envs/.production/.django
     command: /start.sh
     # enable this for google cloud proxy
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - .:/app
 
