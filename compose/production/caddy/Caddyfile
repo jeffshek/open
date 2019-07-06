@@ -1,4 +1,4 @@
-http://open.senrigan.io, 35.227.244.108:80, 35.227.244.108:443
+http://open.senrigan.io, open.senrigan.io, 35.227.244.108:80, 35.227.244.108:443
  {
     # TODO - Add IP for Load Balancer Healthchecks
     # Make Sure All LB IPs are Reserved
