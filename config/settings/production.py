@@ -72,12 +72,12 @@ INSTALLED_APPS += ["storages"]  # noqa F405
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
 GS_DEFAULT_ACL = "publicRead"
+
 # STATIC
 # ------------------------
 # STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/static/"
-
 # kind of getting lazy, but this would be easier
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # MEDIA
 # ------------------------------------------------------------------------------
