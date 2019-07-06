@@ -28,16 +28,14 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
 
-  redis:
-    image: redis:5.0
 
-  celeryworker:
-    <<: *django
-    image: open_production_celeryworker
-    command: /start-celeryworker.sh
-
-  celerybeat:
-    <<: *django
-    image: open_production_celerybeat
-    command: /start-celerybeat.sh
+#  celeryworker:
+#    <<: *django
+#    image: open_production_celeryworker
+#    command: /start-celeryworker.sh
+#
+#  celerybeat:
+#    <<: *django
+#    image: open_production_celerybeat
+#    command: /start-celerybeat.sh
 
