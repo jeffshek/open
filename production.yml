@@ -34,10 +34,11 @@ services:
 
   cloud-sql-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.11
-    command: /cloud_sql_proxy -instances=proven-record-242223:us-east1-b:open-b522b437=tcp:0.0.0.0:5432
-    -credential_file /root/.config/senrigan_gcp_sql_access.json
+    command: >
+      /cloud_sql_proxy -instances=proven-record-242223:us-east1-b:open-b522b437=tcp:0.0.0.0:5432
+      -credential_file /root/.config/senrigan_gcp_sql_access.json
     volumes:
-      - ~/.envs/.production:/root/.config
+      - .envs/.production:/root/.config
     ports:
       - 5432:5432
 
