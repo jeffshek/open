@@ -5,7 +5,7 @@ django==2.2.2  # https://www.djangoproject.com/
 django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
-django-model-utils==3.1.2  # https://github.com/jazzband/django-model-utils
+django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 djangorestframework==3.9.4  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
