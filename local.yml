@@ -9,10 +9,9 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: open_local_django
+    image: gcr.io/proven-record-242223/github.com/jeffshek/open:latest
     depends_on:
       - postgres
-      - mailhog
     volumes:
       - .:/app
     env_file:
@@ -32,30 +31,15 @@ services:
     env_file:
       - ./.envs/.local/.django
 
-  mailhog:
-    image: mailhog/mailhog:v1.0.0
-    ports:
-      - "8025:8025"
-
   redis:
     image: redis:5.0
 
-  celeryworker:
-    <<: *django
-    image: open_local_celeryworker
-    depends_on:
-      - redis
-      - postgres
-      - mailhog
-    ports: []
-    command: /start-celeryworker.sh
-
-  celerybeat:
-    <<: *django
-    image: open_local_celerybeat
-    depends_on:
-      - redis
-      - postgres
-      - mailhog
-    ports: []
-    command: /start-celerybeat.sh
+#  celeryworker:
+#    <<: *django
+#    image: open_local_celeryworker
+#    depends_on:
+#      - redis
+#      - postgres
+#      - mailhog
+#    ports: []
+#    command: /start-celeryworker.sh
