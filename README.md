@@ -27,6 +27,10 @@ In the upcoming month, as I move things over bit by bit, this will be home to
 4) Profit
 ~~~ 
 
-### To install pre-commit
-> pre-commit install
+### To install pre-commit hooks
+~~~bash
+# probably be on a virtualenv where calling python results in py3+
 
+1. pip install pre-commit
+2. pre-commit install
+~~~
