@@ -317,8 +317,13 @@ tags
 .envs/*
 
 # don't allow gcp keys
+# pretty paranoid about this, so super careful is better than sorry
 gcp.json
 gcp_app.json
+senrigan_gce_limited_access.json
+
 *senrigan_gcp_sql_access*
+*senrigan_gce_limited_access*
+*senrigan_gc*
 
 exports/
