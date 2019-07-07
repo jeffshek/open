@@ -319,5 +319,6 @@ tags
 # don't allow gcp keys
 gcp.json
 gcp_app.json
+*senrigan_gcp_sql_access*
 
 exports/

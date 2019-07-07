@@ -32,20 +32,14 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
 
-#  traefik:
-#    build:
-#      context: .
-#      dockerfile: ./compose/production/traefik/Dockerfile
-#    image: open_production_traefik
-#    depends_on:
-#      - django
-#    volumes:
-#      - production_traefik:/etc/traefik/acme
-#      - ./.envs/.production/.certs:/etc/traefik/certs
-#    ports:
-#      - "0.0.0.0:80:80"
-#      - "0.0.0.0:443:443"
-
+  cloud-sql-proxy:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.11
+    command: /cloud_sql_proxy -instances=proven-record-242223:us-east1-b:open-b522b437=tcp:0.0.0.0:5432
+    -credential_file /root/.config/senrigan_gcp_sql_access.json
+    volumes:
+      - ~/.envs/.production:/root/.config
+    ports:
+      - 5432:5432
 
 #  celeryworker:
 #    <<: *django
