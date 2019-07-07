@@ -9,7 +9,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: gcr.io/proven-record-242223/github.com/jeffshek/open
+    image: gcr.io/proven-record-242223/github.com/jeffshek/open:latest
     env_file:
       - ./.envs/.production/.django
     command: /start.sh
