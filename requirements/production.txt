@@ -3,7 +3,7 @@
 gunicorn==19.9.0  # https://github.com/benoitc/gunicorn
 psycopg2==2.8.2 --no-binary psycopg2  # https://github.com/psycopg/psycopg2
 Collectfast==0.6.2  # https://github.com/antonagestam/collectfast
-sentry-sdk==0.9.0  # https://github.com/getsentry/sentry-python
+sentry-sdk==0.10.1  # https://github.com/getsentry/sentry-python
 
 # Django
 # ------------------------------------------------------------------------------
