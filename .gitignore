@@ -327,3 +327,5 @@ senrigan_gce_limited_access.json
 *senrigan_gc*
 
 exports/
+
+/app/staticfiles
