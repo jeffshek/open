@@ -2,7 +2,6 @@ version: '3'
 
 volumes:
   local_postgres_data: {}
-  local_postgres_data_backups: {}
 
 services:
   django: &django
@@ -10,6 +9,8 @@ services:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: gcr.io/proven-record-242223/github.com/jeffshek/open:latest
+    # watch out for sequential failures, postgres will quickly lock up
+    restart: on-failure
     depends_on:
       - postgres
     volumes:
@@ -27,7 +28,6 @@ services:
     image: open_production_postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
-      - local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.django
 

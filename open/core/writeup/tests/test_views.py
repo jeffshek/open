@@ -1,7 +1,9 @@
-from django.test import TestCase
-from rest_framework.reverse import reverse
+from test_plus.test import TestCase
 
 from open.users.factories import UserFactory
+
+
+# dpy test core.writeup
 
 
 class WriteupViewTests(TestCase):
