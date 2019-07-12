@@ -8,6 +8,8 @@ class WriteupViewTests(OpenDefaultTest):
     """
 
     VIEW_NAME = WriteUpResourceEndpoints.GENERATED_SENTENCE
+    VIEW_NEEDS_LOGIN = False
 
-    def test_this_point(self):
-        pass
+    def test_get_view(self):
+        response = self._get_response_data()
+        self.assertTrue("sentence1" in response)

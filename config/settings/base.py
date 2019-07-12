@@ -280,3 +280,7 @@ CLOUDFLARE_SENRIGAN_ZONE_ID = env(
     "CLOUDFLARE_SENRIGAN_ZONE_ID", default="nah-this-isnt-it"
 )
 CLOUDFLARE_EMAIL = env("CLOUDFLARE_EMAIL", default="no-this-isnt-shared@gmail.com")
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",)
+}
