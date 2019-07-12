@@ -1,14 +1,13 @@
-from test_plus.test import TestCase
-
-from open.users.factories import UserFactory
-
-
-# dpy test core.writeup
+from open.core.writeup.constants import WriteUpResourceEndpoints
+from open.utilities.testing_mixins import OpenDefaultTest
 
 
-class WriteupViewTests(TestCase):
-    def setUp(self):
-        self.user = UserFactory()
+class WriteupViewTests(OpenDefaultTest):
+    """
+    dpy test core.writeup
+    """
+
+    VIEW_NAME = WriteUpResourceEndpoints.GENERATED_SENTENCE
 
     def test_this_point(self):
-        print("yep")
+        pass
