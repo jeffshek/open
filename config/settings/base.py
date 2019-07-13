@@ -49,6 +49,8 @@ ROOT_URLCONF = "config.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = "config.wsgi.application"
 
+ASGI_APPLICATION = "open.routing.application"
+
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
@@ -58,8 +60,8 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
+    "channels",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -67,6 +69,7 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "rest_framework",
+    "django_extensions",
 ]
 LOCAL_APPS = ["open.users.apps.UsersConfig", "open.core"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -279,3 +282,7 @@ CLOUDFLARE_SENRIGAN_ZONE_ID = env(
     "CLOUDFLARE_SENRIGAN_ZONE_ID", default="nah-this-isnt-it"
 )
 CLOUDFLARE_EMAIL = env("CLOUDFLARE_EMAIL", default="no-this-isnt-shared@gmail.com")
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",)
+}
