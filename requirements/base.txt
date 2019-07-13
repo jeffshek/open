@@ -1,6 +1,16 @@
 argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
+asgiref==3.1.4
+asn1crypto==0.24.0
+autobahn==19.7.1
+
+# channels requirements, it's a lot.
+Automat==0.7.0
 celery==4.3.0  # https://github.com/celery/celery
+channels==2.2.0
+constantly==15.1.0
 coreapi==2.3.3  # https://github.com/core-api/python-client
+cryptography==2.7
+daphne==2.3.0
 django==2.2.2  # https://www.djangoproject.com/
 django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
@@ -8,15 +18,20 @@ django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==3.1.2  # https://github.com/jazzband/django-model-utils
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 djangorestframework==3.9.4  # https://github.com/encode/django-rest-framework
-
 flower==0.9.3  # https://github.com/mher/flower
+hyperlink==19.0.0
+incremental==17.5.0
 numpy==1.16.4
 pandas==0.24.2
 Pillow==6.0.0  # https://github.com/python-pillow/Pillow
+PyHamcrest==1.9.0
 python-coveralls==2.9.2
 python-slugify==3.0.2  # https://github.com/un33k/python-slugify
 pytz==2019.1  # https://github.com/stub42/pytz
 PyYAML==5.1.1
 redis==3.2.1  # https://github.com/antirez/redis
+twisted==19.2.1
+txaio==18.8.1
 whitenoise==4.1.2  # https://github.com/evansd/whitenoise
 XlsxWriter==1.1.8
+zope.interface==4.6.0

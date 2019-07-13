@@ -11,7 +11,7 @@ class OpenDefaultTest(APITestCase):
     """
     Note: This will also run itself once too ...
     This is a bit of an antipattern, I should separate as a mixin better
-    But it makes harder to read
+    But it makes it harder to read
     """
 
     # just use a random view
