@@ -2,13 +2,9 @@
 black==19.3b0  # https://github.com/ambv/black
 coverage==4.5.3  # https://github.com/nedbat/coveragepy
 django-coverage-plugin==1.6.0  # https://github.com/nedbat/django_coverage_plugin
-django-coverage-plugin==1.6.0  # https://github.com/nedbat/django_coverage_plugin
-django-debug-toolbar==1.11  # https://github.com/jazzband/django-debug-toolbar
 django-debug-toolbar==2.0  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==2.1.9  # https://github.com/django-extensions/django-extensions
-django-extensions==2.1.9  # https://github.com/django-extensions/django-extensions
 django-test-plus==1.2.1
-factory-boy==2.12.0  # https://github.com/FactoryBoy/factory_boy
 factory-boy==2.12.0  # https://github.com/FactoryBoy/factory_boy
 flake8==3.7.7  # https://github.com/PyCQA/flake8
 ipdb==0.12  # https://github.com/gotcha/ipdb
