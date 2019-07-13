@@ -1,6 +1,6 @@
 from django.urls import path
 
-from open.core.views import GeneratedSentenceView
+from open.core.writeup.views import GeneratedSentenceView
 from open.core.writeup.constants import WriteUpResourceEndpoints
 
 urlpatterns = [
