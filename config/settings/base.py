@@ -49,6 +49,8 @@ ROOT_URLCONF = "config.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = "config.wsgi.application"
 
+ASGI_APPLICATION = "open.routing.application"
+
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
@@ -58,8 +60,8 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
+    "channels",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
