@@ -39,7 +39,6 @@ class WriteUpSessionConsumer(JsonWebsocketConsumer):
         group_name = self.scope["url_route"]["kwargs"]["session_uuid"]
         self.group_name_uuid = "session_%s" % group_name
 
-        # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.group_name_uuid, self.channel_name
         )
@@ -55,7 +54,6 @@ class WriteUpSessionConsumer(JsonWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
 
-        # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.group_name_uuid, {"type": "chat_message", "message": message}
         )

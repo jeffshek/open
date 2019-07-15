@@ -12,7 +12,7 @@ urlpatterns = [
         name="unnamed",
     ),
     path(settings.ADMIN_URL, admin.site.urls),
-    path("writeup/v1/", include("open.core.writeup.urls")),
+    path("api/writeup/v1/", include("open.core.writeup.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
