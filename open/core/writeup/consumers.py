@@ -6,7 +6,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.conf import settings
 
 
-class WriteUpSessionConsumer(WebsocketConsumer):
+class WriteUpGPT2MediumConsumer(WebsocketConsumer):
     def connect(self):
         group_name = self.scope["url_route"]["kwargs"]["session_uuid"]
         self.group_name_uuid = "session_%s" % group_name
@@ -47,11 +47,6 @@ class WriteUpSessionConsumer(WebsocketConsumer):
                     "message": message + value + divider,
                 },
             )
-
-    # def chat_message(self, event):
-    #     message = event["message"]
-    #
-    #     self.send(text_data=json.dumps({"message": message}))
 
     def api_serialized_message(self, event):
         message = event["message"]
