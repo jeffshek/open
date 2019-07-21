@@ -292,3 +292,6 @@ CLOUDFLARE_EMAIL = env("CLOUDFLARE_EMAIL", default="no-this-isnt-shared@gmail.co
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",)
 }
+
+ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT")
+GPT2_API_ENDPOINT = env("GPT2_API_ENDPOINT")

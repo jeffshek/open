@@ -329,3 +329,5 @@ senrigan_gce_limited_access.json
 exports/
 
 /app/staticfiles
+
+*prototype*

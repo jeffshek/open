@@ -3,6 +3,12 @@ from django.urls import include, path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views import defaults as default_views
+from django.views.generic import RedirectView
+
+# need a special view to make sure favicon always works
+favicon_view = RedirectView.as_view(
+    url="/static/images/favicons/gatsby-icon.png", permanent=True
+)
 
 urlpatterns = [
     path(
@@ -11,7 +17,11 @@ urlpatterns = [
         kwargs={"exception": Exception("Shame On You")},
         name="unnamed",
     ),
+    path("favicon.ico", favicon_view, name="favicon"),
     path(settings.ADMIN_URL, admin.site.urls),
+    # prefix an api endpoint in front of everything to use a global load balancer
+    # and route traffic based on API variants. this is to offload websocket servers
+    # and traditional REST servers
     path("api/writeup/v1/", include("open.core.writeup.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

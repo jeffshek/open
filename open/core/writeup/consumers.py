@@ -1,40 +1,12 @@
-from channels.generic.websocket import AsyncWebsocketConsumer, JsonWebsocketConsumer
 import json
+
+import requests
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+from django.conf import settings
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        self.room_group_name = "chat_%s" % self.room_name
-
-        # Join room group
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
-
-    async def disconnect(self, close_code):
-        # Leave room group
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
-    # Receive message from WebSocket
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-
-        # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name, {"type": "chat_message", "message": message}
-        )
-
-    # Receive message from room group
-    async def chat_message(self, event):
-        message = event["message"]
-
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({"message": message}))
-
-
-class WriteUpSessionConsumer(JsonWebsocketConsumer):
+class WriteUpGPT2MediumConsumer(WebsocketConsumer):
     def connect(self):
         group_name = self.scope["url_route"]["kwargs"]["session_uuid"]
         self.group_name_uuid = "session_%s" % group_name
@@ -54,11 +26,29 @@ class WriteUpSessionConsumer(JsonWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
 
-        async_to_sync(self.channel_layer.group_send)(
-            self.group_name_uuid, {"type": "chat_message", "message": message}
-        )
+        post_message = {"prompt": message}
 
-    def chat_message(self, event):
+        response = requests.post(settings.GPT2_API_ENDPOINT, json=post_message)
+        if response.status_code != 200:
+            raise ValueError(f"Issue with {message}. Got {response.content}")
+
+        returned_data = response.json()
+
+        for key, value in returned_data.items():
+            if "text_" not in key:
+                continue
+
+            divider = "\n---------------"
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name_uuid,
+                {
+                    "type": "api_serialized_message",
+                    "message": message + value + divider,
+                },
+            )
+
+    def api_serialized_message(self, event):
         message = event["message"]
 
         self.send(text_data=json.dumps({"message": message}))
