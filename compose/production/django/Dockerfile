@@ -37,12 +37,7 @@ RUN sed -i 's/\r//' /start-celerybeat.sh
 RUN chmod +x /start-celerybeat.sh
 
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
-RUN echo "export ZSH_THEME=michelebologna" >> ~/.zshrc
-RUN echo "source /root/.oh-my-zsh/oh-my-zsh.sh" >> ~/.zshrc
-RUN echo "rm ~/.zcompdump-*" >> ~/.zshrc
-
-COPY ./compose/production/django/aliases.txt /aliases.txt
-RUN cat /aliases.txt >> ~/.zshrc
+COPY ./compose/.zshrc /root/.zshrc
 
 WORKDIR /app
 
