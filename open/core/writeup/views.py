@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from django.shortcuts import render
 
 
-SENTENCE_1_MOCK_RESPONSE = "i hate cheese"
+SENTENCE_1_MOCK_RESPONSE = "API Services: ONLINE."
 
 
 class GeneratedSentenceView(APIView):
