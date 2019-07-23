@@ -5,6 +5,8 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.conf import settings
 
+from open.core.writeup.utilities import serialize_gpt2_responses
+
 
 class WriteUpGPT2MediumConsumer(WebsocketConsumer):
     def connect(self):
@@ -38,13 +40,14 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
             if "text_" not in key:
                 continue
 
+            value_serialized = serialize_gpt2_responses(value)
             divider = "\n---------------"
 
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name_uuid,
                 {
                     "type": "api_serialized_message",
-                    "message": message + value + divider,
+                    "message": message + value_serialized + divider,
                 },
             )
 
