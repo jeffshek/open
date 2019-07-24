@@ -30,7 +30,7 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
 
         post_message = {"prompt": message}
 
-        response = requests.get(settings.GPT2_API_ENDPOINT, json=post_message)
+        response = requests.post(settings.GPT2_API_ENDPOINT, json=post_message)
         if response.status_code != 200:
             raise ValueError(f"Issue with {message}. Got {response.content}")
 
