@@ -36,16 +36,21 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
 
         returned_data = response.json()
 
+        # make a copy of the response, but run a serialization process to clean
+        # up any oddities like end of lines
+        text_responses = returned_data.copy()
+
         for key, value in returned_data.items():
             if "text_" not in key:
                 continue
 
             value_serialized = serialize_gpt2_responses(value)
+            text_responses[key] = value_serialized
 
-            async_to_sync(self.channel_layer.group_send)(
-                self.group_name_uuid,
-                {"type": "api_serialized_message", "message": value_serialized},
-            )
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name_uuid,
+            {"type": "api_serialized_message", "message": text_responses},
+        )
 
     def api_serialized_message(self, event):
         message = event["message"]

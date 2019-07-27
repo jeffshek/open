@@ -20,7 +20,9 @@
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data['message'];
-        document.querySelector('#chat-log').value += (message + '\n');
+        var text_0 = message['text_0']
+        console.log(message)
+        document.querySelector('#chat-log').value += (text_0 + '\n');
     };
 
     chatSocket.onclose = function(e) {
