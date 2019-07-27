@@ -9,14 +9,14 @@ import environ
 import sentry_sdk
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from channels.routing import get_default_application
-
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env()
 SENTRY_DSN = env("SENTRY_DSN")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
 django.setup()
-sentry_sdk.init(dsn=SENTRY_DSN)
+sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
 
 application = get_default_application()
 
@@ -24,5 +24,3 @@ application = get_default_application()
 # async and not, it only reports on the asgi ... so you'll need to
 # parse out into a WSGI and an ASGI process to monitor
 application = SentryAsgiMiddleware(application)
-
-sentry_sdk.init(dsn=SENTRY_DSN)
