@@ -1,6 +1,6 @@
 -r ./base.txt
 Collectfast==0.6.2  # https://github.com/antonagestam/collectfast
-django-anymail[mailgun]==6.0.1  # https://github.com/anymail/django-anymail
+django-anymail[mailgun]==6.1.0  # https://github.com/anymail/django-anymail
 
 # Django
 # ------------------------------------------------------------------------------
