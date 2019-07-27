@@ -41,14 +41,10 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
                 continue
 
             value_serialized = serialize_gpt2_responses(value)
-            divider = "\n---------------"
 
             async_to_sync(self.channel_layer.group_send)(
                 self.group_name_uuid,
-                {
-                    "type": "api_serialized_message",
-                    "message": message + value_serialized + divider,
-                },
+                {"type": "api_serialized_message", "message": value_serialized},
             )
 
     def api_serialized_message(self, event):
