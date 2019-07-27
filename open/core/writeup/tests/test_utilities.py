@@ -16,3 +16,9 @@ class TestUtilities(TestCase):
 
         serialized = serialize_gpt2_responses(mock_response)
         self.assertEqual(fresh_prince, serialized)
+
+    def test_gpt2_text_cleanup_remove_new_lines(self):
+        too_many_newlines = "\n\nCat\n\n"
+
+        serialized = serialize_gpt2_responses(too_many_newlines)
+        self.assertEqual("Cat", serialized)
