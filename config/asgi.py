@@ -19,8 +19,4 @@ django.setup()
 sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
 
 application = get_default_application()
-
-# this is slightly infuriating, now if you have daphene serving both
-# async and not, it only reports on the asgi ... so you'll need to
-# parse out into a WSGI and an ASGI process to monitor
 application = SentryAsgiMiddleware(application)

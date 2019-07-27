@@ -5,17 +5,16 @@ from django.views import defaults as default_views
 from django.views.generic import RedirectView
 from django.conf import settings
 
+# you probably don't need this anymore, but leave it here in case sentry has issues
+# with sync processes again ...
 # import sentry_sdk
 # from sentry_sdk.integrations.django import DjangoIntegration
+# sentry_sdk.init(dsn=settings.SENTRY_DSN, integrations=[DjangoIntegration()])
 
 # need a special view to make sure favicon always works
 favicon_view = RedirectView.as_view(
     url="/static/images/favicons/gatsby-icon.png", permanent=True
 )
-
-# try a hack to see if you can make regular sync processes still report
-# sentry error without spinning up separate worker
-# sentry_sdk.init(dsn=settings.SENTRY_DSN, integrations=[DjangoIntegration()])
 
 
 def trigger_error(request):
