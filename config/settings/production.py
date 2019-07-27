@@ -26,6 +26,8 @@ CACHES = {
             # Mimicing memcache behavior.
             # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
             "IGNORE_EXCEPTIONS": True,
+            # redis is a gift to humans
+            "MAX_ENTRIES": 30000,
         },
     }
 }
