@@ -10,7 +10,14 @@ favicon_view = RedirectView.as_view(
     url="/static/images/favicons/gatsby-icon.png", permanent=True
 )
 
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+    return division_by_zero
+
+
 urlpatterns = [
+    path("sentry-debug/", trigger_error),
     path(
         "",
         default_views.permission_denied,
