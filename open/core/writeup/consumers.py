@@ -5,7 +5,10 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.conf import settings
 
+from open.core.writeup.caches import get_cache_key_for_gpt2_parameter
+from open.core.writeup.serializers import GPT2MediumPromptSerializer
 from open.core.writeup.utilities import serialize_gpt2_responses
+from django.core.cache import cache
 
 
 class WriteUpGPT2MediumConsumer(WebsocketConsumer):
@@ -29,12 +32,22 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
         message = text_data_json["message"]
 
         post_message = {"prompt": message}
+        serializer = GPT2MediumPromptSerializer(data=post_message)
+        serializer.is_valid()
 
-        response = requests.post(settings.GPT2_API_ENDPOINT, json=post_message)
-        if response.status_code != 200:
-            raise ValueError(f"Issue with {message}. Got {response.content}")
+        cache_key = get_cache_key_for_gpt2_parameter(**serializer.validated_data)
+        cached_results = cache.get(cache_key)
 
-        returned_data = response.json()
+        if cached_results:
+            returned_data = cached_results
+        else:
+            response = requests.post(settings.GPT2_API_ENDPOINT, json=post_message)
+            if response.status_code != 200:
+                raise ValueError(f"Issue with {message}. Got {response.content}")
+
+            # TODO - this is lazy and prone to fail since redis wasn't designed for JSON
+            returned_data = response.json()
+            cache.set(cache_key, returned_data)
 
         # make a copy of the response, but run a serialization process to clean
         # up any oddities like end of lines
