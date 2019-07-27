@@ -45,7 +45,8 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
             if response.status_code != 200:
                 raise ValueError(f"Issue with {message}. Got {response.content}")
 
-            # TODO - this is lazy and prone to fail since redis wasn't designed for JSON
+            # TODO - read more into this ... django's cache abstraction might actually make it work
+            # without having to store in redis the proper way, xoxo django
             returned_data = response.json()
             cache.set(cache_key, returned_data)
 
