@@ -9,6 +9,6 @@ websocket_urlpatterns = [
     ),
     url(
         r"^ws/test/writeup/gpt2_medium/session/(?P<session_uuid>[^/]+)/$",
-        consumers.WriteUpGPT2MediumConsumer,
+        consumers.WriteUpGPT2MediumConsumerMock,
     ),
 ]
