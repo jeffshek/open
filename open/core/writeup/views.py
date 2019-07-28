@@ -9,12 +9,30 @@ from django.shortcuts import render
 SENTENCE_1_MOCK_RESPONSE = "API Services: ONLINE."
 
 
-class GeneratedSentenceView(APIView):
+class GPT2MediumPromptTestView(APIView):
+    """ A Quick Test View To Use When Debugging """
+
     permission_classes = ()
 
     def get(self, request):
-        data = {"sentence1": SENTENCE_1_MOCK_RESPONSE}
-        return Response(data=data)
+        response = {
+            "prompt": "Hello, I am a useful test to see baseline performance",
+            "text_0": "Tell Me How Long",
+            "text_1": "It takes to run a query, so that I can be used to benchmark",
+            "text_2": "Other performances ... ",
+        }
+
+        return Response(data=response)
+
+    def post(self, request):
+        response = {
+            "prompt": "Hello, I am a useful test to see baseline performance",
+            "text_0": "Tell Me How Long",
+            "text_1": "It takes to run a query, so that I can be used to benchmark",
+            "text_2": "Other performances ... ",
+        }
+
+        return Response(data=response)
 
 
 def writeup_index(request):

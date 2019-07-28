@@ -30,7 +30,6 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-
         post_message = {"prompt": message}
         serializer = GPT2MediumPromptSerializer(data=post_message)
         serializer.is_valid()
@@ -74,3 +73,20 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
         message = event["message"]
 
         self.send(text_data=json.dumps({"message": message}))
+
+
+class WriteUpGPT2MediumConsumerMock(WriteUpGPT2MediumConsumer):
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message = text_data_json["message"]
+
+        post_message = {"prompt": message}
+        post_message["text_0"] = "I am a test. That's wonderful."
+        post_message["text_1"] = "Today, I saw potato in the fields."
+        post_message["text_2"] = "Our crops are growing."
+        post_message["text_3"] = "How will we drink coffee tomorrow?"
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name_uuid,
+            {"type": "api_serialized_message", "message": post_message},
+        )
