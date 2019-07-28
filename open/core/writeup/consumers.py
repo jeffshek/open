@@ -41,7 +41,11 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
         if cached_results:
             returned_data = cached_results
         else:
-            response = requests.post(settings.GPT2_API_ENDPOINT, json=post_message)
+            token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
+            headers = {"Authorization": token_key}
+            response = requests.post(
+                settings.GPT2_API_ENDPOINT, json=post_message, headers=headers
+            )
             if response.status_code != 200:
                 raise ValueError(f"Issue with {message}. Got {response.content}")
 
