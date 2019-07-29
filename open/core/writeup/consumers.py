@@ -31,10 +31,12 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         post_message = {"prompt": message}
+
         serializer = GPT2MediumPromptSerializer(data=post_message)
         serializer.is_valid()
+        prompt_serialized = serializer.validated_data
 
-        cache_key = get_cache_key_for_gpt2_parameter(**serializer.validated_data)
+        cache_key = get_cache_key_for_gpt2_parameter(**prompt_serialized)
         cached_results = cache.get(cache_key)
 
         if cached_results:
@@ -43,7 +45,7 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
             token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
             headers = {"Authorization": token_key}
             response = requests.post(
-                settings.GPT2_API_ENDPOINT, json=post_message, headers=headers
+                settings.GPT2_API_ENDPOINT, json=prompt_serialized, headers=headers
             )
             if response.status_code != 200:
                 raise ValueError(f"Issue with {message}. Got {response.content}")
