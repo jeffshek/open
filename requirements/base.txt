@@ -1,3 +1,4 @@
+aiohttp==3.5.4
 aioredis==1.2.0
 argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
 asgiref==3.1.4
@@ -22,8 +23,10 @@ djangorestframework==3.9.4  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.0
 hyperlink==19.0.0
+idna-ssl==1.1.0
 incremental==17.5.0
 msgpack==0.6.1
+multidict==4.5.2
 numpy==1.16.4
 pandas==0.24.2
 Pillow==6.0.0  # https://github.com/python-pillow/Pillow
@@ -37,6 +40,8 @@ sentry-asgi==0.2.0
 sentry-sdk==0.10.2  # https://github.com/getsentry/sentry-python
 twisted==19.2.1
 txaio==18.8.1
+typing-extensions==3.7.4
 whitenoise==4.1.2  # https://github.com/evansd/whitenoise
 XlsxWriter==1.1.8
+yarl==1.3.0
 zope.interface==4.6.0
