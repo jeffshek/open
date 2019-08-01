@@ -331,3 +331,5 @@ exports/
 /app/staticfiles
 
 *prototype*
+
+*credentials*

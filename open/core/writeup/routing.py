@@ -7,7 +7,7 @@ websocket_urlpatterns = [
         r"^ws/writeup/gpt2_medium/session/(?P<session_uuid>[^/]+)/$",
         consumers.WriteUpGPT2MediumConsumer,
     ),
-    # a quick testing url when you need to restart the ml servers
+    # this is a a quick test url when you need to restart the ml backend servers
     url(
         r"^ws/test/writeup/gpt2_medium/session/(?P<session_uuid>[^/]+)/$",
         consumers.WriteUpGPT2MediumConsumerMock,

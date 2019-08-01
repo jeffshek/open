@@ -10,7 +10,8 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
     image: gcr.io/proven-record-242223/github.com/jeffshek/open:latest
     env_file:
-      - ./.envs/.production/.django
+#      - ./.envs/.production/.django
+      - ./credientials/open/production/django.txt
     command: /start.sh
     volumes:
       - .:/app
@@ -33,7 +34,7 @@ services:
       /cloud_sql_proxy -instances=proven-record-242223:us-east1:open-b522b437=tcp:0.0.0.0:5432
       -credential_file /root/.config/senrigan_gcp_sql_access.json
     volumes:
-      - .envs/.production:/root/.config
+      - ./credientials/open/production/:/root/.config
     ports:
       - 5432:5432
 
