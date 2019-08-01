@@ -30,7 +30,7 @@ services:
       - "0.0.0.0:443:443"
 
   cloud-sql-proxy:
-    image: gcr.io/cloudsql-docke r/gce-proxy:1.11
+    image: gcr.io/cloudsql-docker/gce-proxy:1.11
     command: >
       /cloud_sql_proxy -instances=proven-record-242223:us-east1:open-b522b437=tcp:0.0.0.0:5432
       -credential_file /root/.config/senrigan_gcp_sql_access.json
