@@ -29,10 +29,8 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-        post_message = {"prompt": message}
 
-        serializer = GPT2MediumPromptSerializer(data=post_message)
+        serializer = GPT2MediumPromptSerializer(data=text_data_json)
         serializer.is_valid()
         prompt_serialized = serializer.validated_data
 
@@ -48,7 +46,7 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
                 settings.GPT2_API_ENDPOINT, json=prompt_serialized, headers=headers
             )
             if response.status_code != 200:
-                raise ValueError(f"Issue with {message}. Got {response.content}")
+                raise ValueError(f"Issue with {text_data_json}. Got {response.content}")
 
             # TODO - read more into this ... django's cache abstraction might actually make it work
             # without having to store in redis the proper way, xoxo django
