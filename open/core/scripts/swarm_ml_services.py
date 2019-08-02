@@ -2,18 +2,33 @@ import asyncio
 import time
 
 import aiohttp
-from django.conf import settings
+import json
+
+
+# from django.conf import settings
 import websockets
 
 # this was mostly taken from a medium article ... it hasn't aged well and i should rewrite this.
+
 from open.utilities.date_and_time import print_current_time
 
 # this script is used to ensure that load balancing works for the ML api endpoints
 # python manage.py runscript swarm_ml_services
 
-urls = [settings.GPT2_API_ENDPOINT] * 50000
+# urls = [settings.GPT2_API_ENDPOINT] * 50000
+urls = ["wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/work/"] * 50
+
 
 exception_count = 0
+
+
+def get_random_prompt():
+    import random
+    from open.core.scripts.utilities import random_nouns
+
+    random_word = random.choice(random_nouns)
+    data = {"prompt": f"Hello {random_word}, I am eating {random_word}."}
+    return data
 
 
 async def fetch_url(session, url):
@@ -32,13 +47,15 @@ async def fetch_url(session, url):
 
 
 async def fetch_websocket_url(session, url):
-    async with websockets.connect(url) as websocket:
-        data = {"prompt": f"Hello"}
+    async with websockets.connect(url, ssl=True) as websocket:
+        print_current_time()
 
-        await websocket.send(data)
+        data = get_random_prompt()
+        # data = {"prompt": f"Hello"}
+        data_json = json.dumps(data)
+
+        await websocket.send(data_json)
         greeting = await websocket.recv()
-
-        print(greeting)
 
         return greeting
 
