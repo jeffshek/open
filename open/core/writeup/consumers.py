@@ -147,6 +147,16 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
                         logger.exception(
                             f"Issue with Request to ML Endpoint. Received {status}"
                         )
+                        error_msg = {
+                            "prompt": prompt_serialized["prompt"],
+                            "text_0": "An Error Occurred",
+                        }
+
+                        await self.channel_layer.group_send(
+                            self.group_name_uuid,
+                            {"type": "api_serialized_message", "message": error_msg},
+                        )
+
                         return
 
                     returned_data = await resp.json()
