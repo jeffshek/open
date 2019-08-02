@@ -3,6 +3,7 @@ import time
 
 import aiohttp
 from django.conf import settings
+import websockets
 
 # this was mostly taken from a medium article ... it hasn't aged well and i should rewrite this.
 from open.utilities.date_and_time import print_current_time
@@ -30,13 +31,25 @@ async def fetch_url(session, url):
         return await response.text()
 
 
+async def fetch_websocket_url(session, url):
+    async with websockets.connect(url) as websocket:
+        data = {"prompt": f"Hello"}
+
+        await websocket.send(data)
+        greeting = await websocket.recv()
+
+        print(greeting)
+
+        return greeting
+
+
 async def fetch_all_urls(urls, loop):
     connector = aiohttp.TCPConnector(limit=100)
 
     async with aiohttp.ClientSession(connector=connector) as session:
         results = await asyncio.gather(
             # returning exceptions =  true means to ignore exceptions
-            *[fetch_url(session, url) for url in urls],
+            *[fetch_websocket_url(session, url) for url in urls],
             return_exceptions=True,
         )
         return results
