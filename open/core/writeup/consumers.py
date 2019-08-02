@@ -12,6 +12,10 @@ from open.core.writeup.utilities import serialize_gpt2_responses
 from django.core.cache import cache
 import aiohttp
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class WriteUpGPT2MediumConsumer(WebsocketConsumer):
     def connect(self):
@@ -136,6 +140,15 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
                 async with session.post(
                     settings.GPT2_API_ENDPOINT, data=prompt_serialized, headers=headers
                 ) as resp:
+                    status = resp.status
+
+                    # if the ml endpoints are hit too hard, we'll receive a 500 error
+                    if resp.status != 200:
+                        logger.exception(
+                            f"Issue with Request to ML Endpoint. Received {status}"
+                        )
+                        return
+
                     returned_data = await resp.json()
 
             await set_cached_results(cache_key, returned_data)

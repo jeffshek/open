@@ -46,12 +46,19 @@ async def fetch_url(session, url):
         return await response.text()
 
 
+count = 0
+
+
+def increment_request_count():
+    global count
+    count += 1
+
+
 async def fetch_websocket_url(session, url):
     async with websockets.connect(url, ssl=True) as websocket:
-        print_current_time()
+        print(increment_request_count())
 
         data = get_random_prompt()
-        # data = {"prompt": f"Hello"}
         data_json = json.dumps(data)
 
         await websocket.send(data_json)
@@ -67,7 +74,7 @@ async def fetch_all_urls(urls, loop):
         results = await asyncio.gather(
             # returning exceptions =  true means to ignore exceptions
             *[fetch_websocket_url(session, url) for url in urls],
-            return_exceptions=True,
+            return_exceptions=False,
         )
         return results
 
@@ -78,7 +85,7 @@ def run():
     start = time.time()
     htmls = loop.run_until_complete(fetch_all_urls(urls, loop))
 
-    print(htmls[:50])
+    # print(htmls[:50])
     end = time.time()
 
     # a simple check to make sure we got all the data we wanted
