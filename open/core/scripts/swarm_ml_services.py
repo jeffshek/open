@@ -2,11 +2,12 @@ import asyncio
 import json
 import time
 import uuid
+import csv
 
 import aiohttp
 
 # from django.conf import settings
-import websockets
+# import websockets
 
 
 # this was mostly taken from a medium article ... it hasn't aged well and i should rewrite this.
@@ -26,18 +27,13 @@ def get_urls(urls_to_create=50):
         ws_url = (
             f"wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/{uuid_str}/"
         )
-        ws_url = f"ws://127.0.0.1:8008/ws/async/writeup/gpt2_medium/session/{uuid_str}/"
 
         urls.append(ws_url)
-        # print (ws_url)
 
     return urls
 
 
-urls = get_urls(5000)
-
-
-exception_count = 0
+urls = get_urls(50000)
 
 
 def get_random_prompt():
@@ -45,14 +41,14 @@ def get_random_prompt():
     from open.core.scripts.utilities import random_nouns
 
     random_word = random.choice(random_nouns)
-    data = {"prompt": f"Hello {random_word}, I am eating {random_word}."}
+    random_word_2 = random.choice(random_nouns)
+    data = {
+        "prompt": f"Today marks the day of {random_word}, I am eating {random_word}. Okay? {random_word_2}"
+    }
     return data
 
 
 async def fetch_url(session, url):
-    # random_word = random.choice(random_nouns)
-    # data = {"prompt": f"Hello {random_word}, I am eating {random_word}."}
-
     data = {"prompt": f"Hello"}
 
     async with session.post(url, data=data, timeout=60 * 60) as response:
@@ -72,42 +68,75 @@ def increment_request_count():
     return count
 
 
-async def fetch_websocket_url(session, url):
-    async with websockets.connect(url, ssl=True) as websocket:
-        print(increment_request_count())
-
-        data = get_random_prompt()
-        data_json = json.dumps(data)
-
-        await websocket.send(data_json)
-        greeting = await websocket.recv()
-
-        return greeting
-
-
 async def fetch_all_urls(urls, loop):
     connector = aiohttp.TCPConnector(limit=100)
 
     async with aiohttp.ClientSession(connector=connector) as session:
         results = await asyncio.gather(
             # returning exceptions =  true means to ignore exceptions
-            *[fetch_websocket_url(session, url) for url in urls],
+            *[fetch_url(session, url) for url in urls],
             return_exceptions=False,
         )
         return results
 
 
+async def fetch_via_websocket(session, url):
+    ws = await session.ws_connect(url)
+
+    print(increment_request_count())
+
+    data = get_random_prompt()
+    data_json = json.dumps(data)
+
+    await ws.send_str(data_json)
+
+    msg = await ws.receive()
+    # msg = await asyncio.wait_for(ws.receive(), timeout=300.0)
+
+    msg_json = msg.json()
+
+    ws_msg_serialized = msg_json["message"]
+
+    await ws.close()
+    return ws_msg_serialized
+
+
+async def fetch_all_urls_via_websockets(urls):
+    connector = aiohttp.TCPConnector(limit=100)
+    timeout = aiohttp.ClientTimeout(total=60 * 60)
+
+    async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
+
+        results = await asyncio.gather(
+            # returning exceptions =  true means to ignore exceptions
+            *[fetch_via_websocket(session, url) for url in urls],
+            return_exceptions=True,
+        )
+        return results
+
+
 def run():
+
     loop = asyncio.get_event_loop()
 
     start = time.time()
-    htmls = loop.run_until_complete(fetch_all_urls(urls, loop))
-
-    print(htmls[:50])
+    data = loop.run_until_complete(fetch_all_urls_via_websockets(urls))
     end = time.time()
 
+    with open("exports/output.csv", mode="w") as output:
+        fieldnames = ["prompt", "text_0"]
+        writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
+
+        writer.writeheader()
+
+        for line in data:
+            try:
+                writer.writerow(line)
+            except Exception:
+                continue
+
     # a simple check to make sure we got all the data we wanted
-    print(len(htmls))
+    print(len(data))
 
     time_duration = end - start
     print(f"It took {time_duration} seconds to run.")

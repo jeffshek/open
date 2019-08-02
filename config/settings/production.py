@@ -21,6 +21,8 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": env("REDIS_URL"),
+        # make cache timeouts last a whole day
+        "TIMEOUT": 60 * 60 * 24,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # Mimicing memcache behavior.
@@ -28,8 +30,6 @@ CACHES = {
             "IGNORE_EXCEPTIONS": True,
             # redis is a gift to humans
             "MAX_ENTRIES": 30000,
-            # make cache timeouts last a whole day
-            "TIMEOUT": 60 * 60 * 24,
         },
     }
 }
