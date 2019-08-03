@@ -70,7 +70,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         cached_results = await get_cached_results(cache_key)
 
         if cached_results:
-            return await self.serialize_text_response_and_send(cached_results)
+            return await self.send_serialized_data(cached_results)
 
         # if no cache, make the requests and then cache it and send it out
         token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
@@ -90,14 +90,15 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
                 returned_data = await resp.json()
 
-        await set_cached_results(cache_key, returned_data)
-        await self.serialize_text_response_and_send(returned_data)
+        serialized_text_responses = serialize_gpt2_api_response(returned_data)
+        await set_cached_results(cache_key, serialized_text_responses)
 
-    async def serialize_text_response_and_send(self, returned_data):
-        text_responses = serialize_gpt2_api_response(returned_data)
+        await self.send_serialized_data(returned_data)
+
+    async def send_serialized_data(self, returned_data):
         await self.channel_layer.group_send(
             self.group_name_uuid,
-            {"type": "api_serialized_message", "message": text_responses},
+            {"type": "api_serialized_message", "message": returned_data},
         )
 
     async def api_serialized_message(self, event):
