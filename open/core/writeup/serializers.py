@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from open.core.models import WriteUpSharedPrompt
+from open.core.writeup.models import WriteUpSharedPrompt
 
 
 class GPT2MediumPromptSerializer(serializers.Serializer):

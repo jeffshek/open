@@ -1,6 +1,6 @@
 from factory.django import DjangoModelFactory
 
-from open.core.models import WriteUpSharedPrompt
+from open.core.writeup.models import WriteUpSharedPrompt
 
 
 class WriteUpSharedPromptFactory(DjangoModelFactory):

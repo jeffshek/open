@@ -1,10 +1,12 @@
 import json
 
+from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import render
 
+from open.core.writeup.models import WriteUpSharedPrompt
+from open.core.writeup.serializers import WriteUpSharedPromptSerializer
 
 SENTENCE_1_MOCK_RESPONSE = "API Services: ONLINE."
 
@@ -45,3 +47,23 @@ def writeup_room(request, room_name):
         "writeup/room.html",
         {"room_name_json": mark_safe(json.dumps(room_name))},
     )
+
+
+class WriteUpSharedPromptView(APIView):
+    permission_classes = ()
+
+    def get(self, request, uuid):
+        prompt = WriteUpSharedPrompt(uuid=uuid)
+        serializer = WriteUpSharedPromptSerializer(prompt)
+        data = serializer.data
+
+        return Response(data=data)
+
+    def post(self, request):
+        serializer = WriteUpSharedPromptSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+
+        instanced_serialized = WriteUpSharedPromptSerializer(instance)
+        return Response(data=instanced_serialized.data)
