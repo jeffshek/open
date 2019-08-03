@@ -56,3 +56,24 @@ class WriteUpSharedPromptViewTests(OpenDefaultTest):
 
         created_instance = WriteUpSharedPrompt.objects.get(uuid=returned_uuid)
         self.assertEqual(created_instance.text, text)
+
+    def test_post_updating_already_existing_view_fails(self):
+        url = reverse(self.VIEW_NAME)
+
+        text = "I am eating a hamburger"
+        data = {"text": text, "email": text, "title": text}
+
+        client = self.registered_user_client
+        response = client.post(url, data=data)
+        returned_uuid = response.data["uuid"]
+
+        # now try to pass a uuid in the post
+        data["uuid"] = returned_uuid
+
+        # this should ignore the uuid and make a new object instead
+        response = client.post(url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+        new_uuid = response.data["uuid"]
+
+        self.assertNotEqual(returned_uuid, new_uuid)

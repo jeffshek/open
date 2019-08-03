@@ -22,6 +22,7 @@ urlpatterns = [
         name=WriteUpResourceEndpoints.SHARED_PROMPT_NAME,
     ),
     path(
+        # api.writeup.ai/shared/prompts/:uuid
         r"shared/prompts/<uuid:uuid>/",
         WriteUpSharedPromptView.as_view(),
         name=WriteUpResourceEndpoints.SHARED_PROMPT_NAME,
