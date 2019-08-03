@@ -12,4 +12,4 @@ class WriteupViewTests(OpenDefaultTest):
 
     def test_get_view(self):
         response = self._get_response_data()
-        self.assertTrue("sentence1" in response)
+        self.assertTrue("prompt" in response)

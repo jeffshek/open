@@ -8,7 +8,10 @@ from django.conf import settings
 
 from open.core.writeup.caches import get_cache_key_for_gpt2_parameter
 from open.core.writeup.serializers import GPT2MediumPromptSerializer
-from open.core.writeup.utilities import serialize_gpt2_responses
+from open.core.writeup.utilities import (
+    serialize_gpt2_individual_values,
+    serialize_gpt2_api_response,
+)
 from django.core.cache import cache
 import aiohttp
 
@@ -68,7 +71,7 @@ class WriteUpGPT2MediumConsumer(WebsocketConsumer):
             if "text_" not in key:
                 continue
 
-            value_serialized = serialize_gpt2_responses(value)
+            value_serialized = serialize_gpt2_individual_values(value)
             text_responses[key] = value_serialized
 
         async_to_sync(self.channel_layer.group_send)(
@@ -115,63 +118,71 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         self.group_name_uuid = "session_%s" % group_name
 
         await self.channel_layer.group_add(self.group_name_uuid, self.channel_name)
-
         await self.accept()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.group_name_uuid, self.channel_name)
 
+    async def return_invalid_data_prompt(self):
+        error_msg = {
+            "prompt": "Invalid Data Was Passed",
+            "text_0": "Invalid Data Was Passed",
+        }
+        await self.channel_layer.group_send(
+            self.group_name_uuid,
+            {"type": "api_serialized_message", "message": error_msg},
+        )
+
+    async def return_invalid_api_response(self, prompt_serialized, status):
+        logger.exception(f"Issue with Request to ML Endpoint. Received {status}")
+        error_msg = {
+            "prompt": prompt_serialized["prompt"],
+            "text_0": "An Error Occurred",
+        }
+        return await self.channel_layer.group_send(
+            self.group_name_uuid,
+            {"type": "api_serialized_message", "message": error_msg},
+        )
+
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         serializer = GPT2MediumPromptSerializer(data=text_data_json)
-        serializer.is_valid()
+        valid = serializer.is_valid()
+
+        if not valid:
+            return await self.return_invalid_data_prompt()
+
         prompt_serialized = serializer.validated_data
 
         cache_key = get_cache_key_for_gpt2_parameter(**prompt_serialized)
         cached_results = await get_cached_results(cache_key)
 
         if cached_results:
-            returned_data = cached_results
-        else:
-            token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
-            headers = {"Authorization": token_key}
+            return await self.serialize_text_response_and_send(cached_results)
 
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    settings.GPT2_API_ENDPOINT, data=prompt_serialized, headers=headers
-                ) as resp:
-                    status = resp.status
+        # if no cache, make the requests and then cache it and send it out
+        token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
+        headers = {"Authorization": token_key}
 
-                    # if the ml endpoints are hit too hard, we'll receive a 500 error
-                    if resp.status != 200:
-                        logger.exception(
-                            f"Issue with Request to ML Endpoint. Received {status}"
-                        )
-                        error_msg = {
-                            "prompt": prompt_serialized["prompt"],
-                            "text_0": "An Error Occurred",
-                        }
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                settings.GPT2_API_ENDPOINT, data=prompt_serialized, headers=headers
+            ) as resp:
+                status = resp.status
 
-                        await self.channel_layer.group_send(
-                            self.group_name_uuid,
-                            {"type": "api_serialized_message", "message": error_msg},
-                        )
+                # if the ml endpoints are hit too hard, we'll receive a 500 error
+                if resp.status != 200:
+                    return await self.return_invalid_api_response(
+                        prompt_serialized, status
+                    )
 
-                        return
+                returned_data = await resp.json()
 
-                    returned_data = await resp.json()
+        await set_cached_results(cache_key, returned_data)
+        await self.serialize_text_response_and_send(returned_data)
 
-            await set_cached_results(cache_key, returned_data)
-
-        text_responses = returned_data.copy()
-
-        for key, value in returned_data.items():
-            if "text_" not in key:
-                continue
-
-            value_serialized = serialize_gpt2_responses(value)
-            text_responses[key] = value_serialized
-
+    async def serialize_text_response_and_send(self, returned_data):
+        text_responses = serialize_gpt2_api_response(returned_data)
         await self.channel_layer.group_send(
             self.group_name_uuid,
             {"type": "api_serialized_message", "message": text_responses},
