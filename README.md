@@ -22,9 +22,9 @@ In the upcoming month, as I move things over bit by bit, this will be home to
 
 ## writeup.ai 
 ### Lots of Credit To ....
-* [OpenAI](https://openai.com/blog/better-language-models/) for generating and releasing GPT-2 Medium!
-* [HuggingFace](https://github.com/huggingface/pytorch-transformers) for making PyTorch extensions.
-* [Google Cloud Platform](https://cloud.google.com/) it's been a pleasure using GCP to host this. 
+* [OpenAI](https://openai.com/blog/better-language-models/) for generating and releasing GPT-2 Medium
+* [HuggingFace](https://github.com/huggingface/pytorch-transformers) for making PyTorch extensions
+* [Google Cloud Platform](https://cloud.google.com/) it's been a pleasure using GCP to host this
 * This is mostly open-sourced, but there is a separate private repo that handles all the deployments and the ML services. That was too hard to open-source without making my life too hard. But it's probably the easiest one to code - it only consists of a microservice and a web app hosting models. 
 * I'll be releasing a huge writeup about how this was built on my [blog](https://senrigan.io/blog/). 
 
