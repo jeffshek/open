@@ -294,7 +294,13 @@ CLOUDFLARE_SENRIGAN_ZONE_ID = env(
 CLOUDFLARE_EMAIL = env("CLOUDFLARE_EMAIL", default="no-this-isnt-shared@gmail.com")
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",)
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    # anything more than five a second feels quite excessive
+    "DEFAULT_THROTTLE_RATES": {"anon": "5/second", "user": "5/second"},
 }
 
 ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT", default="https://www.google.com")
