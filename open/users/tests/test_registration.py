@@ -63,13 +63,32 @@ class TestUserRegistrationWithAPI(TestCase):
         # with provided credentials.', code='invalid')]}
         self.assertTrue("non_field_errors" in response.data)
 
-    def test_login_process_with_correct_creds(self):
+    def test_login_process_with_correct_creds_username(self):
         created_user = User.objects.create_user(
             username=MOCK_USERNAME, password=MOCK_PASSWORD
         )
 
         url = reverse("rest_login")
         data = {"username": MOCK_USERNAME, "password": MOCK_PASSWORD}
+
+        client = APIClient()
+        response = client.post(url, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("key" in response.data)
+
+        key = response.data["key"]
+        expected_key = Token.objects.get(user=created_user).key
+
+        self.assertEqual(key, expected_key)
+
+    def test_login_process_with_correct_creds_email(self):
+        created_user = User.objects.create_user(
+            username=MOCK_USERNAME, email=MOCK_EMAIL, password=MOCK_PASSWORD
+        )
+
+        url = reverse("rest_login")
+        data = {"email": MOCK_EMAIL, "password": MOCK_PASSWORD}
 
         client = APIClient()
         response = client.post(url, data)
