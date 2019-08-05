@@ -25,12 +25,15 @@ urlpatterns = [
         kwargs={"exception": Exception("Shame On You")},
         name="unnamed",
     ),
+    path("rest-auth/", include("rest_auth.urls")),
+    path("rest-auth/registration/", include("rest_auth.registration.urls")),
     path("favicon.ico", favicon_view, name="favicon"),
     path(settings.ADMIN_URL, admin.site.urls),
     # prefix an api endpoint in front of everything to use a global load balancer
     # and route traffic based on API variants. this is to offload websocket servers
     # and traditional REST servers
     path("api/writeup/v1/", include("open.core.writeup.urls")),
+    path("users/", include("open.users.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
