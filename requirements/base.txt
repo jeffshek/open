@@ -19,6 +19,7 @@ django==2.2.3  # https://www.djangoproject.com/
 django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
+django-fsm==2.6.1
 django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 django-rest-auth==0.9.5
