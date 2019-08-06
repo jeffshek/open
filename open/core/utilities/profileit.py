@@ -4,10 +4,13 @@ import cProfile
 def profileit(func):
     """
     Decorator (function wrapper) that profiles a single function
+
     @profileit()
     def func1(...)
             # do something
         pass
+
+    Taken from some GitHub ... somewhere, I can't remember
     """
 
     def wrapper(*args, **kwargs):

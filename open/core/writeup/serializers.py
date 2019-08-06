@@ -1,6 +1,8 @@
+from django.db.models import UUIDField
 from rest_framework import serializers
+from rest_framework.fields import IntegerField
 
-from open.core.writeup.models import WriteUpPrompt
+from open.core.writeup.models import WriteUpPrompt, WriteUpFlaggedPrompt
 
 
 class GPT2MediumPromptSerializer(serializers.Serializer):
@@ -17,4 +19,20 @@ class GPT2MediumPromptSerializer(serializers.Serializer):
 class WriteUpPromptSerializer(serializers.ModelSerializer):
     class Meta:
         model = WriteUpPrompt
-        fields = ("text", "email", "title", "uuid")
+        fields = ("text", "email", "title", "uuid", "instagram", "twitter", "website")
+
+
+class WriteUpPromptVoteModifySerializer(serializers.ModelSerializer):
+    prompt_uuid = UUIDField(required=True)
+    value = IntegerField(min_value=-1, max_value=3, default=1)
+
+    class Meta:
+        model = WriteUpPrompt
+        fields = ("prompt_uuid", "value")
+
+
+class WriteUpFlaggedPromptModifySerializer(serializers.ModelSerializer):
+    prompt_uuid = UUIDField(required=True)
+
+    class Meta:
+        model = WriteUpFlaggedPrompt
