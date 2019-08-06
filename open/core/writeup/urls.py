@@ -17,14 +17,12 @@ urlpatterns = [
     path(r"", writeup_index, name="index"),
     path(r"chat/<slug:room_name>/", writeup_room, name="room"),
     path(
-        r"shared/prompts/",
-        WriteUpPromptView.as_view(),
-        name=WriteUpResourceEndpoints.SHARED_PROMPT_NAME,
+        r"prompts/", WriteUpPromptView.as_view(), name=WriteUpResourceEndpoints.PROMPTS
     ),
     path(
-        # api.writeup.ai/shared/prompts/:uuid
-        r"shared/prompts/<uuid:uuid>/",
+        # api.writeup.ai/prompts/:uuid
+        r"prompts/<uuid:uuid>/",
         WriteUpPromptView.as_view(),
-        name=WriteUpResourceEndpoints.SHARED_PROMPT_NAME,
+        name=WriteUpResourceEndpoints.PROMPTS,
     ),
 ]

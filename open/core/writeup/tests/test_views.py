@@ -20,7 +20,7 @@ class WriteupViewTests(OpenDefaultTest):
 
 
 class WriteUpPromptViewTests(OpenDefaultTest):
-    VIEW_NAME = WriteUpResourceEndpoints.SHARED_PROMPT_NAME
+    VIEW_NAME = WriteUpResourceEndpoints.PROMPTS
     VIEW_NEEDS_LOGIN = False
 
     @classmethod
