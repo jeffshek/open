@@ -15,7 +15,7 @@ contextvars==2.4
 coreapi==2.3.3  # https://github.com/core-api/python-client
 cryptography==2.7
 daphne==2.3.0
-django==2.2.3  # https://www.djangoproject.com/
+django==2.2.4  # https://www.djangoproject.com/
 django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
@@ -40,7 +40,7 @@ python-coveralls==2.9.2
 python-slugify==3.0.2  # https://github.com/un33k/python-slugify
 pytz==2019.1  # https://github.com/stub42/pytz
 PyYAML==5.1.1
-redis==3.2.1  # https://github.com/antirez/redis
+redis==3.3.5  # https://github.com/antirez/redis
 sentry-asgi==0.2.0
 sentry-sdk==0.10.2  # https://github.com/getsentry/sentry-python
 twisted==19.2.1
