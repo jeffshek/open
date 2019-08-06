@@ -1,12 +1,7 @@
 from django.urls import path
 
-from open.core.writeup.views import (
-    writeup_index,
-    writeup_room,
-    GPT2MediumPromptTestView,
-    WriteUpPromptView,
-)
 from open.core.writeup.constants import WriteUpResourceEndpoints
+from open.core.writeup.views import GPT2MediumPromptTestView, WriteUpPromptView
 
 urlpatterns = [
     path(
@@ -14,8 +9,6 @@ urlpatterns = [
         view=GPT2MediumPromptTestView.as_view(),
         name=WriteUpResourceEndpoints.GENERATED_SENTENCE,
     ),
-    path(r"", writeup_index, name="index"),
-    path(r"chat/<slug:room_name>/", writeup_room, name="room"),
     path(
         r"prompts/", WriteUpPromptView.as_view(), name=WriteUpResourceEndpoints.PROMPTS
     ),

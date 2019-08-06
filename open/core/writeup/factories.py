@@ -1,3 +1,4 @@
+from factory import SubFactory
 from factory.django import DjangoModelFactory
 
 from open.core.writeup.models import (
@@ -13,10 +14,14 @@ class WriteUpPromptFactory(DjangoModelFactory):
 
 
 class WriteUpPromptVoteFactory(DjangoModelFactory):
+    prompt = SubFactory(WriteUpPromptFactory)
+
     class Meta:
         model = WriteUpPromptVote
 
 
 class WriteUpFlaggedPromptFactory(DjangoModelFactory):
+    prompt = SubFactory(WriteUpPromptFactory)
+
     class Meta:
         model = WriteUpFlaggedPrompt

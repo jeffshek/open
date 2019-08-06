@@ -1,7 +1,3 @@
-import json
-
-from django.shortcuts import render
-from django.utils.safestring import mark_safe
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -35,18 +31,6 @@ class GPT2MediumPromptTestView(APIView):
         }
 
         return Response(data=response)
-
-
-def writeup_index(request):
-    return render(request, "writeup/index.html", {})
-
-
-def writeup_room(request, room_name):
-    return render(
-        request,
-        "writeup/room.html",
-        {"room_name_json": mark_safe(json.dumps(room_name))},
-    )
 
 
 class WriteUpPromptView(APIView):

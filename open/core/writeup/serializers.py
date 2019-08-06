@@ -1,6 +1,6 @@
-from django.db.models import UUIDField
+
 from rest_framework import serializers
-from rest_framework.fields import IntegerField
+from rest_framework.fields import IntegerField, UUIDField
 
 from open.core.writeup.models import (
     WriteUpPrompt,
@@ -40,3 +40,4 @@ class WriteUpFlaggedPromptModifySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WriteUpFlaggedPrompt
+        fields = ("prompt_uuid",)
