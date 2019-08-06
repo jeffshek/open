@@ -1,8 +1,8 @@
 from rest_framework.reverse import reverse
 
 from open.core.writeup.constants import WriteUpResourceEndpoints
-from open.core.writeup.factories import WriteUpSharedPromptFactory
-from open.core.writeup.models import WriteUpSharedPrompt
+from open.core.writeup.factories import WriteUpPromptFactory
+from open.core.writeup.models import WriteUpPrompt
 from open.utilities.testing_mixins import OpenDefaultTest
 
 
@@ -25,7 +25,7 @@ class WriteUpPromptViewTests(OpenDefaultTest):
 
     @classmethod
     def setUpTestData(cls):
-        cls.factory_uuid = WriteUpSharedPromptFactory().uuid.__str__()
+        cls.factory_uuid = WriteUpPromptFactory().uuid.__str__()
         super().setUpTestData()
 
     @classmethod
@@ -54,7 +54,7 @@ class WriteUpPromptViewTests(OpenDefaultTest):
 
         self.assertEqual(returned_text, text)
 
-        created_instance = WriteUpSharedPrompt.objects.get(uuid=returned_uuid)
+        created_instance = WriteUpPrompt.objects.get(uuid=returned_uuid)
         self.assertEqual(created_instance.text, text)
 
     def test_post_updating_already_existing_view_fails(self):

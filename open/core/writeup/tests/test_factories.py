@@ -1,11 +1,11 @@
 from test_plus import TestCase
 
-from open.core.writeup.factories import WriteUpSharedPromptFactory
+from open.core.writeup.factories import WriteUpPromptFactory
 
 
 class TestWriteUpFactories(TestCase):
     def test_writeup_prompt_factory(self):
-        writeup_prompt = WriteUpSharedPromptFactory()
+        writeup_prompt = WriteUpPromptFactory()
         self.assertIsNotNone(writeup_prompt)
 
     def test_writeup_prompt_factory_loaded(self):
@@ -13,7 +13,7 @@ class TestWriteUpFactories(TestCase):
         email = "Jeff Was Here"
         title = "Jeff Was Here"
 
-        writeup_prompt = WriteUpSharedPromptFactory(text=text, email=email, title=title)
+        writeup_prompt = WriteUpPromptFactory(text=text, email=email, title=title)
 
         self.assertEqual(writeup_prompt.text, text)
         self.assertEqual(writeup_prompt.email, text)
