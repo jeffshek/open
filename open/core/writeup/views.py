@@ -1,8 +1,12 @@
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from open.core.writeup.models import WriteUpPrompt
-from open.core.writeup.serializers import WriteUpPromptSerializer
+from open.core.writeup.models import WriteUpPrompt, WriteUpPromptVote
+from open.core.writeup.serializers import (
+    WriteUpPromptSerializer,
+    WriteUpPromptVoteModifySerializer,
+)
 
 SENTENCE_1_MOCK_RESPONSE = "API Services: ONLINE."
 
@@ -51,3 +55,21 @@ class WriteUpPromptView(APIView):
 
         instanced_serialized = WriteUpPromptSerializer(instance)
         return Response(data=instanced_serialized.data)
+
+
+class WriteUpPromptVoteView(APIView):
+    def post(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+        user = request.user
+
+        serializer = WriteUpPromptVoteModifySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        validated_data = serializer.validated_data
+
+        instance = WriteUpPromptVote.objects.update_or_create(
+            user=user, prompt=prompt, defaults=validated_data
+        )
+
+        return_serializer = WriteUpPromptVoteModifySerializer(instance=instance)
+        return Response(data=return_serializer.data)

@@ -12,6 +12,9 @@ class OpenDefaultTest(APITestCase):
     Note: This will also run itself once too ...
     This is a bit of an antipattern, I should separate as a mixin better
     But it makes it harder to read
+
+    NOTE - This is only useful for singular, non-nested RESTful endpoints
+    This was probably a dumb idea to make this.
     """
 
     # just use a random view

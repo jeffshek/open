@@ -1,6 +1,8 @@
 class WriteUpResourceEndpoints:
     GENERATED_SENTENCE = "generated_sentence"
     PROMPTS = "prompts"
+    PROMPT_VOTES = "prompt_votes"
+    PROMPT_FLAGS = "prompt_flags"
 
 
 GPT2_END_TEXT_STRING = "<|endoftext|>"

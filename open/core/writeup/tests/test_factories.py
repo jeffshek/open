@@ -7,10 +7,14 @@ from open.core.writeup.factories import (
 )
 
 
-class TestWriteUpPromptFactories(TestCase):
-    def test_writeup_prompt_factory(self):
-        writeup_prompt = WriteUpPromptFactory()
-        self.assertIsNotNone(writeup_prompt)
+class TestFactoryMixin:
+    def test_factory(self):
+        instance = self.FACTORY()
+        self.assertIsNotNone(instance)
+
+
+class TestWriteUpPromptFactories(TestCase, TestFactoryMixin):
+    FACTORY = WriteUpPromptFactory
 
     def test_writeup_prompt_factory_loaded(self):
         text = "Jeff Was Here"
@@ -24,13 +28,9 @@ class TestWriteUpPromptFactories(TestCase):
         self.assertEqual(writeup_prompt.title, text)
 
 
-class TestWriteUpPromptVoteFactory(TestCase):
-    def test_factory(self):
-        instance = WriteUpPromptVoteFactory()
-        self.assertIsNotNone(instance)
+class TestWriteUpPromptVoteFactory(TestCase, TestFactoryMixin):
+    FACTORY = WriteUpPromptVoteFactory
 
 
 class TestWriteUpFlaggedPromptFactory(TestCase):
-    def test_factory(self):
-        instance = WriteUpFlaggedPromptFactory()
-        self.assertIsNotNone(instance)
+    FACTORY = WriteUpFlaggedPromptFactory

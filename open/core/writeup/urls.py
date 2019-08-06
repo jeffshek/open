@@ -1,7 +1,11 @@
 from django.urls import path
 
 from open.core.writeup.constants import WriteUpResourceEndpoints
-from open.core.writeup.views import GPT2MediumPromptTestView, WriteUpPromptView
+from open.core.writeup.views import (
+    GPT2MediumPromptTestView,
+    WriteUpPromptView,
+    WriteUpPromptVoteView,
+)
 
 urlpatterns = [
     path(
@@ -13,9 +17,20 @@ urlpatterns = [
         r"prompts/", WriteUpPromptView.as_view(), name=WriteUpResourceEndpoints.PROMPTS
     ),
     path(
-        # api.writeup.ai/prompts/:uuid
+        # frontend urls are like
+        # writeup.ai/prompts/:uuid/
         r"prompts/<uuid:uuid>/",
         WriteUpPromptView.as_view(),
         name=WriteUpResourceEndpoints.PROMPTS,
+    ),
+    path(
+        r"prompts/<uuid:prompt_uuid>/votes/",
+        WriteUpPromptVoteView.as_view(),
+        name=WriteUpResourceEndpoints.PROMPT_VOTES,
+    ),
+    path(
+        r"prompts/<uuid:prompt_uuid>/flags/",
+        WriteUpPromptView.as_view(),
+        name=WriteUpResourceEndpoints.PROMPT_FLAGS,
     ),
 ]

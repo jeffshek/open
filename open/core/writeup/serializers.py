@@ -27,12 +27,11 @@ class WriteUpPromptSerializer(serializers.ModelSerializer):
 
 
 class WriteUpPromptVoteModifySerializer(serializers.ModelSerializer):
-    prompt_uuid = UUIDField(required=True)
     value = IntegerField(min_value=-1, max_value=3, default=1)
 
     class Meta:
         model = WriteUpPromptVote
-        fields = ("prompt_uuid", "value")
+        fields = ("value",)
 
 
 class WriteUpFlaggedPromptModifySerializer(serializers.ModelSerializer):
