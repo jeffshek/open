@@ -4,7 +4,8 @@ from open.core.writeup.models import WriteUpPrompt
 
 
 class GPT2MediumPromptSerializer(serializers.Serializer):
-    # copy and pasted from secondary repo, modifications to this, should be one way
+    # warning!
+    # copy and pasted from service repo, the only modifications to this should be one way
     # synced from other repo
     prompt = serializers.CharField(required=True)
     batch_size = serializers.IntegerField(default=5, max_value=10, min_value=1)
