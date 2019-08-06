@@ -34,7 +34,7 @@ class PromptShareStates:
     UNSHARED = "unshared"
     # access only if you have special link
     PUBLISHED_LINK_ACCESS_ONLY = "published_link_access_only"
-    # everyone has access
+    # everyone has access, let people search and find, show on ranking
     PUBLISHED = "published"
 
 

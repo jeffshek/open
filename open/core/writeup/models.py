@@ -1,11 +1,4 @@
-from django.db.models import (
-    TextField,
-    BooleanField,
-    ForeignKey,
-    SET_NULL,
-    CASCADE,
-    IntegerField,
-)
+from django.db.models import TextField, ForeignKey, SET_NULL, CASCADE, IntegerField
 from django_fsm import FSMField
 
 from open.core.writeup.constants import (
@@ -28,6 +21,7 @@ class WriteUpPrompt(BaseModel):
     email = TextField(default="", blank=True)
     instagram = TextField(default="", blank=True)
     twitter = TextField(default="", blank=True)
+    website = TextField(default="", blank=True)
     # default to unshared, but allow people to share otherwise
     share_state = FSMField(
         choices=PROMPT_SHARE_STATES_CHOICES, default=PromptShareStates.UNSHARED
@@ -40,10 +34,13 @@ class WriteUpPrompt(BaseModel):
 
 
 class WriteUpPromptVote(BaseModel):
+    prompt = ForeignKey(WriteUpPrompt, on_delete=CASCADE)
     user = ForeignKey(User, null=True, blank=True, on_delete=CASCADE)
-    is_upvote = BooleanField(default=True)
+    # values can be negative (up to -1), which means a downvote
     value = IntegerField(default=1)
-    prompt = ForeignKey(WriteUpPrompt, on_delete=SET_NULL)
+
+    class Meta:
+        unique_together = ("prompt", "user")
 
 
 class WriteUpFlaggedPrompt(BaseModel):
@@ -51,3 +48,6 @@ class WriteUpFlaggedPrompt(BaseModel):
     # save who flagged it to prevent abuse
     prompt = ForeignKey(WriteUpPrompt, null=False, on_delete=CASCADE)
     user = ForeignKey(User, null=True, blank=True, on_delete=CASCADE)
+
+    class Meta:
+        unique_together = ("prompt", "user")

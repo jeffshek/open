@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from open.core.writeup.models import WriteUpSharedPrompt
+from open.core.writeup.models import WriteUpPrompt
 
 
 class GPT2MediumPromptSerializer(serializers.Serializer):
@@ -13,7 +13,7 @@ class GPT2MediumPromptSerializer(serializers.Serializer):
     top_k = serializers.IntegerField(default=10, max_value=40)
 
 
-class WriteUpSharedPromptSerializer(serializers.ModelSerializer):
+class WriteUpPromptSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WriteUpSharedPrompt
+        model = WriteUpPrompt
         fields = ("text", "email", "title", "uuid")

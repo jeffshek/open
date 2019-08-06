@@ -19,7 +19,7 @@ class WriteupViewTests(OpenDefaultTest):
         self.assertTrue("prompt" in response)
 
 
-class WriteUpSharedPromptViewTests(OpenDefaultTest):
+class WriteUpPromptViewTests(OpenDefaultTest):
     VIEW_NAME = WriteUpResourceEndpoints.SHARED_PROMPT_NAME
     VIEW_NEEDS_LOGIN = False
 
