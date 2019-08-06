@@ -23,7 +23,7 @@ django-fsm==2.6.1
 django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 django-rest-auth==0.9.5
-djangorestframework==3.9.4  # https://github.com/encode/django-rest-framework
+djangorestframework==3.10.2  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.0
 hyperlink==19.0.0
