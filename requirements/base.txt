@@ -46,7 +46,7 @@ sentry-sdk==0.10.2  # https://github.com/getsentry/sentry-python
 twisted==19.2.1
 txaio==18.8.1
 typing-extensions==3.7.4
-websocket-client-0.56.0 # need this for now to profile and find speedups
+websocket-client==0.56.0 # need this for now to profile and find speedups
 websockets==8.0.2
 whitenoise==4.1.2  # https://github.com/evansd/whitenoise
 XlsxWriter==1.1.8
