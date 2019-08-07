@@ -1,10 +1,21 @@
 from django.test import TestCase
 
-from open.core.writeup.constants import GPT2_END_TEXT_STRING
-from open.core.writeup.utilities import (
+from open.core.writeup.constants import (
+    GPT2_END_TEXT_STRING,
+    StaffVerifiedShareStates,
+    PromptShareStates,
+)
+from open.core.writeup.factories import WriteUpPromptFactory
+from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
+from open.core.writeup.utilities.gpt2_serializers import (
     serialize_gpt2_individual_values,
     serialize_gpt2_api_response,
 )
+from open.users.factories import UserFactory
+
+"""
+dpy test core.writeup.tests.test_utilities --keepdb
+"""
 
 
 class TestUtilities(TestCase):
@@ -35,3 +46,31 @@ class TestUtilities(TestCase):
         expected_data["text_0"] = text_with_spaces.strip()
 
         self.assertEqual(serialized_data, expected_data)
+
+
+class TestAccessPermissionsForPrompts(TestCase):
+    def test_access_permission_for_user_owner(self):
+        user = UserFactory()
+        user_prompt = WriteUpPromptFactory(user=user)
+        valid = user_can_read_prompt_instance(user, user_prompt)
+
+        self.assertTrue(valid)
+
+    def test_access_permission_for_not_owner(self):
+        user = UserFactory()
+
+        diff_user_prompt = WriteUpPromptFactory()
+        valid = user_can_read_prompt_instance(user, diff_user_prompt)
+
+        self.assertFalse(valid)
+
+    def test_access_permission_for_not_owner_failed(self):
+        user = UserFactory()
+
+        diff_user_prompt = WriteUpPromptFactory(
+            share_state=PromptShareStates.PUBLISHED,
+            staff_verified_share_state=StaffVerifiedShareStates.VERIFIED_FAIL,
+        )
+        valid = user_can_read_prompt_instance(user, diff_user_prompt)
+
+        self.assertFalse(valid)

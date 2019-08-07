@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,14 +9,15 @@ from open.core.writeup.models import (
     WriteUpFlaggedPrompt,
 )
 from open.core.writeup.serializers import (
-    WriteUpPromptSerializer,
+    WriteUpPromptReadSerializer,
     WriteUpPromptVoteModifySerializer,
 )
+from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
 
 SENTENCE_1_MOCK_RESPONSE = "API Services: ONLINE."
 
 
-class GPT2MediumPromptTestView(APIView):
+class GPT2MediumPromptDebugView(APIView):
     """ A Quick Test View To Use When Debugging """
 
     permission_classes = ()
@@ -41,24 +43,53 @@ class GPT2MediumPromptTestView(APIView):
         return Response(data=response)
 
 
+#
+# class WriteUpPromptListView(APIView):
+#     permission_classes = ()
+#
+#     def get(self, request):
+#         prompts = WriteUpPrompt
+#
+#         serializer = WriteUpPromptSerializer(prompt)
+#         data = serializer.data
+#
+#         return Response(data=data)
+
+
 class WriteUpPromptView(APIView):
     permission_classes = ()
 
-    def get(self, request, uuid):
-        prompt = WriteUpPrompt(uuid=uuid)
-        serializer = WriteUpPromptSerializer(prompt)
+    def get(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+
+        can_read = user_can_read_prompt_instance(request.user, prompt)
+        if not can_read:
+            raise Http404
+
+        serializer = WriteUpPromptReadSerializer(prompt)
         data = serializer.data
 
         return Response(data=data)
 
     def post(self, request):
-        serializer = WriteUpPromptSerializer(data=request.data)
+        serializer = WriteUpPromptReadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        instance = serializer.save()
+        if request.user.is_anonymous:
+            user = None
+        else:
+            user = request.user
 
-        instanced_serialized = WriteUpPromptSerializer(instance)
+        instance = serializer.save(user=user)
+
+        instanced_serialized = WriteUpPromptReadSerializer(instance)
         return Response(data=instanced_serialized.data)
+
+    def delete(self, request, prompt_uuid):
+        return
+
+
+# TODO - Create endpoints to allow updating of prompt endpoints (maybe)
 
 
 class WriteUpPromptVoteView(APIView):

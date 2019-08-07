@@ -11,3 +11,8 @@ class BaseModel(TimeStampedModel):
 
     class Meta:
         abstract = True
+
+    @property
+    def uuid_str(self):
+        # i frequently get the str of uuid a lot
+        return self.uuid.__str__()
