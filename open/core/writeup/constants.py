@@ -21,6 +21,13 @@ class StaffVerifiedShareStates:
     UNVERIFIED = "unverified"
 
 
+# everything else means it's failed
+SHOWABLE_STAFF_VERIFIED_STATES = [
+    StaffVerifiedShareStates.VERIFIED_PASS,
+    StaffVerifiedShareStates.UNVERIFIED_ISSUE,
+    StaffVerifiedShareStates.UNVERIFIED,
+]
+
 STAFF_VERIFIED_SHARE_STATE_CHOICES = [
     (StaffVerifiedShareStates.VERIFIED_FAIL, "Verified Fail"),
     (StaffVerifiedShareStates.VERIFIED_PASS, "Verified Pass"),

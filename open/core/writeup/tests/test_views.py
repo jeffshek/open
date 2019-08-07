@@ -112,7 +112,6 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
 
     def test_post_view_with_anon_user(self):
         url = reverse(self.VIEW_NAME)
-
         text = "I am eating a hamburger"
         data = {"text": text, "email": text, "title": text}
 
@@ -131,6 +130,56 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
 
         # no logged in user made this, no user should be attached
         self.assertIsNone(created_instance.user)
+
+    def test_post_view_multiple_times_creates_new_records(self):
+        url = reverse(self.VIEW_NAME)
+        text = "I am eating a hamburger"
+        data = {"text": text, "email": text, "title": text}
+
+        client = self.registered_user_client
+
+        for _ in range(5):
+            response = client.post(url, data=data)
+            self.assertEqual(response.status_code, 200)
+
+        count = WriteUpPrompt.objects.filter(user=self.registered_user).count()
+        self.assertEqual(count, 5)
+
+    def test_delete_view(self):
+        prompt = WriteUpPromptFactory(user=self.registered_user)
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
+        url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
+
+        client = self.registered_user_client
+        response = client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+        exists = WriteUpPrompt.objects.filter(uuid=prompt.uuid_str).exists()
+        self.assertFalse(exists)
+
+    def test_list_view_wont_return_bad_stuff(self):
+        WriteUpPromptFactory(
+            staff_verified_share_state=StaffVerifiedShareStates.VERIFIED_FAIL
+        )
+        url = reverse(self.VIEW_NAME)
+
+        response = self.registered_user_client.get(url)
+
+        self.assertEqual(0, len(response.data))
+
+    def test_list_view_returns_published_stuff(self):
+        WriteUpPromptFactory.create_batch(5, share_state=PromptShareStates.PUBLISHED)
+        WriteUpPromptFactory.create_batch(
+            5, share_state=PromptShareStates.PUBLISHED_LINK_ACCESS_ONLY
+        )
+        WriteUpPromptFactory.create_batch(5, share_state=PromptShareStates.UNSHARED)
+
+        url = reverse(self.VIEW_NAME)
+
+        response = self.registered_user_client.get(url)
+
+        # should only see 5, the ones that are PUBLISHED
+        self.assertEqual(5, len(response.data))
 
 
 class WriteUpPromptVoteViewTests(TestCase):

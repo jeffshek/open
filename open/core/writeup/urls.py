@@ -6,6 +6,7 @@ from open.core.writeup.views import (
     WriteUpPromptView,
     WriteUpPromptVoteView,
     WriteUpFlaggedPromptView,
+    WriteUpPromptListCreateView,
 )
 
 urlpatterns = [
@@ -15,7 +16,9 @@ urlpatterns = [
         name=WriteUpResourceEndpoints.GENERATED_SENTENCE,
     ),
     path(
-        r"prompts/", WriteUpPromptView.as_view(), name=WriteUpResourceEndpoints.PROMPTS
+        r"prompts/",
+        WriteUpPromptListCreateView.as_view(),
+        name=WriteUpResourceEndpoints.PROMPTS,
     ),
     path(
         # frontend urls are like
