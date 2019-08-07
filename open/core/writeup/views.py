@@ -1,12 +1,16 @@
-import json
-
-from django.shortcuts import render
-from django.utils.safestring import mark_safe
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from open.core.writeup.models import WriteUpSharedPrompt
-from open.core.writeup.serializers import WriteUpSharedPromptSerializer
+from open.core.writeup.models import (
+    WriteUpPrompt,
+    WriteUpPromptVote,
+    WriteUpFlaggedPrompt,
+)
+from open.core.writeup.serializers import (
+    WriteUpPromptSerializer,
+    WriteUpPromptVoteModifySerializer,
+)
 
 SENTENCE_1_MOCK_RESPONSE = "API Services: ONLINE."
 
@@ -37,33 +41,61 @@ class GPT2MediumPromptTestView(APIView):
         return Response(data=response)
 
 
-def writeup_index(request):
-    return render(request, "writeup/index.html", {})
-
-
-def writeup_room(request, room_name):
-    return render(
-        request,
-        "writeup/room.html",
-        {"room_name_json": mark_safe(json.dumps(room_name))},
-    )
-
-
-class WriteUpSharedPromptView(APIView):
+class WriteUpPromptView(APIView):
     permission_classes = ()
 
     def get(self, request, uuid):
-        prompt = WriteUpSharedPrompt(uuid=uuid)
-        serializer = WriteUpSharedPromptSerializer(prompt)
+        prompt = WriteUpPrompt(uuid=uuid)
+        serializer = WriteUpPromptSerializer(prompt)
         data = serializer.data
 
         return Response(data=data)
 
     def post(self, request):
-        serializer = WriteUpSharedPromptSerializer(data=request.data)
+        serializer = WriteUpPromptSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
 
-        instanced_serialized = WriteUpSharedPromptSerializer(instance)
+        instanced_serialized = WriteUpPromptSerializer(instance)
         return Response(data=instanced_serialized.data)
+
+
+class WriteUpPromptVoteView(APIView):
+    def post(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+        user = request.user
+
+        serializer = WriteUpPromptVoteModifySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        validated_data = serializer.validated_data
+
+        instance = WriteUpPromptVote.objects.update_or_create(
+            user=user, prompt=prompt, defaults=validated_data
+        )
+
+        return_serializer = WriteUpPromptVoteModifySerializer(instance=instance)
+        return Response(data=return_serializer.data)
+
+
+class WriteUpFlaggedPromptView(APIView):
+    def post(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+        user = request.user
+
+        WriteUpFlaggedPrompt.objects.update_or_create(prompt=prompt, user=user)
+
+        # don't really need a serializer for this.
+        data = {"status": f"{prompt_uuid} has been flagged. Thank you."}
+
+        return Response(data=data)
+
+    def delete(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+        user = request.user
+
+        instance = get_object_or_404(WriteUpFlaggedPrompt, prompt=prompt, user=user)
+        instance.delete()
+
+        return Response(status=204)

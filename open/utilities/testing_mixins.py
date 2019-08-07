@@ -12,6 +12,9 @@ class OpenDefaultTest(APITestCase):
     Note: This will also run itself once too ...
     This is a bit of an antipattern, I should separate as a mixin better
     But it makes it harder to read
+
+    NOTE - This is only useful for singular, non-nested RESTful endpoints
+    This was probably a dumb idea to make this.
     """
 
     # just use a random view
@@ -19,6 +22,8 @@ class OpenDefaultTest(APITestCase):
     VIEW_NEEDS_LOGIN = False
 
     def setUp(self):
+        self.unregistered_user_client = APIClient()
+
         self.registered_user = User.objects.get(id=self.registered_user_id)
         self.registered_user_client = APIClient()
         self.registered_user_client.force_login(self.registered_user)

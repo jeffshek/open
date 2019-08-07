@@ -1,12 +1,12 @@
 from django.urls import path
 
-from open.core.writeup.views import (
-    writeup_index,
-    writeup_room,
-    GPT2MediumPromptTestView,
-    WriteUpSharedPromptView,
-)
 from open.core.writeup.constants import WriteUpResourceEndpoints
+from open.core.writeup.views import (
+    GPT2MediumPromptTestView,
+    WriteUpPromptView,
+    WriteUpPromptVoteView,
+    WriteUpFlaggedPromptView,
+)
 
 urlpatterns = [
     path(
@@ -14,17 +14,24 @@ urlpatterns = [
         view=GPT2MediumPromptTestView.as_view(),
         name=WriteUpResourceEndpoints.GENERATED_SENTENCE,
     ),
-    path(r"", writeup_index, name="index"),
-    path(r"chat/<slug:room_name>/", writeup_room, name="room"),
     path(
-        r"shared/prompts/",
-        WriteUpSharedPromptView.as_view(),
-        name=WriteUpResourceEndpoints.SHARED_PROMPT_NAME,
+        r"prompts/", WriteUpPromptView.as_view(), name=WriteUpResourceEndpoints.PROMPTS
     ),
     path(
-        # api.writeup.ai/shared/prompts/:uuid
-        r"shared/prompts/<uuid:uuid>/",
-        WriteUpSharedPromptView.as_view(),
-        name=WriteUpResourceEndpoints.SHARED_PROMPT_NAME,
+        # frontend urls are like
+        # writeup.ai/prompts/:uuid/
+        r"prompts/<uuid:uuid>/",
+        WriteUpPromptView.as_view(),
+        name=WriteUpResourceEndpoints.PROMPTS,
+    ),
+    path(
+        r"prompts/<uuid:prompt_uuid>/votes/",
+        WriteUpPromptVoteView.as_view(),
+        name=WriteUpResourceEndpoints.PROMPT_VOTES,
+    ),
+    path(
+        r"prompts/<uuid:prompt_uuid>/flags/",
+        WriteUpFlaggedPromptView.as_view(),
+        name=WriteUpResourceEndpoints.PROMPT_FLAGS,
     ),
 ]
