@@ -72,13 +72,14 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         if cached_results:
             return await self.send_serialized_data(cached_results)
 
-        # if no cache, make the requests and then cache it and send it out
-        token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
-        headers = {"Authorization": token_key}
+        # switch auth styles, passing it here makes it a little bit more cross-operable
+        # since aiohttp doesn't pass headers in the same way as the requests library
+        # and you're too lazy to write custom middleware for one endpoint
+        prompt_serialized["api_key"] = settings.ML_SERVICE_ENDPOINT_API_KEY
 
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                settings.GPT2_API_ENDPOINT, data=prompt_serialized, headers=headers
+                settings.GPT2_API_ENDPOINT, data=prompt_serialized
             ) as resp:
                 status = resp.status
 
