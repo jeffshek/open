@@ -5,6 +5,7 @@ from open.core.writeup.views import (
     GPT2MediumPromptTestView,
     WriteUpPromptView,
     WriteUpPromptVoteView,
+    WriteUpFlaggedPromptView,
 )
 
 urlpatterns = [
@@ -30,7 +31,7 @@ urlpatterns = [
     ),
     path(
         r"prompts/<uuid:prompt_uuid>/flags/",
-        WriteUpPromptView.as_view(),
+        WriteUpFlaggedPromptView.as_view(),
         name=WriteUpResourceEndpoints.PROMPT_FLAGS,
     ),
 ]

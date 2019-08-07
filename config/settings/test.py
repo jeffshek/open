@@ -1,9 +1,7 @@
-"""
-With these settings, tests run faster.
-"""
-
 from .base import *  # noqa
 from .base import env
+
+print("TEST - SETTINGS")
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -55,8 +53,9 @@ EMAIL_HOST = "localhost"
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
 
-
 CELERY_TASK_ALWAYS_EAGER = True
 
-# Your stuff...
-# ------------------------------------------------------------------------------
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {  # noqa
+    "anon": "500/second",
+    "user": "500/second",
+}

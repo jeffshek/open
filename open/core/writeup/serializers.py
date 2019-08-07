@@ -21,12 +21,20 @@ class GPT2MediumPromptSerializer(serializers.Serializer):
 
 
 class WriteUpPromptSerializer(serializers.ModelSerializer):
+    """
+    PROMPTS
+    """
+
     class Meta:
         model = WriteUpPrompt
         fields = ("text", "email", "title", "uuid", "instagram", "twitter", "website")
 
 
 class WriteUpPromptVoteModifySerializer(serializers.ModelSerializer):
+    """
+    VOTES
+    """
+
     value = IntegerField(min_value=-1, max_value=3, default=1)
 
     class Meta:
@@ -35,6 +43,10 @@ class WriteUpPromptVoteModifySerializer(serializers.ModelSerializer):
 
 
 class WriteUpFlaggedPromptModifySerializer(serializers.ModelSerializer):
+    """
+    FLAGGING
+    """
+
     prompt_uuid = UUIDField(required=True)
 
     class Meta:

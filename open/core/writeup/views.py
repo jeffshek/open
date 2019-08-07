@@ -2,7 +2,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from open.core.writeup.models import WriteUpPrompt, WriteUpPromptVote
+from open.core.writeup.models import (
+    WriteUpPrompt,
+    WriteUpPromptVote,
+    WriteUpFlaggedPrompt,
+)
 from open.core.writeup.serializers import (
     WriteUpPromptSerializer,
     WriteUpPromptVoteModifySerializer,
@@ -73,3 +77,25 @@ class WriteUpPromptVoteView(APIView):
 
         return_serializer = WriteUpPromptVoteModifySerializer(instance=instance)
         return Response(data=return_serializer.data)
+
+
+class WriteUpFlaggedPromptView(APIView):
+    def post(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+        user = request.user
+
+        WriteUpFlaggedPrompt.objects.update_or_create(prompt=prompt, user=user)
+
+        # don't really need a serializer for this.
+        data = {"status": f"{prompt_uuid} has been flagged. Thank you."}
+
+        return Response(data=data)
+
+    def delete(self, request, prompt_uuid):
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
+        user = request.user
+
+        instance = get_object_or_404(WriteUpFlaggedPrompt, prompt=prompt, user=user)
+        instance.delete()
+
+        return Response(status=204)
