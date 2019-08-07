@@ -2,7 +2,11 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 from test_plus import TestCase
 
-from open.core.writeup.constants import WriteUpResourceEndpoints
+from open.core.writeup.constants import (
+    WriteUpResourceEndpoints,
+    PromptShareStates,
+    StaffVerifiedShareStates,
+)
 from open.core.writeup.factories import (
     WriteUpPromptFactory,
     WriteUpFlaggedPromptFactory,
@@ -15,14 +19,14 @@ from open.core.writeup.models import (
 from open.users.factories import UserFactory
 from open.users.models import User
 from open.utilities.testing import generate_random_uuid_as_string
-from open.utilities.testing_mixins import OpenDefaultTest
+from open.utilities.testing_mixins import OpenDefaultTest, OpenDefaultAPITest
 
 """
 dpy test core.writeup.tests.test_views --keepdb
 """
 
 
-class WriteupViewTests(OpenDefaultTest):
+class GPT2MediumPromptDebugViewTests(OpenDefaultTest):
     VIEW_NAME = WriteUpResourceEndpoints.GENERATED_SENTENCE
     VIEW_NEEDS_LOGIN = False
 
@@ -31,24 +35,58 @@ class WriteupViewTests(OpenDefaultTest):
         self.assertTrue("prompt" in response)
 
 
-class WriteUpPromptViewTests(OpenDefaultTest):
+class WriteUpPromptViewTests(OpenDefaultAPITest):
     VIEW_NAME = WriteUpResourceEndpoints.PROMPTS
-    VIEW_NEEDS_LOGIN = False
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.factory_uuid = WriteUpPromptFactory().uuid.__str__()
-        super().setUpTestData()
-
-    @classmethod
-    def set_reversed_url(cls):
-        kwargs = {"uuid": cls.factory_uuid}
-        cls.url = reverse(cls.VIEW_NAME, kwargs=kwargs)
 
     def test_get_view(self):
-        response = self._get_response()
+        mock_title = "I Want Noodles"
+        prompt = WriteUpPromptFactory(title=mock_title, user=self.registered_user)
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
+        url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
+
+        response = self.registered_user_client.get(url)
+        self.assertEqual(response.status_code, 200)
+
         data = response.data
-        self.assertEqual(data["uuid"], self.factory_uuid)
+        self.assertEqual(data["uuid"], prompt.uuid_str)
+        self.assertEqual(data["title"], prompt.title)
+
+    def test_get_view_no_permission(self):
+        mock_title = "I Want Noodles"
+        prompt = WriteUpPromptFactory(title=mock_title)
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
+        url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
+
+        response = self.registered_user_client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_view_marked_as_public_can_be_accessed(self):
+        mock_title = "I Want Noodles"
+        prompt = WriteUpPromptFactory(
+            title=mock_title, share_state=PromptShareStates.PUBLISHED
+        )
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
+        url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
+
+        response = self.registered_user_client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        data = response.data
+        self.assertEqual(data["uuid"], prompt.uuid_str)
+        self.assertEqual(data["title"], prompt.title)
+
+    def test_get_view_marked_as_failed_flagged_cannot_be_accessed(self):
+        mock_title = "I Want Noodles"
+        prompt = WriteUpPromptFactory(
+            title=mock_title,
+            share_state=PromptShareStates.PUBLISHED,
+            staff_verified_share_state=StaffVerifiedShareStates.VERIFIED_FAIL,
+        )
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
+        url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
+
+        response = self.registered_user_client.get(url)
+        self.assertEqual(response.status_code, 404)
 
     def test_post_view(self):
         url = reverse(self.VIEW_NAME)
@@ -69,26 +107,30 @@ class WriteUpPromptViewTests(OpenDefaultTest):
         created_instance = WriteUpPrompt.objects.get(uuid=returned_uuid)
         self.assertEqual(created_instance.text, text)
 
-    def test_post_updating_already_existing_view_fails(self):
+        # since this was passed by a registered user, make sure user owns it
+        self.assertEqual(created_instance.user, self.registered_user)
+
+    def test_post_view_with_anon_user(self):
         url = reverse(self.VIEW_NAME)
 
         text = "I am eating a hamburger"
         data = {"text": text, "email": text, "title": text}
 
-        client = self.registered_user_client
-        response = client.post(url, data=data)
-        returned_uuid = response.data["uuid"]
-
-        # now try to pass a uuid in the post
-        data["uuid"] = returned_uuid
-
-        # this should ignore the uuid and make a new object instead
+        client = self.unregistered_user_client
         response = client.post(url, data=data)
 
         self.assertEqual(response.status_code, 200)
-        new_uuid = response.data["uuid"]
 
-        self.assertNotEqual(returned_uuid, new_uuid)
+        returned_uuid = response.data["uuid"]
+        returned_text = response.data["text"]
+
+        self.assertEqual(returned_text, text)
+
+        created_instance = WriteUpPrompt.objects.get(uuid=returned_uuid)
+        self.assertEqual(created_instance.text, text)
+
+        # no logged in user made this, no user should be attached
+        self.assertIsNone(created_instance.user)
 
 
 class WriteUpPromptVoteViewTests(TestCase):
@@ -114,7 +156,7 @@ class WriteUpPromptVoteViewTests(TestCase):
         self.staff_user_client.force_login(self.staff_user)
 
     def test_view(self):
-        prompt_uuid = WriteUpPromptFactory().uuid.__str__()
+        prompt_uuid = WriteUpPromptFactory().uuid_str
         url_kwargs = {"prompt_uuid": prompt_uuid}
         url = reverse(self.VIEW_NAME, kwargs=url_kwargs)
 
@@ -134,7 +176,7 @@ class WriteUpPromptVoteViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_no_login_has_no_access(self):
-        prompt_uuid = WriteUpPromptFactory().uuid.__str__()
+        prompt_uuid = WriteUpPromptFactory().uuid_str
         url_kwargs = {"prompt_uuid": prompt_uuid}
         url = reverse(self.VIEW_NAME, kwargs=url_kwargs)
 
@@ -144,7 +186,7 @@ class WriteUpPromptVoteViewTests(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_post_multiple_times_only_results_in_one_record(self):
-        prompt_uuid = WriteUpPromptFactory().uuid.__str__()
+        prompt_uuid = WriteUpPromptFactory().uuid_str
         url_kwargs = {"prompt_uuid": prompt_uuid}
         url = reverse(self.VIEW_NAME, kwargs=url_kwargs)
 
@@ -183,7 +225,7 @@ class WriteUpFlaggedPromptViewTests(TestCase):
 
     def test_view(self):
         prompt = WriteUpPromptFactory()
-        data_kwargs = {"prompt_uuid": prompt.uuid.__str__()}
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
         url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
 
         response = self.registered_user_client.post(url)
@@ -191,7 +233,7 @@ class WriteUpFlaggedPromptViewTests(TestCase):
 
     def test_post_view_multiple_times_only_results_in_one(self):
         prompt = WriteUpPromptFactory()
-        data_kwargs = {"prompt_uuid": prompt.uuid.__str__()}
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
         url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
 
         for _ in range(3):
@@ -206,7 +248,7 @@ class WriteUpFlaggedPromptViewTests(TestCase):
         prompt = WriteUpPromptFactory()
         WriteUpFlaggedPromptFactory(user=self.registered_user, prompt=prompt)
 
-        data_kwargs = {"prompt_uuid": prompt.uuid.__str__()}
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
         url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
 
         response = self.registered_user_client.delete(url)

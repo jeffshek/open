@@ -20,7 +20,7 @@ class GPT2MediumPromptSerializer(serializers.Serializer):
     top_k = serializers.IntegerField(default=10, max_value=40)
 
 
-class WriteUpPromptSerializer(serializers.ModelSerializer):
+class WriteUpPromptReadSerializer(serializers.ModelSerializer):
     """
     PROMPTS
     """

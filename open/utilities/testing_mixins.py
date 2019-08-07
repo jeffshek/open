@@ -78,3 +78,24 @@ class OpenDefaultTest(APITestCase):
 
         # if not logged in should error out
         self.assertEqual(status_code, 403)
+
+
+class OpenDefaultAPITest(APITestCase):
+    def setUp(self):
+        self.unregistered_user_client = APIClient()
+
+        self.registered_user = User.objects.get(id=self.registered_user_id)
+        self.registered_user_client = APIClient()
+        self.registered_user_client.force_login(self.registered_user)
+
+        self.staff_user = UserFactory(is_staff=True)
+        self.staff_user_client = APIClient()
+        self.staff_user_client.force_login(self.staff_user)
+
+    @classmethod
+    def setUpTestData(cls):
+        registered_user = UserFactory(is_staff=False)
+        cls.registered_user_id = registered_user.id
+
+        staff_user = UserFactory(is_staff=True)
+        cls.staff_user_id = staff_user.id

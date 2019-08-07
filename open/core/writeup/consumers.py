@@ -9,7 +9,7 @@ from django.core.cache import cache
 
 from open.core.writeup.caches import get_cache_key_for_gpt2_parameter
 from open.core.writeup.serializers import GPT2MediumPromptSerializer
-from open.core.writeup.utilities import serialize_gpt2_api_response
+from open.core.writeup.utilities.gpt2_serializers import serialize_gpt2_api_response
 
 logger = logging.getLogger(__name__)
 

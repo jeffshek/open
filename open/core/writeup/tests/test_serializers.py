@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from open.core.writeup.serializers import (
     GPT2MediumPromptSerializer,
-    WriteUpPromptSerializer,
+    WriteUpPromptReadSerializer,
 )
 
 
@@ -21,7 +21,7 @@ class WriteUpPromptSerializerTests(TestCase):
         text = "I am so hungry for Shake Shack right now"
         data = {"text": text, "email": text, "title": text}
 
-        serializer = WriteUpPromptSerializer(data=data)
+        serializer = WriteUpPromptReadSerializer(data=data)
         valid = serializer.is_valid()
 
         self.assertTrue(valid)
