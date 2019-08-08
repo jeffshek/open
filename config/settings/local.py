@@ -78,3 +78,12 @@ if SENTRY_ENABLED:
         dsn=SENTRY_DSN,
         integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
     )
+
+CORS_ORIGIN_WHITELIST = [
+    "https://writeup.ai",
+    "https://betterself.io",
+    "https://www.betterself.io",
+    "http://localhost:8008",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]

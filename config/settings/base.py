@@ -310,3 +310,10 @@ ML_SERVICE_ENDPOINT_API_KEY = env(
     "ML_SERVICE_ENDPOINT_API_KEY", default="nada-go-find-an-api-key"
 )
 GPT2_API_ENDPOINT = env("GPT2_API_ENDPOINT", default="https://www.google.com")
+
+
+CORS_ORIGIN_WHITELIST = [
+    "https://writeup.ai",
+    "https://betterself.io",
+    "https://www.betterself.io",
+]
