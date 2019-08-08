@@ -32,6 +32,9 @@ class WriteUpPrompt(BaseModel):
         default=StaffVerifiedShareStates.UNVERIFIED,
     )
 
+    class Meta:
+        verbose_name = "Write Up Prompt"
+
 
 class WriteUpPromptVote(BaseModel):
     prompt = ForeignKey(WriteUpPrompt, on_delete=CASCADE)
@@ -41,6 +44,7 @@ class WriteUpPromptVote(BaseModel):
 
     class Meta:
         unique_together = ("prompt", "user")
+        verbose_name = "Write Up Prompt Vote"
 
 
 class WriteUpFlaggedPrompt(BaseModel):
@@ -51,3 +55,4 @@ class WriteUpFlaggedPrompt(BaseModel):
 
     class Meta:
         unique_together = ("prompt", "user")
+        verbose_name = "Write Up Flagged Prompt"

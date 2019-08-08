@@ -181,6 +181,16 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
         exists = WriteUpPrompt.objects.filter(uuid=prompt.uuid_str).exists()
         self.assertFalse(exists)
 
+    def test_delete_view_wont_allow_for_not_owner(self):
+        # prompt = WriteUpPromptFactory(user=self.registered_user)
+        prompt = WriteUpPromptFactory()
+        data_kwargs = {"prompt_uuid": prompt.uuid_str}
+        url = reverse(self.VIEW_NAME, kwargs=data_kwargs)
+
+        client = self.registered_user_client
+        response = client.delete(url)
+        self.assertEqual(response.status_code, 404)
+
     def test_list_view_wont_return_bad_stuff(self):
         WriteUpPromptFactory(
             staff_verified_share_state=StaffVerifiedShareStates.VERIFIED_FAIL

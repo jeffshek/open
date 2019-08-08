@@ -17,6 +17,7 @@ cryptography==2.7
 daphne==2.3.0
 django==2.2.4  # https://www.djangoproject.com/
 django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
+django-cors-headers==3.0.2
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-fsm==2.6.1
