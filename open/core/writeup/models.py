@@ -36,7 +36,7 @@ class WriteUpPrompt(BaseModel):
         verbose_name = "Write Up Prompt"
 
     def __str__(self):
-        return f"{self.title}-{self.id}"
+        return f"{self.title} - {self.id}"
 
 
 class WriteUpPromptVote(BaseModel):
