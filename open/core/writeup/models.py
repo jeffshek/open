@@ -35,6 +35,9 @@ class WriteUpPrompt(BaseModel):
     class Meta:
         verbose_name = "Write Up Prompt"
 
+    def __str__(self):
+        return f"{self.title}-{self.id}"
+
 
 class WriteUpPromptVote(BaseModel):
     prompt = ForeignKey(WriteUpPrompt, on_delete=CASCADE)
