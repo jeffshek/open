@@ -13,7 +13,7 @@ from open.core.writeup.models import (
     WriteUpFlaggedPrompt,
 )
 from open.core.writeup.serializers import (
-    WriteUpPromptReadSerializer,
+    WriteUpPromptCreateReadSerializer,
     WriteUpPromptVoteModifySerializer,
 )
 from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
@@ -56,11 +56,11 @@ class WriteUpPromptListCreateView(APIView):
             staff_verified_share_state__in=SHOWABLE_STAFF_VERIFIED_STATES,
         )
 
-        serializer = WriteUpPromptReadSerializer(writeup_prompts, many=True)
+        serializer = WriteUpPromptCreateReadSerializer(writeup_prompts, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = WriteUpPromptReadSerializer(data=request.data)
+        serializer = WriteUpPromptCreateReadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         if request.user.is_anonymous:
@@ -70,7 +70,7 @@ class WriteUpPromptListCreateView(APIView):
 
         instance = serializer.save(user=user)
 
-        instanced_serialized = WriteUpPromptReadSerializer(instance)
+        instanced_serialized = WriteUpPromptCreateReadSerializer(instance)
         return Response(data=instanced_serialized.data)
 
 
@@ -84,7 +84,7 @@ class WriteUpPromptView(APIView):
         if not can_read:
             raise Http404
 
-        serializer = WriteUpPromptReadSerializer(prompt)
+        serializer = WriteUpPromptCreateReadSerializer(prompt)
         data = serializer.data
 
         return Response(data=data)

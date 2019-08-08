@@ -20,14 +20,23 @@ class GPT2MediumPromptSerializer(serializers.Serializer):
     top_k = serializers.IntegerField(default=10, max_value=40)
 
 
-class WriteUpPromptReadSerializer(serializers.ModelSerializer):
+class WriteUpPromptCreateReadSerializer(serializers.ModelSerializer):
     """
     PROMPTS
     """
 
     class Meta:
         model = WriteUpPrompt
-        fields = ("text", "email", "title", "uuid", "instagram", "twitter", "website")
+        fields = (
+            "text",
+            "email",
+            "title",
+            "uuid",
+            "instagram",
+            "twitter",
+            "website",
+            "share_state",
+        )
 
 
 class WriteUpPromptVoteModifySerializer(serializers.ModelSerializer):

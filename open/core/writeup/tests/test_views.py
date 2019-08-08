@@ -110,6 +110,30 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
         # since this was passed by a registered user, make sure user owns it
         self.assertEqual(created_instance.user, self.registered_user)
 
+    def test_post_view_share_state(self):
+        url = reverse(self.VIEW_NAME)
+
+        text = "I am eating a hamburger"
+        data = {
+            "text": text,
+            "email": text,
+            "title": text,
+            "share_state": PromptShareStates.PUBLISHED,
+        }
+
+        client = self.registered_user_client
+        response = client.post(url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+
+        returned_uuid = response.data["uuid"]
+        returned_text = response.data["text"]
+
+        self.assertEqual(returned_text, text)
+
+        created_instance = WriteUpPrompt.objects.get(uuid=returned_uuid)
+        self.assertEqual(created_instance.share_state, PromptShareStates.PUBLISHED)
+
     def test_post_view_with_anon_user(self):
         url = reverse(self.VIEW_NAME)
         text = "I am eating a hamburger"
