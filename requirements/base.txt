@@ -43,7 +43,7 @@ PyYAML==5.1.1
 redis==3.3.5  # https://github.com/antirez/redis
 sentry-asgi==0.2.0
 sentry-sdk==0.10.2  # https://github.com/getsentry/sentry-python
-twisted==19.2.1
+twisted==19.7.0
 txaio==18.8.1
 typing-extensions==3.7.4
 websocket-client==0.56.0 # need this for now to profile and find speedups
