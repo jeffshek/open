@@ -7,7 +7,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.conf import settings
 from django.core.cache import cache
 
-from open.core.writeup.caches import get_cache_key_for_gpt2_parameter
+from open.core.writeup.caches import (
+    get_cache_key_for_gpt2_parameter,
+    get_cache_key_for_processing_gpt2_parameter,
+)
 from open.core.writeup.serializers import GPT2MediumPromptSerializer
 from open.core.writeup.utilities.gpt2_serializers import serialize_gpt2_api_response
 
@@ -22,6 +25,24 @@ def get_cached_results(cache_key):
 @database_sync_to_async
 def set_cached_results(cache_key, returned_data):
     cache.set(cache_key, returned_data)
+
+
+@database_sync_to_async
+def check_if_cache_key_for_gpt2_parameter_is_running(cache_key):
+    is_cache_key_already_running = get_cache_key_for_processing_gpt2_parameter(
+        cache_key
+    )
+    return cache.get(is_cache_key_already_running, False)
+
+
+@database_sync_to_async
+def set_gpt2_request_is_running_in_cache(cache_key):
+    is_cache_key_already_running = get_cache_key_for_processing_gpt2_parameter(
+        cache_key
+    )
+    # set the cache to say this request is already running for 180 seconds
+    # if it doesn't get the result by then, something is probably wrong
+    cache.set(is_cache_key_already_running, True, 180)
 
 
 class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
@@ -59,6 +80,8 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         serializer = GPT2MediumPromptSerializer(data=text_data_json)
+        # don't throw exceptions in the regular raise_exception=True, all
+        # exceptions need to be properly handled
         valid = serializer.is_valid()
 
         if not valid:
@@ -71,6 +94,19 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         if cached_results:
             return await self.send_serialized_data(cached_results)
+
+        # technically a bug can probably occur if separate users try the same exact
+        # phrase in the 180 seconds, but if that happens, that means the servers are probably
+        # dead from too many requests anyways
+        duplicate_request = await check_if_cache_key_for_gpt2_parameter_is_running(
+            cache_key
+        )
+        if duplicate_request:
+            return
+
+        # if it doesnt' exist, add a state flag to say this is going to be running
+        # so it will automatically broadcast back when it completes
+        await set_gpt2_request_is_running_in_cache(cache_key)
 
         # switch auth styles, passing it here makes it a little bit more cross-operable
         # since aiohttp doesn't pass headers in the same way as the requests library

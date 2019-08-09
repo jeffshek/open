@@ -49,6 +49,15 @@ class GPT2MediumPromptDebugView(APIView):
 
 class WriteUpPromptListCreateView(APIView):
     permission_classes = ()
+    throttle_scope = "default_scope"
+
+    def get_throttles(self):
+        if self.request.method.lower() == "get":
+            self.throttle_scope = "list_prompt_rate"
+        elif self.request.method.lower() == "post":
+            self.throttle_scope = "create_prompt_rate"
+
+        return super(WriteUpPromptListCreateView, self).get_throttles()
 
     def get(self, request):
         writeup_prompts = WriteUpPrompt.objects.filter(
