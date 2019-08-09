@@ -1,3 +1,5 @@
+from unittest import mock
+
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 from test_plus import TestCase
@@ -109,6 +111,27 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
 
         # since this was passed by a registered user, make sure user owns it
         self.assertEqual(created_instance.user, self.registered_user)
+
+    @mock.patch(
+        "rest_framework.throttling.ScopedRateThrottle.get_rate", return_value="1/hour"
+    )
+    def test_post_view_hits_rate_limit_will_return_429(self, throttled_function):
+        """
+        because DRF imports settings in a non-standard manner, you can't use override settings
+        to change the rate limit. by patching, you can get the same result.
+        """
+        url = reverse(self.VIEW_NAME)
+
+        text = "I am eating a hamburger"
+        data = {"text": text, "email": text, "title": text}
+
+        client = self.registered_user_client
+
+        for _ in range(3):
+            response = client.post(url, data=data)
+
+        # by the 3rd request, it should have hit the rate limit
+        self.assertEqual(response.status_code, 429)
 
     def test_post_view_share_state(self):
         url = reverse(self.VIEW_NAME)

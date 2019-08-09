@@ -55,7 +55,18 @@ EMAIL_PORT = 1025
 
 CELERY_TASK_ALWAYS_EAGER = True
 
-REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {  # noqa
-    "anon": "500/second",
-    "user": "500/second",
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
+    ],
+    # anything more than five a second feels quite excessive
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "500/second",
+        "user": "500/second",
+        "create_prompt_rate": "500/second",
+        "list_prompt_rate": "500/second",
+    },
 }
