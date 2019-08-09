@@ -33,7 +33,7 @@ immutables==0.9
 incremental==17.5.0
 msgpack==0.6.1
 multidict==4.5.2
-numpy==1.16.4
+numpy==1.17.0
 pandas==0.25.0
 Pillow==6.0.0  # https://github.com/python-pillow/Pillow
 PyHamcrest==1.9.0
