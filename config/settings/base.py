@@ -306,7 +306,8 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "anon": "5/second",
         "user": "5/second",
-        "create_prompt_rate": "1/hour",
+        # sure, im helping you write faster ... but 25 an hour is excessive
+        "create_prompt_rate": "25/hour",
         "list_prompt_rate": "5/second",
     },
 }
