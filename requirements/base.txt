@@ -35,7 +35,7 @@ msgpack==0.6.1
 multidict==4.5.2
 numpy==1.17.0
 pandas==0.25.0
-Pillow==6.0.0  # https://github.com/python-pillow/Pillow
+Pillow==6.1.0  # https://github.com/python-pillow/Pillow
 PyHamcrest==1.9.0
 python-coveralls==2.9.3
 python-slugify==3.0.2  # https://github.com/un33k/python-slugify
