@@ -38,6 +38,7 @@ class WriteUpPromptCreateReadSerializer(serializers.ModelSerializer):
             "website",
             "share_state",
             "score",
+            "created",
         )
 
 
