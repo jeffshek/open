@@ -230,3 +230,15 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
         with self.assertNumQueriesLessThan(6):
             response = self.registered_user_client.get(url)
             self.assertEqual(response.status_code, 200)
+
+    def test_list_view_returns_sorted_correctly(self):
+        # should return greatest to smallest, that way easier to truncate
+        WriteUpPromptFactory.create_batch(100, share_state=PromptShareStates.PUBLISHED)
+        url = reverse(self.VIEW_NAME)
+        response = self.registered_user_client.get(url)
+        data = response.data
+
+        score = [item["score"] for item in data]
+
+        sorted_score = sorted(score, reverse=True)
+        self.assertEqual(score, sorted_score)

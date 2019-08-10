@@ -16,6 +16,10 @@ class TestFactoryMixin:
 class TestWriteUpPromptFactories(TestCase, TestFactoryMixin):
     FACTORY = WriteUpPromptFactory
 
+    def test_score_calculated(self):
+        instance = self.FACTORY()
+        self.assertTrue(instance.score != 0)
+
     def test_writeup_prompt_factory_loaded(self):
         text = "Jeff Was Here"
         email = "Jeff Was Here"
