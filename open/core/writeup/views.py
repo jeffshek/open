@@ -63,7 +63,7 @@ class WriteUpPromptListCreateView(APIView):
         writeup_prompts = WriteUpPrompt.objects.filter(
             share_state=PromptShareStates.PUBLISHED,
             staff_verified_share_state__in=SHOWABLE_STAFF_VERIFIED_STATES,
-        )
+        ).order_by("-score")
 
         serializer = WriteUpPromptCreateReadSerializer(writeup_prompts, many=True)
         return Response(serializer.data)
