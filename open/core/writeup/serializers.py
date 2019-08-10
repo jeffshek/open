@@ -1,4 +1,3 @@
-
 from rest_framework import serializers
 from rest_framework.fields import IntegerField, UUIDField
 
@@ -25,6 +24,8 @@ class WriteUpPromptCreateReadSerializer(serializers.ModelSerializer):
     PROMPTS
     """
 
+    score = IntegerField(read_only=True)
+
     class Meta:
         model = WriteUpPrompt
         fields = (
@@ -36,6 +37,7 @@ class WriteUpPromptCreateReadSerializer(serializers.ModelSerializer):
             "twitter",
             "website",
             "share_state",
+            "score",
         )
 
 

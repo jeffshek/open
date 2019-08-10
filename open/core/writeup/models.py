@@ -31,6 +31,10 @@ class WriteUpPrompt(BaseModel):
         choices=STAFF_VERIFIED_SHARE_STATE_CHOICES,
         default=StaffVerifiedShareStates.UNVERIFIED,
     )
+    # this is a denormalized field that is the sum of all the upvotes
+    # this serves as a quick queryable field, where it's also easy to easy
+    # to recompute for all prompts when cpu is idle
+    score = IntegerField(default=0)
 
     class Meta:
         verbose_name = "Write Up Prompt"
