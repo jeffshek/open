@@ -31,6 +31,16 @@ class WriteUpPrompt(BaseModel):
         choices=STAFF_VERIFIED_SHARE_STATE_CHOICES,
         default=StaffVerifiedShareStates.UNVERIFIED,
     )
+    # this is a denormalized field that is the sum of all the upvotes
+    # this serves as a quick queryable field, where it's also easy to easy
+    # to recompute for all prompts when cpu is idle
+    score = IntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Write Up Prompt"
+
+    def __str__(self):
+        return f"{self.title} - {self.id}"
 
 
 class WriteUpPromptVote(BaseModel):
@@ -41,6 +51,7 @@ class WriteUpPromptVote(BaseModel):
 
     class Meta:
         unique_together = ("prompt", "user")
+        verbose_name = "Write Up Prompt Vote"
 
 
 class WriteUpFlaggedPrompt(BaseModel):
@@ -51,3 +62,4 @@ class WriteUpFlaggedPrompt(BaseModel):
 
     class Meta:
         unique_together = ("prompt", "user")
+        verbose_name = "Write Up Flagged Prompt"

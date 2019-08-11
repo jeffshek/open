@@ -3,13 +3,17 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from open.core.writeup.constants import (
+    SHOWABLE_STAFF_VERIFIED_STATES,
+    PromptShareStates,
+)
 from open.core.writeup.models import (
     WriteUpPrompt,
     WriteUpPromptVote,
     WriteUpFlaggedPrompt,
 )
 from open.core.writeup.serializers import (
-    WriteUpPromptReadSerializer,
+    WriteUpPromptCreateReadSerializer,
     WriteUpPromptVoteModifySerializer,
 )
 from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
@@ -43,17 +47,40 @@ class GPT2MediumPromptDebugView(APIView):
         return Response(data=response)
 
 
-#
-# class WriteUpPromptListView(APIView):
-#     permission_classes = ()
-#
-#     def get(self, request):
-#         prompts = WriteUpPrompt
-#
-#         serializer = WriteUpPromptSerializer(prompt)
-#         data = serializer.data
-#
-#         return Response(data=data)
+class WriteUpPromptListCreateView(APIView):
+    permission_classes = ()
+    throttle_scope = "default_scope"
+
+    def get_throttles(self):
+        if self.request.method.lower() == "get":
+            self.throttle_scope = "list_prompt_rate"
+        elif self.request.method.lower() == "post":
+            self.throttle_scope = "create_prompt_rate"
+
+        return super(WriteUpPromptListCreateView, self).get_throttles()
+
+    def get(self, request):
+        writeup_prompts = WriteUpPrompt.objects.filter(
+            share_state=PromptShareStates.PUBLISHED,
+            staff_verified_share_state__in=SHOWABLE_STAFF_VERIFIED_STATES,
+        ).order_by("-score")
+
+        serializer = WriteUpPromptCreateReadSerializer(writeup_prompts, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = WriteUpPromptCreateReadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if request.user.is_anonymous:
+            user = None
+        else:
+            user = request.user
+
+        instance = serializer.save(user=user)
+
+        instanced_serialized = WriteUpPromptCreateReadSerializer(instance)
+        return Response(data=instanced_serialized.data)
 
 
 class WriteUpPromptView(APIView):
@@ -66,30 +93,19 @@ class WriteUpPromptView(APIView):
         if not can_read:
             raise Http404
 
-        serializer = WriteUpPromptReadSerializer(prompt)
+        serializer = WriteUpPromptCreateReadSerializer(prompt)
         data = serializer.data
 
         return Response(data=data)
 
-    def post(self, request):
-        serializer = WriteUpPromptReadSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        if request.user.is_anonymous:
-            user = None
-        else:
-            user = request.user
-
-        instance = serializer.save(user=user)
-
-        instanced_serialized = WriteUpPromptReadSerializer(instance)
-        return Response(data=instanced_serialized.data)
-
     def delete(self, request, prompt_uuid):
-        return
+        if request.user.is_anonymous:
+            raise Http404
 
+        prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid, user=request.user)
+        prompt.delete()
 
-# TODO - Create endpoints to allow updating of prompt endpoints (maybe)
+        return Response(status=204)
 
 
 class WriteUpPromptVoteView(APIView):

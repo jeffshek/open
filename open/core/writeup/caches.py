@@ -16,3 +16,8 @@ def get_cache_key_for_gpt2_parameter(
         f"{app}_{prompt_hash}_{batch_size}_{length}_{temperature}_{top_k}_{language}"
     )
     return cache_key
+
+
+def get_cache_key_for_processing_gpt2_parameter(cache_key):
+    # need a prefix, otherwise that's be cache collusion with data
+    return f"processing_{cache_key}"

@@ -6,7 +6,9 @@ from .base import env
 
 print("LOCAL - SETTINGS")
 
-DEBUG = True
+# this is way too slow on channels if it's true
+DEBUG = False
+
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     default="UI0EyIjSNG7JlKtcRMwWPF6OkX9Q03PqKgz9vJpNGlotG5uQLElk61kLy46QnjUB",
@@ -78,3 +80,12 @@ if SENTRY_ENABLED:
         dsn=SENTRY_DSN,
         integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
     )
+
+CORS_ORIGIN_WHITELIST = [
+    "https://writeup.ai",
+    "https://betterself.io",
+    "https://www.betterself.io",
+    "http://localhost:8008",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]

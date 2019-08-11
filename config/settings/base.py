@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "rest_auth",
     "rest_auth.registration",
     "django_extensions",
+    "corsheaders",
 ]
 
 LOCAL_APPS = ["open.users.apps.UsersConfig", "open.core"]
@@ -128,6 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -298,9 +300,16 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
     ],
-    # anything more than five a second feels quite excessive
-    "DEFAULT_THROTTLE_RATES": {"anon": "5/second", "user": "5/second"},
+    # anything more than five a second feels quite excessive for a human
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "5/second",
+        "user": "5/second",
+        # sure, im helping you write faster ... but 25 an hour is excessive
+        "create_prompt_rate": "25/hour",
+        "list_prompt_rate": "5/second",
+    },
 }
 
 ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT", default="https://www.google.com")
@@ -308,3 +317,10 @@ ML_SERVICE_ENDPOINT_API_KEY = env(
     "ML_SERVICE_ENDPOINT_API_KEY", default="nada-go-find-an-api-key"
 )
 GPT2_API_ENDPOINT = env("GPT2_API_ENDPOINT", default="https://www.google.com")
+
+
+CORS_ORIGIN_WHITELIST = [
+    "https://writeup.ai",
+    "https://betterself.io",
+    "https://www.betterself.io",
+]

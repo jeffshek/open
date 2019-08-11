@@ -21,6 +21,13 @@ class StaffVerifiedShareStates:
     UNVERIFIED = "unverified"
 
 
+# everything else means it's failed
+SHOWABLE_STAFF_VERIFIED_STATES = [
+    StaffVerifiedShareStates.VERIFIED_PASS,
+    StaffVerifiedShareStates.UNVERIFIED_ISSUE,
+    StaffVerifiedShareStates.UNVERIFIED,
+]
+
 STAFF_VERIFIED_SHARE_STATE_CHOICES = [
     (StaffVerifiedShareStates.VERIFIED_FAIL, "Verified Fail"),
     (StaffVerifiedShareStates.VERIFIED_PASS, "Verified Pass"),
@@ -41,7 +48,7 @@ class PromptShareStates:
 
 
 PROMPT_SHARE_STATES_CHOICES = [
-    (PromptShareStates.UNSHARED, "UNSHARED"),
-    (PromptShareStates.PUBLISHED_LINK_ACCESS_ONLY, "PUBLISHED_LINK_ACCESS_ONLY"),
-    (PromptShareStates.PUBLISHED, "PUBLISHED"),
+    (PromptShareStates.UNSHARED, "Unshared"),
+    (PromptShareStates.PUBLISHED_LINK_ACCESS_ONLY, "Link Access Only"),
+    (PromptShareStates.PUBLISHED, "Published"),
 ]
