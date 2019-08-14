@@ -78,9 +78,13 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        # TODO - async/Channels can only be tested with pytest
+        # so i need to configure pytest and then ... test
+
         text_data_json = json.loads(text_data)
         serializer = GPT2MediumPromptSerializer(data=text_data_json)
-        # don't throw exceptions in the regular raise_exception=True, all
+
+        # don't throw exceptions in the regular pattern raise_exception=True, all
         # exceptions need to be properly handled
         valid = serializer.is_valid()
 
@@ -91,13 +95,12 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         cache_key = get_cache_key_for_gpt2_parameter(**prompt_serialized)
         cached_results = await get_cached_results(cache_key)
-
         if cached_results:
             return await self.send_serialized_data(cached_results)
 
         # technically a bug can probably occur if separate users try the same exact
         # phrase in the 180 seconds, but if that happens, that means the servers are probably
-        # dead from too many requests anyways
+        # crushed from too many requests anyways, RIP
         duplicate_request = await check_if_cache_key_for_gpt2_parameter_is_running(
             cache_key
         )
@@ -105,12 +108,13 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             return
 
         # if it doesnt' exist, add a state flag to say this is going to be running
-        # so it will automatically broadcast back when it completes
+        # so it will automatically broadcast back when if the frontend makes a duplicate request
         await set_gpt2_request_is_running_in_cache(cache_key)
 
         # switch auth styles, passing it here makes it a little bit more cross-operable
         # since aiohttp doesn't pass headers in the same way as the requests library
         # and you're too lazy to write custom middleware for one endpoint
+        # the ml endpoints are protected via an api_key to prevent abuse
         prompt_serialized["api_key"] = settings.ML_SERVICE_ENDPOINT_API_KEY
 
         async with aiohttp.ClientSession() as session:

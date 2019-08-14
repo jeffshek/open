@@ -29,6 +29,22 @@ class TestUtilities(TestCase):
         serialized = serialize_gpt2_individual_values(mock_response)
         self.assertEqual(fresh_prince, serialized)
 
+    def test_gpt2_text_cleanup_multiple_end_of_text(self):
+        fresh_prince = (
+            "Now this is a story all about how\n\nMy life got flipped upside down"
+        )
+        two_of_us = "Just the two of us, building castles in the sky, Just the two of us, you and I"
+        mock_response = fresh_prince + GPT2_END_TEXT_STRING + two_of_us
+
+        mock_response = mock_response + GPT2_END_TEXT_STRING + "RANDOM"
+
+        print(mock_response)
+
+        serialized = serialize_gpt2_individual_values(mock_response)
+
+        print(serialized)
+        self.assertEqual(fresh_prince, serialized)
+
     def test_gpt2_text_cleanup_remove_new_lines(self):
         too_many_newlines = "\n\nCat\n\n"
 
