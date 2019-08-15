@@ -10,7 +10,6 @@ from open.core.writeup.models import (
 @admin.register(WriteUpPrompt)
 class WriteUpPromptAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "uuid",
         "text",
         "title",
@@ -21,6 +20,7 @@ class WriteUpPromptAdmin(admin.ModelAdmin):
         "website",
         "share_state",
         "staff_verified_share_state",
+        "score",
     )
     list_filter = ("user",)
 
