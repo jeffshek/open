@@ -4,6 +4,7 @@
 [![codebeat badge](https://codebeat.co/badges/11be282f-cbaa-4c8f-bfb9-539e1c7e2366)](https://codebeat.co/projects/github-com-jeffshek-open-master)
 ![CookieCutter](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)
 [![Coverage Status](https://coveralls.io/repos/github/jeffshek/open/badge.svg?branch=master)](https://coveralls.io/github/jeffshek/open?branch=master)
+[![HitCount](http://hits.dwyl.io/jeffshek/open.svg)](http://hits.dwyl.io/jeffshek/open)
 
 Hi. This my personal repo I'm using to contain all my open source ideas. It serves as my justification to try out new
 ideas, but with an overengineered infrastructure and libraries to support scaling and doing things "my way".
@@ -20,13 +21,13 @@ In the upcoming month, as I move things over bit by bit, this will be home to
 * A clinical trial analytics engine
 * More applied machine learning projects in health and medicine
 
-## writeup.ai 
+## writeup.ai
 ### Lots of Credit To ....
 * [OpenAI](https://openai.com/blog/better-language-models/) for generating and releasing GPT-2 Medium
 * [HuggingFace](https://github.com/huggingface/pytorch-transformers) for making PyTorch extensions
 * [Google Cloud Platform](https://cloud.google.com/) it's been a pleasure using GCP to host this
-* This is mostly open-sourced, but there is a separate private repo that handles all the deployments and the ML services. That was too hard to open-source without making my life too hard. But it's probably the easiest one to code - it only consists of a microservice and a web app hosting models. 
-* I'll be releasing a huge writeup about how this was built on my [blog](https://senrigan.io/blog/). 
+* This is mostly open-sourced, but there is a separate private repo that handles all the deployments and the ML services. That was too hard to open-source without making my life too hard. But it's probably the easiest one to code - it only consists of a microservice and a web app hosting models.
+* I'll be releasing a huge writeup about how this was built on my [blog](https://senrigan.io/blog/).
 
 ## Development
 
