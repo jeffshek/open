@@ -31,7 +31,7 @@ def set_cached_results(cache_key, returned_data):
 
 
 @database_sync_to_async
-def check_if_cache_key_for_gpt2_parameter_is_running(cache_key):
+def check_if_cache_key_for_parameters_is_running(cache_key):
     is_cache_key_already_running = get_cache_key_for_processing_algo_parameter(
         cache_key
     )
@@ -97,8 +97,22 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        # TODO - async/Channels can only be tested with pytest
-        # so i need to configure pytest and then ... test
+        """
+        this function is kind of overwhelming (sorry), but what i'm doing is
+        putting a few caches because running inference even with
+        p100 gpus is still slow for transformer architectures
+
+        the first cache checks if this request has been made before
+        with the specific settings of word length, temp, etc
+
+        the second cache sees if this request is already running,
+        in most circumstances, that's overengineering, but some requests
+        can take over ten seconds to run, so the worst case would be if
+        it duplicated this request
+
+        TODO:
+        - async/channels can only be tested with pytest, so configure pytest
+        """
 
         text_data_json = json.loads(text_data)
         serializer = TextAlgorithmPromptSerializer(data=text_data_json)
@@ -120,7 +134,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         # technically a bug can probably occur if separate users try the same exact
         # phrase in the 180 seconds, but if that happens, that means the servers are probably
         # crushed from too many requests anyways, RIP
-        duplicate_request = await check_if_cache_key_for_gpt2_parameter_is_running(
+        duplicate_request = await check_if_cache_key_for_parameters_is_running(
             cache_key
         )
         if duplicate_request:
@@ -169,6 +183,11 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
 
 class WriteUpGPT2MediumConsumerMock(AsyncWriteUpGPT2MediumConsumer):
+    """
+    This is a dummy endpoint I used for debugging, since it doesn't require
+    having an active service architecture running.
+    """
+
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["prompt"]
