@@ -2,7 +2,7 @@ import time
 
 from django.utils.lorem_ipsum import COMMON_P
 
-from open.core.writeup.serializers import GPT2MediumPromptSerializer
+from open.core.writeup.serializers import TextAlgorithmPromptSerializer
 
 """
 dpy runscript writeup_time_serializers
@@ -19,7 +19,7 @@ def run():
     }
 
     start = time.time()
-    serializer = GPT2MediumPromptSerializer(data=data)
+    serializer = TextAlgorithmPromptSerializer(data=data)
     serializer.is_valid()
     end = time.time()
 
