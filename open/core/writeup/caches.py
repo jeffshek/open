@@ -1,5 +1,7 @@
 import hashlib
 
+from open.core.writeup.constants import MLModelNames
+
 
 def get_cache_key_for_gpt2_parameter(
     prompt,
@@ -8,7 +10,7 @@ def get_cache_key_for_gpt2_parameter(
     temperature,
     top_k,
     language="english_common",
-    model_name="gpt2_medium",
+    model_name=MLModelNames.GPT2_MEDIUM,
 ):
     app = "writeup"
 

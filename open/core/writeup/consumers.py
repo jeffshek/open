@@ -11,7 +11,7 @@ from open.core.writeup.caches import (
     get_cache_key_for_gpt2_parameter,
     get_cache_key_for_processing_gpt2_parameter,
 )
-from open.core.writeup.serializers import GPT2MediumPromptSerializer
+from open.core.writeup.serializers import TextAlgorithmPromptSerializer
 from open.core.writeup.utilities.gpt2_serializers import serialize_gpt2_api_response
 
 logger = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         # so i need to configure pytest and then ... test
 
         text_data_json = json.loads(text_data)
-        serializer = GPT2MediumPromptSerializer(data=text_data_json)
+        serializer = TextAlgorithmPromptSerializer(data=text_data_json)
 
         # don't throw exceptions in the regular pattern raise_exception=True, all
         # exceptions need to be properly handled

@@ -8,6 +8,36 @@ class WriteUpResourceEndpoints:
 GPT2_END_TEXT_STRING = "<|endoftext|>"
 
 
+class MLModelTypes:
+    GPT2 = "gpt2"
+    XLNET = "xlnet"
+    TRANSFORMER_XL = "transfo-xl"
+
+
+ML_MODEL_TYPE_CHOICES = [
+    (MLModelTypes.GPT2, "GPT2"),
+    (MLModelTypes.TRANSFORMER_XL, "TransformerXL"),
+    (MLModelTypes.XLNET, "XLNet"),
+]
+
+
+class MLModelNames:
+    # mimic how huggingface calls it!
+    XLNET_BASE_CASED = "xlnet-base-cased"
+    XLNET_LARGE_CASED = "xlnet-large-cased"
+    GPT2_MEDIUM = "gpt2-medium"
+    TRANSFO_XL_WT103 = "transfo-xl-wt103"
+
+
+ML_MODEL_NAME_CHOICES = [
+    (MLModelNames.XLNET_LARGE_CASED, "XLNet Large Cased"),
+    (MLModelNames.XLNET_BASE_CASED, "XLNet Base Cased"),
+    (MLModelNames.GPT2_MEDIUM, "GPT2 Medium"),
+    # robots in disguise ...
+    (MLModelNames.TRANSFO_XL_WT103, "Transformer XL WT 103"),
+]
+
+
 class StaffVerifiedShareStates:
     # admin would review any unverified issues and if they're bad
     # put them as fail and just not show them

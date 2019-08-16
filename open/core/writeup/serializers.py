@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import IntegerField, UUIDField
 
+from open.core.writeup.constants import ML_MODEL_NAME_CHOICES, MLModelNames
 from open.core.writeup.models import (
     WriteUpPrompt,
     WriteUpFlaggedPrompt,
@@ -8,7 +9,7 @@ from open.core.writeup.models import (
 )
 
 
-class GPT2MediumPromptSerializer(serializers.Serializer):
+class TextAlgorithmPromptSerializer(serializers.Serializer):
     # warning!
     # copy and pasted from service repo, the only modifications to this should be one way
     # synced from other repo
@@ -19,6 +20,9 @@ class GPT2MediumPromptSerializer(serializers.Serializer):
     length = serializers.IntegerField(default=40, max_value=256, min_value=1)
     temperature = serializers.FloatField(default=.7, min_value=0.1, max_value=1)
     top_k = serializers.IntegerField(default=10, max_value=40)
+    model_name = serializers.ChoiceField(
+        choices=ML_MODEL_NAME_CHOICES, default=MLModelNames.GPT2_MEDIUM
+    )
 
 
 class WriteUpPromptCreateReadSerializer(serializers.ModelSerializer):
