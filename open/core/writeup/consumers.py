@@ -9,8 +9,9 @@ from django.core.cache import cache
 
 from open.core.writeup.caches import (
     get_cache_key_for_text_algo_parameter,
-    get_cache_key_for_processing_gpt2_parameter,
+    get_cache_key_for_processing_algo_parameter,
 )
+from open.core.writeup.constants import MLModelNames
 from open.core.writeup.serializers import TextAlgorithmPromptSerializer
 from open.core.writeup.utilities.text_algo_serializers import (
     serialize_text_algo_api_response
@@ -31,7 +32,7 @@ def set_cached_results(cache_key, returned_data):
 
 @database_sync_to_async
 def check_if_cache_key_for_gpt2_parameter_is_running(cache_key):
-    is_cache_key_already_running = get_cache_key_for_processing_gpt2_parameter(
+    is_cache_key_already_running = get_cache_key_for_processing_algo_parameter(
         cache_key
     )
     return cache.get(is_cache_key_already_running, False)
@@ -39,12 +40,28 @@ def check_if_cache_key_for_gpt2_parameter_is_running(cache_key):
 
 @database_sync_to_async
 def set_if_request_is_running_in_cache(cache_key):
-    is_cache_key_already_running = get_cache_key_for_processing_gpt2_parameter(
+    is_cache_key_already_running = get_cache_key_for_processing_algo_parameter(
         cache_key
     )
     # set the cache to say this request is already running for 180 seconds
     # if it doesn't get the result by then, something is probably wrong
     cache.set(is_cache_key_already_running, True, 180)
+
+
+def get_api_endpoint_from_model_name(model_name):
+    if model_name == MLModelNames.GPT2_MEDIUM:
+        url = settings.GPT2_API_ENDPOINT
+    elif model_name == MLModelNames.XLNET_BASE_CASED:
+        url = settings.XLNET_BASE_CASED_API_ENDPOINT
+    elif model_name == MLModelNames.XLNET_LARGE_CASED:
+        url = settings.XLNET_LARGE_CASED_API_ENDPOINT
+    elif model_name == MLModelNames.TRANSFO_XL_WT103:
+        url = settings.TRANSFORMERS_XL_API_ENDPOINT
+    else:
+        logger.exception(f"Invalid Model Name Was Passed {model_name}")
+        # default to gpt2 for now
+        url = settings.GPT2_API_ENDPOINT
+    return url
 
 
 class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
@@ -119,10 +136,11 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         # the ml endpoints are protected via an api_key to prevent abuse
         prompt_serialized["api_key"] = settings.ML_SERVICE_ENDPOINT_API_KEY
 
+        model_name = prompt_serialized["model_name"]
+        url = get_api_endpoint_from_model_name(model_name)
+
         async with aiohttp.ClientSession() as session:
-            async with session.post(
-                settings.GPT2_API_ENDPOINT, data=prompt_serialized
-            ) as resp:
+            async with session.post(url, data=prompt_serialized) as resp:
                 status = resp.status
 
                 # if the ml endpoints are hit too hard, we'll receive a 500 error

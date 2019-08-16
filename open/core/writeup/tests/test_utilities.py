@@ -1,10 +1,13 @@
 from django.test import TestCase
+from django.conf import settings
 
 from open.core.writeup.constants import (
     GPT2_END_TEXT_STRING,
     StaffVerifiedShareStates,
     PromptShareStates,
+    MLModelNames,
 )
+from open.core.writeup.consumers import get_api_endpoint_from_model_name
 from open.core.writeup.factories import WriteUpPromptFactory
 from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
 from open.core.writeup.utilities.text_algo_serializers import (
@@ -86,3 +89,9 @@ class TestAccessPermissionsForPrompts(TestCase):
         valid = user_can_read_prompt_instance(user, diff_user_prompt)
 
         self.assertFalse(valid)
+
+
+class TestAPIEndpointsUrlCorrect(TestCase):
+    def test_api_endpoints_correctly_returned(self):
+        returned_endpoint = get_api_endpoint_from_model_name(MLModelNames.GPT2_MEDIUM)
+        self.assertEqual(returned_endpoint, settings.GPT2_API_ENDPOINT)
