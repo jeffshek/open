@@ -38,11 +38,7 @@ class TestUtilities(TestCase):
 
         mock_response = mock_response + GPT2_END_TEXT_STRING + "RANDOM"
 
-        print(mock_response)
-
         serialized = serialize_gpt2_individual_values(mock_response)
-
-        print(serialized)
         self.assertEqual(fresh_prince, serialized)
 
     def test_gpt2_text_cleanup_remove_new_lines(self):

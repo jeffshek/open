@@ -2,7 +2,13 @@ import hashlib
 
 
 def get_cache_key_for_gpt2_parameter(
-    prompt, batch_size, length, temperature, top_k, language="english_common"
+    prompt,
+    batch_size,
+    length,
+    temperature,
+    top_k,
+    language="english_common",
+    model_name="gpt2_medium",
 ):
     app = "writeup"
 
@@ -12,9 +18,7 @@ def get_cache_key_for_gpt2_parameter(
     prompt_encoded = prompt.strip().encode("utf-8")
     prompt_hash = hashlib.md5(prompt_encoded).hexdigest()
 
-    cache_key = (
-        f"{app}_{prompt_hash}_{batch_size}_{length}_{temperature}_{top_k}_{language}"
-    )
+    cache_key = f"{app}_{prompt_hash}_{batch_size}_{length}_{temperature}_{top_k}_{language}_{model_name}"
     return cache_key
 
 
