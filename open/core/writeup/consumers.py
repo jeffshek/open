@@ -8,11 +8,13 @@ from django.conf import settings
 from django.core.cache import cache
 
 from open.core.writeup.caches import (
-    get_cache_key_for_gpt2_parameter,
+    get_cache_key_for_text_algo_parameter,
     get_cache_key_for_processing_gpt2_parameter,
 )
 from open.core.writeup.serializers import TextAlgorithmPromptSerializer
-from open.core.writeup.utilities.gpt2_serializers import serialize_gpt2_api_response
+from open.core.writeup.utilities.text_algo_serializers import (
+    serialize_text_algo_api_response
+)
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +38,7 @@ def check_if_cache_key_for_gpt2_parameter_is_running(cache_key):
 
 
 @database_sync_to_async
-def set_gpt2_request_is_running_in_cache(cache_key):
+def set_if_request_is_running_in_cache(cache_key):
     is_cache_key_already_running = get_cache_key_for_processing_gpt2_parameter(
         cache_key
     )
@@ -93,7 +95,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         prompt_serialized = serializer.validated_data
 
-        cache_key = get_cache_key_for_gpt2_parameter(**prompt_serialized)
+        cache_key = get_cache_key_for_text_algo_parameter(**prompt_serialized)
         cached_results = await get_cached_results(cache_key)
         if cached_results:
             return await self.send_serialized_data(cached_results)
@@ -109,7 +111,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         # if it doesnt' exist, add a state flag to say this is going to be running
         # so it will automatically broadcast back when if the frontend makes a duplicate request
-        await set_gpt2_request_is_running_in_cache(cache_key)
+        await set_if_request_is_running_in_cache(cache_key)
 
         # switch auth styles, passing it here makes it a little bit more cross-operable
         # since aiohttp doesn't pass headers in the same way as the requests library
@@ -131,7 +133,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
                 returned_data = await resp.json()
 
-        serialized_text_responses = serialize_gpt2_api_response(returned_data)
+        serialized_text_responses = serialize_text_algo_api_response(returned_data)
         await set_cached_results(cache_key, serialized_text_responses)
 
         await self.send_serialized_data(returned_data)

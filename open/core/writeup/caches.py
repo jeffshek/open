@@ -3,7 +3,7 @@ import hashlib
 from open.core.writeup.constants import MLModelNames
 
 
-def get_cache_key_for_gpt2_parameter(
+def get_cache_key_for_text_algo_parameter(
     prompt,
     batch_size,
     length,
