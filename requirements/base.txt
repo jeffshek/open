@@ -42,7 +42,7 @@ python-coveralls==2.9.3
 python-slugify==3.0.3  # https://github.com/un33k/python-slugify
 pytz==2019.2  # https://github.com/stub42/pytz
 PyYAML==5.1.1
-redis==3.3.6  # https://github.com/antirez/redis
+redis==3.3.7  # https://github.com/antirez/redis
 sentry-asgi==0.2.0
 sentry-sdk==0.10.2  # https://github.com/getsentry/sentry-python
 twisted==19.7.0
