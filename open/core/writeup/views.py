@@ -118,9 +118,15 @@ class WriteUpPromptVoteView(APIView):
 
         validated_data = serializer.validated_data
 
-        instance = WriteUpPromptVote.objects.update_or_create(
+        instance, created = WriteUpPromptVote.objects.update_or_create(
             user=user, prompt=prompt, defaults=validated_data
         )
+
+        # Temporary hack, switch to a denormalized process that should
+        # check and update this every five minutes instead
+        prompt = instance.prompt
+        prompt.score += 1
+        prompt.save()
 
         return_serializer = WriteUpPromptVoteModifySerializer(instance=instance)
         return Response(data=return_serializer.data)
