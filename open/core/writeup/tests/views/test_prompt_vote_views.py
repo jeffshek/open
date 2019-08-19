@@ -42,6 +42,22 @@ class WriteUpPromptVoteViewTests(TestCase):
         self.staff_user_client.force_login(self.staff_user)
 
     def test_view(self):
+        prompt = WriteUpPromptFactory()
+        prompt_uuid = prompt.uuid_str
+        url_kwargs = {"prompt_uuid": prompt_uuid}
+        url = reverse(self.VIEW_NAME, kwargs=url_kwargs)
+
+        original_prompt_score = prompt.score
+        data = {"value": 1}
+
+        response = self.registered_user_client.post(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
+        prompt.refresh_from_db()
+        # the score counter isn't fully real-time, it's like meh
+        self.assertTrue(prompt.score > original_prompt_score)
+
+    def test_view_updates_score(self):
         prompt_uuid = WriteUpPromptFactory().uuid_str
         url_kwargs = {"prompt_uuid": prompt_uuid}
         url = reverse(self.VIEW_NAME, kwargs=url_kwargs)
