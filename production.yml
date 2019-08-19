@@ -10,7 +10,6 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
     image: gcr.io/proven-record-242223/open:latest
     env_file:
-#      - ./.envs/.production/.django
       - ./credentials/open/production/django.txt
     command: /start.sh
     volumes:

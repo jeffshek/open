@@ -1,15 +1,18 @@
 from django.test import TestCase
+from django.conf import settings
 
 from open.core.writeup.constants import (
     GPT2_END_TEXT_STRING,
     StaffVerifiedShareStates,
     PromptShareStates,
+    MLModelNames,
 )
+from open.core.writeup.consumers import get_api_endpoint_from_model_name
 from open.core.writeup.factories import WriteUpPromptFactory
 from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
-from open.core.writeup.utilities.gpt2_serializers import (
-    serialize_gpt2_individual_values,
-    serialize_gpt2_api_response,
+from open.core.writeup.utilities.text_algo_serializers import (
+    serialize_text_algo_individual_values,
+    serialize_text_algo_api_response,
 )
 from open.users.factories import UserFactory
 
@@ -26,13 +29,25 @@ class TestUtilities(TestCase):
         two_of_us = "Just the two of us, building castles in the sky, Just the two of us, you and I"
         mock_response = fresh_prince + GPT2_END_TEXT_STRING + two_of_us
 
-        serialized = serialize_gpt2_individual_values(mock_response)
+        serialized = serialize_text_algo_individual_values(mock_response)
+        self.assertEqual(fresh_prince, serialized)
+
+    def test_gpt2_text_cleanup_multiple_end_of_text(self):
+        fresh_prince = (
+            "Now this is a story all about how\n\nMy life got flipped upside down"
+        )
+        two_of_us = "Just the two of us, building castles in the sky, Just the two of us, you and I"
+        mock_response = fresh_prince + GPT2_END_TEXT_STRING + two_of_us
+
+        mock_response = mock_response + GPT2_END_TEXT_STRING + "RANDOM"
+
+        serialized = serialize_text_algo_individual_values(mock_response)
         self.assertEqual(fresh_prince, serialized)
 
     def test_gpt2_text_cleanup_remove_new_lines(self):
         too_many_newlines = "\n\nCat\n\n"
 
-        serialized = serialize_gpt2_individual_values(too_many_newlines)
+        serialized = serialize_text_algo_individual_values(too_many_newlines)
         self.assertEqual("Cat", serialized)
 
     def test_gpt2_api_serializer(self):
@@ -40,7 +55,7 @@ class TestUtilities(TestCase):
         text_with_spaces = " I have lot of spaces         "
         data = {"prompt": "Spiderman", "text_0": text_with_spaces}
 
-        serialized_data = serialize_gpt2_api_response(data)
+        serialized_data = serialize_text_algo_api_response(data)
 
         expected_data = data.copy()
         expected_data["text_0"] = text_with_spaces.strip()
@@ -74,3 +89,9 @@ class TestAccessPermissionsForPrompts(TestCase):
         valid = user_can_read_prompt_instance(user, diff_user_prompt)
 
         self.assertFalse(valid)
+
+
+class TestAPIEndpointsUrlCorrect(TestCase):
+    def test_api_endpoints_correctly_returned(self):
+        returned_endpoint = get_api_endpoint_from_model_name(MLModelNames.GPT2_MEDIUM)
+        self.assertEqual(returned_endpoint, settings.GPT2_API_ENDPOINT)

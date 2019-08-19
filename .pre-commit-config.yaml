@@ -17,7 +17,7 @@ repos:
         files: \.(py|sh)$
     -   id: flake8  # flake8 catch not used variables
         files: \.py$
-        args: ['--ignore=E128,W503']
+        args: ['--ignore=E128,W503,E501']
     -   id: name-tests-test
         files: tests/.+\.py$
         args: ['--django']  # Use args: ['--django'] to match test*.py instead.

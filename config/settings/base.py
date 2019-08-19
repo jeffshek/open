@@ -316,7 +316,17 @@ ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT", default="https://www.google.com
 ML_SERVICE_ENDPOINT_API_KEY = env(
     "ML_SERVICE_ENDPOINT_API_KEY", default="nada-go-find-an-api-key"
 )
-GPT2_API_ENDPOINT = env("GPT2_API_ENDPOINT", default="https://www.google.com")
+GPT2_API_ENDPOINT = env("GPT2_API_ENDPOINT", default="https://www.google.com/gpt2")
+XLNET_BASE_CASED_API_ENDPOINT = env(
+    "XLNET_BASE_CASED_API_ENDPOINT", default="https://www.google.com/xlnet_based"
+)
+XLNET_LARGE_CASED_API_ENDPOINT = env(
+    "XLNET_LARGE_CASED_API_ENDPOINT", default="https://www.google.com/xlnet_large"
+)
+TRANSFORMERS_XL_API_ENDPOINT = env(
+    "TRANSFORMERS_XL_API_ENDPOINT",
+    default="https://www.google.com/transformers_xl_wt_103",
+)
 
 
 CORS_ORIGIN_WHITELIST = [

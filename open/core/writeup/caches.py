@@ -1,8 +1,16 @@
 import hashlib
 
+from open.core.writeup.constants import MLModelNames
 
-def get_cache_key_for_gpt2_parameter(
-    prompt, batch_size, length, temperature, top_k, language="english_common"
+
+def get_cache_key_for_text_algo_parameter(
+    prompt,
+    batch_size,
+    length,
+    temperature,
+    top_k,
+    language="english_common",
+    model_name=MLModelNames.GPT2_MEDIUM,
 ):
     app = "writeup"
 
@@ -12,12 +20,10 @@ def get_cache_key_for_gpt2_parameter(
     prompt_encoded = prompt.strip().encode("utf-8")
     prompt_hash = hashlib.md5(prompt_encoded).hexdigest()
 
-    cache_key = (
-        f"{app}_{prompt_hash}_{batch_size}_{length}_{temperature}_{top_k}_{language}"
-    )
+    cache_key = f"{app}_{prompt_hash}_{batch_size}_{length}_{temperature}_{top_k}_{language}_{model_name}"
     return cache_key
 
 
-def get_cache_key_for_processing_gpt2_parameter(cache_key):
+def get_cache_key_for_processing_algo_parameter(cache_key):
     # need a prefix, otherwise that's be cache collusion with data
     return f"processing_{cache_key}"
