@@ -1,6 +1,7 @@
 from unittest import mock
 
 from rest_framework.reverse import reverse
+from rest_framework.test import APIClient
 
 from open.core.writeup.constants import (
     WriteUpResourceEndpoints,
@@ -167,6 +168,17 @@ class WriteUpPromptViewTests(OpenDefaultAPITest):
 
         count = WriteUpPrompt.objects.filter(user=self.registered_user).count()
         self.assertEqual(count, 5)
+
+    def test_post_view_with_invalid_api_key_will_fail(self):
+        url = reverse(self.VIEW_NAME)
+        text = "I am eating a hamburger"
+        data = {"text": text, "email": text, "title": text}
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="Token " + "NO-WORK")
+
+        response = client.post(url, data=data)
+        self.assertEqual(response.status_code, 401)
 
     def test_delete_view(self):
         prompt = WriteUpPromptFactory(user=self.registered_user)
