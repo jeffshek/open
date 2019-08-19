@@ -69,4 +69,9 @@ REST_FRAMEWORK = {
         "create_prompt_rate": "500/second",
         "list_prompt_rate": "500/second",
     },
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
 }

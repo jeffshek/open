@@ -1,3 +1,4 @@
+from rest_framework.authtoken.models import Token
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 from test_plus import TestCase
@@ -8,6 +9,10 @@ from open.core.writeup.models import WriteUpPromptVote
 from open.users.factories import UserFactory
 from open.users.models import User
 from open.utilities.testing import generate_random_uuid_as_string
+
+"""
+dpy test core.writeup.tests.views.test_prompt_vote_views --keepdb
+"""
 
 
 class WriteUpPromptVoteViewTests(TestCase):
@@ -25,10 +30,14 @@ class WriteUpPromptVoteViewTests(TestCase):
         self.unregistered_user_client = APIClient()
 
         self.registered_user = User.objects.get(id=self.registered_user_id)
+        Token.objects.create(user=self.registered_user)
+
         self.registered_user_client = APIClient()
         self.registered_user_client.force_login(self.registered_user)
 
         self.staff_user = UserFactory(is_staff=True)
+        Token.objects.create(user=self.staff_user)
+
         self.staff_user_client = APIClient()
         self.staff_user_client.force_login(self.staff_user)
 
@@ -40,6 +49,21 @@ class WriteUpPromptVoteViewTests(TestCase):
         data = {"value": 3}
 
         response = self.registered_user_client.post(url, data=data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_with_api_client(self):
+        """ Having some odd issues with auth - figure out why"""
+        prompt_uuid = WriteUpPromptFactory().uuid_str
+        url_kwargs = {"prompt_uuid": prompt_uuid}
+        url = reverse(self.VIEW_NAME, kwargs=url_kwargs)
+
+        valid_token = self.registered_user.auth_token.key
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="Token " + valid_token)
+
+        data = {"value": 3}
+        response = client.post(url, data=data)
         self.assertEqual(response.status_code, 200)
 
     def test_view_fake_uuid(self):
@@ -60,7 +84,7 @@ class WriteUpPromptVoteViewTests(TestCase):
         data = {"value": 3}
 
         response = self.unregistered_user_client.post(url, data=data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_post_multiple_times_only_results_in_one_record(self):
         prompt_uuid = WriteUpPromptFactory().uuid_str

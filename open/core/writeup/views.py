@@ -109,6 +109,8 @@ class WriteUpPromptView(APIView):
 
 
 class WriteUpPromptVoteView(APIView):
+    # permission_classes = ()
+
     def post(self, request, prompt_uuid):
         prompt = get_object_or_404(WriteUpPrompt, uuid=prompt_uuid)
         user = request.user
