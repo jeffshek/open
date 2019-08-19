@@ -1,10 +1,11 @@
-from django.urls import include, path
+from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import RedirectView
-from django.conf import settings
 
+from open.users.views import GitHubLogin
 
 # need a special view to make sure favicon always works
 favicon_view = RedirectView.as_view(
@@ -27,6 +28,7 @@ urlpatterns = [
     ),
     path("rest-auth/", include("rest_auth.urls")),
     path("rest-auth/registration/", include("rest_auth.registration.urls")),
+    path("rest-auth/github/", GitHubLogin.as_view(), name="github_login"),
     path("favicon.ico", favicon_view, name="favicon"),
     path(settings.ADMIN_URL, admin.site.urls),
     # prefix an api endpoint in front of everything to use a global load balancer

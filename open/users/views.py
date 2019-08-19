@@ -3,6 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import DetailView, RedirectView, UpdateView
 
+
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from rest_auth.registration.views import SocialLoginView
+
 User = get_user_model()
 
 
@@ -40,3 +45,9 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+
+class GitHubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
+    # callback_url = CALLBACK_URL_YOU_SET_ON_GITHUB
+    client_class = OAuth2Client
