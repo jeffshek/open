@@ -1,4 +1,5 @@
 from django.db.models import TextField, ForeignKey, SET_NULL, CASCADE, IntegerField
+from django_extensions.db.fields.json import JSONField
 from django_fsm import FSMField
 
 from open.core.writeup.constants import (
@@ -13,6 +14,7 @@ from open.utilities.models import BaseModel
 
 class WriteUpPrompt(BaseModel):
     text = TextField(default="", blank=True)
+    content = JSONField(blank=True)
     title = TextField(default="", blank=True)
     user = ForeignKey(User, null=True, blank=True, on_delete=SET_NULL)
     # published/sharing options
