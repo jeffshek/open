@@ -36,6 +36,7 @@ class WriteUpPromptCreateReadSerializer(serializers.ModelSerializer):
         model = WriteUpPrompt
         fields = (
             "text",
+            "content",
             "email",
             "title",
             "uuid",
