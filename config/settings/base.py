@@ -340,5 +340,5 @@ CORS_ORIGIN_WHITELIST = [
     "https://writeup.ai",
     "https://betterself.io",
     "https://www.betterself.io",
-    r"^https://\w+\.senrigan\.io",
+    "https://open.senrigan.io",
 ]
