@@ -14,6 +14,8 @@ from open.utilities.models import BaseModel
 
 class WriteUpPrompt(BaseModel):
     text = TextField(default="", blank=True)
+    # store the content in a jsonfield that will allow the frontend to preserve
+    # formatting from slatejs
     content = JSONField(blank=True)
     title = TextField(default="", blank=True)
     user = ForeignKey(User, null=True, blank=True, on_delete=SET_NULL)
