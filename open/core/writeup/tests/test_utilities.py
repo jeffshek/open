@@ -26,7 +26,9 @@ class TestUtilities(TestCase):
         fresh_prince = (
             "Now this is a story all about how\n\nMy life got flipped upside down"
         )
-        two_of_us = "Just the two of us, building castles in the sky, Just the two of us, you and I"
+        two_of_us = (
+            "Just the two of us, building castles in the sky, Just the two of us, you and I"
+        )
         mock_response = fresh_prince + GPT2_END_TEXT_STRING + two_of_us
 
         serialized = serialize_text_algo_individual_values(mock_response)
@@ -36,7 +38,9 @@ class TestUtilities(TestCase):
         fresh_prince = (
             "Now this is a story all about how\n\nMy life got flipped upside down"
         )
-        two_of_us = "Just the two of us, building castles in the sky, Just the two of us, you and I"
+        two_of_us = (
+            "Just the two of us, building castles in the sky, Just the two of us, you and I"
+        )
         mock_response = fresh_prince + GPT2_END_TEXT_STRING + two_of_us
 
         mock_response = mock_response + GPT2_END_TEXT_STRING + "RANDOM"
@@ -94,4 +98,4 @@ class TestAccessPermissionsForPrompts(TestCase):
 class TestAPIEndpointsUrlCorrect(TestCase):
     def test_api_endpoints_correctly_returned(self):
         returned_endpoint = get_api_endpoint_from_model_name(MLModelNames.GPT2_MEDIUM)
-        self.assertEqual(returned_endpoint, settings.GPT2_API_ENDPOINT)
+        self.assertEqual(returned_endpoint, settings.GPT2_MEDUM_API_ENDPOINT)

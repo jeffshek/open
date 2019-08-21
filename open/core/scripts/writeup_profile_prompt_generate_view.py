@@ -23,7 +23,9 @@ amazingly enough, django channels ... has almost zero overhead wow.
 
 def run():
     # dpy runscript writeup_profile_prompt_generate_view
-    url = "wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/a-cool-test-session/"
+    url = (
+        "wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/a-cool-test-session/"
+    )
     ws = create_connection(url)
 
     start = time.time()
@@ -40,7 +42,7 @@ def run():
     websocket_difference = end - start
     print(f"{websocket_difference/intervals} was the average time in seconds to run.")
 
-    url = settings.GPT2_API_ENDPOINT
+    url = settings.GPT2_MEDUM_API_ENDPOINT
     token_key = f"Token {settings.ML_SERVICE_ENDPOINT_API_KEY}"
     headers = {"Authorization": token_key}
 

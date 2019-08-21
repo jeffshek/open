@@ -50,7 +50,7 @@ def set_if_request_is_running_in_cache(cache_key):
 
 def get_api_endpoint_from_model_name(model_name):
     if model_name == MLModelNames.GPT2_MEDIUM:
-        url = settings.GPT2_API_ENDPOINT
+        url = settings.GPT2_MEDIUM_API_ENDPOINT
     elif model_name == MLModelNames.XLNET_BASE_CASED:
         url = settings.XLNET_BASE_CASED_API_ENDPOINT
     elif model_name == MLModelNames.XLNET_LARGE_CASED:
@@ -60,7 +60,7 @@ def get_api_endpoint_from_model_name(model_name):
     else:
         logger.exception(f"Invalid Model Name Was Passed {model_name}")
         # default to gpt2 for now
-        url = settings.GPT2_API_ENDPOINT
+        url = settings.GPT2_MEDIUM_API_ENDPOINT
     return url
 
 
