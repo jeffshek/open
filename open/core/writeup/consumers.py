@@ -85,8 +85,11 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             {"type": "api_serialized_message", "message": error_msg},
         )
 
-    async def return_invalid_api_response(self, prompt_serialized, status):
-        logger.exception(f"Issue with Request to ML Endpoint. Received {status}")
+    async def return_invalid_api_response(self, prompt_serialized, status, url):
+        logger.exception(
+            f"Issue with Request to ML Endpoint. Received {status} when accessing {url}",
+            exec_info=True,
+        )
         error_msg = {
             "prompt": prompt_serialized["prompt"],
             "text_0": "An Error Occurred",
@@ -160,7 +163,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
                 # if the ml endpoints are hit too hard, we'll receive a 500 error
                 if resp.status != 200:
                     return await self.return_invalid_api_response(
-                        prompt_serialized, status
+                        prompt_serialized, status, url
                     )
 
                 returned_data = await resp.json()
