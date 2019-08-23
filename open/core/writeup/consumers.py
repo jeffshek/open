@@ -50,14 +50,14 @@ def set_if_request_is_running_in_cache(cache_key):
 
 def get_api_endpoint_from_model_name(model_name):
     model_mapping_to_endpoints = {
-        MLModelNames.GPT2_MEDIUM: settings.GPT2_API_ENDPOINT,
+        MLModelNames.GPT2_MEDIUM: settings.GPT2_MEDIUM_API_ENDPOINT,
         MLModelNames.XLNET_BASE_CASED: settings.XLNET_BASE_CASED_API_ENDPOINT,
         MLModelNames.XLNET_LARGE_CASED: settings.XLNET_LARGE_CASED_API_ENDPOINT,
         MLModelNames.TRANSFO_XL_WT103: settings.TRANSFORMERS_XL_API_ENDPOINT,
     }
 
     # default to gpt2 for now until you feel confident
-    url = model_mapping_to_endpoints.get(model_name, settings.GPT2_API_ENDPOINT)
+    url = model_mapping_to_endpoints.get(model_name, settings.GPT2_MEDIUM_API_ENDPOINT)
 
     return url
 

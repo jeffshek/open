@@ -319,7 +319,6 @@ REST_FRAMEWORK = {
     },
 }
 
-# ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT", default="https://www.google.com")
 ML_SERVICE_ENDPOINT_API_KEY = env(
     "ML_SERVICE_ENDPOINT_API_KEY", default="nada-go-find-an-api-key"
 )
