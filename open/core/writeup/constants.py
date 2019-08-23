@@ -1,3 +1,8 @@
+# to differentiate between finetuned models
+ENGLISH_CONSTANT = "english"
+GENERAL_CONSTANT = "general"
+
+
 class WriteUpResourceEndpoints:
     GENERATED_SENTENCE = "generated_sentence"
     PROMPTS = "prompts"
