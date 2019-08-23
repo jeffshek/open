@@ -45,7 +45,7 @@ def set_if_request_is_running_in_cache(cache_key):
     )
     # set the cache to say this request is already running for 180 seconds
     # if it doesn't get the result by then, something is probably wrong
-    cache.set(is_cache_key_already_running, True, 180)
+    cache.set(is_cache_key_already_running, True, 60)
 
 
 def get_api_endpoint_from_model_name(model_name):
