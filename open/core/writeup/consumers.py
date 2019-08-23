@@ -74,6 +74,8 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name_uuid, self.channel_name)
 
     async def return_invalid_data_prompt(self, data):
+        # make the prompt match back what was sent, this is used by the frontend
+        # to validate what message is what
         error_msg = {
             "prompt": data.get("prompt", ""),
             "text_0": "Invalid Data Was Passed",
