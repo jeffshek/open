@@ -319,11 +319,13 @@ REST_FRAMEWORK = {
     },
 }
 
-ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT", default="https://www.google.com")
+# ML_SERVICE_ENDPOINT = env("ML_SERVICE_ENDPOINT", default="https://www.google.com")
 ML_SERVICE_ENDPOINT_API_KEY = env(
     "ML_SERVICE_ENDPOINT_API_KEY", default="nada-go-find-an-api-key"
 )
-GPT2_API_ENDPOINT = env("GPT2_API_ENDPOINT", default="https://www.google.com/gpt2")
+GPT2_MEDIUM_API_ENDPOINT = env(
+    "GPT2_MEDIUM_API_ENDPOINT", default="https://www.google.com/gpt2"
+)
 XLNET_BASE_CASED_API_ENDPOINT = env(
     "XLNET_BASE_CASED_API_ENDPOINT", default="https://www.google.com/xlnet_based"
 )
@@ -340,4 +342,5 @@ CORS_ORIGIN_WHITELIST = [
     "https://writeup.ai",
     "https://betterself.io",
     "https://www.betterself.io",
+    "https://open.senrigan.io",
 ]

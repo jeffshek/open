@@ -15,7 +15,7 @@ import aiohttp
 # this script is used to ensure that load balancing works for the ML api endpoints
 # python manage.py runscript swarm_ml_services
 
-# urls = [settings.GPT2_API_ENDPOINT] * 50000
+# urls = [settings.GPT2_MEDIUM_API_ENDPOINT] * 50000
 # urls = ["wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/work/"] * 50
 
 

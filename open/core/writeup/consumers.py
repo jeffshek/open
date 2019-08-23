@@ -58,6 +58,7 @@ def get_api_endpoint_from_model_name(model_name):
 
     # default to gpt2 for now until you feel confident
     url = model_mapping_to_endpoints.get(model_name, settings.GPT2_API_ENDPOINT)
+
     return url
 
 
