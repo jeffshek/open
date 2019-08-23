@@ -73,9 +73,9 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.group_name_uuid, self.channel_name)
 
-    async def return_invalid_data_prompt(self):
+    async def return_invalid_data_prompt(self, data):
         error_msg = {
-            "prompt": "Invalid Data Was Passed",
+            "prompt": data.get("prompt", ""),
             "text_0": "Invalid Data Was Passed",
         }
         await self.channel_layer.group_send(
@@ -123,7 +123,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         valid = serializer.is_valid()
 
         if not valid:
-            return await self.return_invalid_data_prompt()
+            return await self.return_invalid_data_prompt(text_data_json)
 
         prompt_serialized = serializer.validated_data
 
