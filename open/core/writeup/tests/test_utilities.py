@@ -1,5 +1,5 @@
-from django.test import TestCase
 from django.conf import settings
+from django.test import TestCase
 
 from open.core.writeup.constants import (
     GPT2_END_TEXT_STRING,
@@ -95,3 +95,9 @@ class TestAPIEndpointsUrlCorrect(TestCase):
     def test_api_endpoints_correctly_returned(self):
         returned_endpoint = get_api_endpoint_from_model_name(MLModelNames.GPT2_MEDIUM)
         self.assertEqual(returned_endpoint, settings.GPT2_API_ENDPOINT)
+
+    def test_api_endpoints_correctly_returned_two(self):
+        returned_endpoint = get_api_endpoint_from_model_name(
+            MLModelNames.XLNET_BASE_CASED
+        )
+        self.assertEqual(returned_endpoint, settings.XLNET_BASE_CASED_API_ENDPOINT)
