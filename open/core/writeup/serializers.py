@@ -20,7 +20,8 @@ class TextAlgorithmPromptSerializer(serializers.Serializer):
     length = serializers.IntegerField(default=40, max_value=256, min_value=1)
     temperature = serializers.FloatField(default=.7, min_value=0.1, max_value=1)
     top_k = serializers.IntegerField(default=10, max_value=40, min_value=0)
-    top_p = serializers.FloatField(default=.7, max_value=1, min_value=0)
+    # keep off for the time being ...
+    top_p = serializers.FloatField(default=0, max_value=1, min_value=0)
     model_name = serializers.ChoiceField(
         choices=ML_MODEL_NAME_CHOICES, default=MLModelNames.GPT2_MEDIUM
     )
