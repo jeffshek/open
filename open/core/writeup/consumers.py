@@ -86,8 +86,10 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         )
 
     async def return_invalid_api_response(self, prompt_serialized, resp, status, url):
+        data = await resp.json()
+
         logger.exception(
-            f"Issue with Request to ML Endpoint. Received {status} when accessing {url}. The content was {resp.content}"
+            f"Issue with Request to ML Endpoint. Received {status} when accessing {url}. The data was {data}"
         )
         error_msg = {
             "prompt": prompt_serialized["prompt"],
