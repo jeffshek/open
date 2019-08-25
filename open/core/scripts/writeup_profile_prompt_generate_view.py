@@ -7,6 +7,7 @@ from django.conf import settings
 from websocket import create_connection
 
 from open.core.scripts.swarm_ml_services import get_random_prompt
+from open.core.writeup.constants import TEXT_GENERATION_URL
 
 """
 this script's design was to compare performance behind django channels
@@ -23,9 +24,7 @@ amazingly enough, django channels ... has almost zero overhead wow.
 
 def run():
     # dpy runscript writeup_profile_prompt_generate_view
-    url = (
-        "wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/a-cool-test-session/"
-    )
+    url = f"wss://open.senrigan.io/ws/async/writeup/{TEXT_GENERATION_URL}/session/a-cool-test-session/"
     ws = create_connection(url)
 
     start = time.time()

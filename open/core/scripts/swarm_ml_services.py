@@ -16,7 +16,8 @@ import aiohttp
 # python manage.py runscript swarm_ml_services
 
 # urls = [settings.GPT2_MEDIUM_API_ENDPOINT] * 50000
-# urls = ["wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/work/"] * 50
+# urls = ["wss://open.senrigan.io/ws/async/writeup/text_generation/session/work/"] * 50
+from open.core.writeup.constants import TEXT_GENERATION_URL
 
 
 def get_urls(urls_to_create=50):
@@ -24,9 +25,7 @@ def get_urls(urls_to_create=50):
 
     for _ in range(urls_to_create):
         uuid_str = uuid.uuid4().__str__()
-        ws_url = (
-            f"wss://open.senrigan.io/ws/async/writeup/gpt2_medium/session/{uuid_str}/"
-        )
+        ws_url = f"wss://open.senrigan.io/ws/async/writeup/{TEXT_GENERATION_URL}/session/{uuid_str}/"
 
         urls.append(ws_url)
 
@@ -106,7 +105,6 @@ async def fetch_all_urls_via_websockets(urls):
     timeout = aiohttp.ClientTimeout(total=60 * 60)
 
     async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
-
         results = await asyncio.gather(
             # returning exceptions =  true means to ignore exceptions
             *[fetch_via_websocket(session, url) for url in urls],
@@ -116,7 +114,6 @@ async def fetch_all_urls_via_websockets(urls):
 
 
 def run():
-
     loop = asyncio.get_event_loop()
 
     start = time.time()

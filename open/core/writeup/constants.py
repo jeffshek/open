@@ -2,6 +2,8 @@
 ENGLISH_CONSTANT = "english"
 GENERAL_CONSTANT = "general"
 
+TEXT_GENERATION_URL = "text_generation"
+
 
 class WriteUpResourceEndpoints:
     GENERATED_SENTENCE = "generated_sentence"
