@@ -67,21 +67,21 @@ class TestGPT2SerializerUtilities(TestCase):
 class TestTransformerSerializerUtilities(TestCase):
     def test_beginning_of_prompts_removes_after(self):
         start = "the beginning of the prompt"
-        text_with_beginning_promt = f"{start}{TransformerXLNetTokenTypes.TRANSFORMERS_BEGINNING_OF_PROMPT} nothing should show up"
+        text_with_beginning_promt = f"{start}{TransformerXLNetTokenTypes.BEGINNING_OF_PROMPT} nothing should show up"
 
         result = serialize_text_algo_individual_values(text_with_beginning_promt)
         self.assertEqual(result, start)
 
     def test_end_of_prompts_removes_after(self):
         start = "the beginning of the prompt"
-        text_with_beginning_promt = f"{start}{TransformerXLNetTokenTypes.TRANSFORMERS_ENDING_OF_PROMPT} nothing should show up"
+        text_with_beginning_promt = f"{start}{TransformerXLNetTokenTypes.ENDING_OF_PROMPT} nothing should show up"
 
         result = serialize_text_algo_individual_values(text_with_beginning_promt)
         self.assertEqual(result, start)
 
     def test_end_of_paragraph_returns_double_space(self):
         text = "the beginning of the prompt"
-        text_with_token = f"{text}{TransformerXLNetTokenTypes.TRANSFORMERS_ENDING_OF_PARAGRAPH}should have multiple newlines {TransformerXLNetTokenTypes.TRANSFORMERS_ENDING_OF_PARAGRAPH}"
+        text_with_token = f"{text}{TransformerXLNetTokenTypes.ENDING_OF_PARAGRAPH}should have multiple newlines {TransformerXLNetTokenTypes.ENDING_OF_PARAGRAPH}"
 
         result = serialize_text_algo_individual_values(text_with_token)
         new_line_count = result.count("\n")
@@ -90,11 +90,9 @@ class TestTransformerSerializerUtilities(TestCase):
 
     def test_unknown_tokens_dont_show_up(self):
         text = "the beginning of the prompt"
-        text_with_token = f"{text}{TransformerXLNetTokenTypes.TRANSFORMERS_UNKNOWN_TOKEN} tell me a story {TransformerXLNetTokenTypes.TRANSFORMERS_UNKNOWN_TOKEN}"
+        text_with_token = f"{text}{TransformerXLNetTokenTypes.UNKNOWN_TOKEN} tell me a story {TransformerXLNetTokenTypes.UNKNOWN_TOKEN}"
         result = serialize_text_algo_individual_values(text_with_token)
-        unknown_count = result.count(
-            TransformerXLNetTokenTypes.TRANSFORMERS_UNKNOWN_TOKEN
-        )
+        unknown_count = result.count(TransformerXLNetTokenTypes.UNKNOWN_TOKEN)
 
         self.assertEqual(unknown_count, 0)
 
