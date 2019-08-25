@@ -13,6 +13,26 @@ class WriteUpResourceEndpoints:
 GPT2_END_TEXT_STRING = "<|endoftext|>"
 
 
+class TransformerXLNetTokenTypes:
+    """
+    AFAIK - Both XLNet and TransformersXL share the same type of tokens
+    """
+
+    BEGINNING_OF_PROMPT = "<s>"
+    ENDING_OF_PROMPT = "</s>"
+    ENDING_OF_PARAGRAPH = "<eop>"
+    UNKNOWN_TOKEN = "<unk>"
+
+    # not sure what the other tokens are supposed to do since i don't have wifi at the moment ...
+    # TODO - Add tests to these when you figure it out
+    SEPARATE_TOKEN = "<sep>"
+    PADDING_TOKEN = "<pad>"
+    CLS_TOKEN = "<cls>"
+
+    # TODO - Debate if you want to implement this
+    MASK_TOKEN = "<mask>"
+
+
 class MLModelTypes:
     GPT2 = "gpt2"
     XLNET = "xlnet"

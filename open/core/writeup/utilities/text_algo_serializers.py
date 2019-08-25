@@ -1,4 +1,4 @@
-from open.core.writeup.constants import GPT2_END_TEXT_STRING
+from open.core.writeup.constants import GPT2_END_TEXT_STRING, TransformerXLNetTokenTypes
 
 
 def serialize_text_algo_individual_values(text):
@@ -8,6 +8,22 @@ def serialize_text_algo_individual_values(text):
     if GPT2_END_TEXT_STRING in text_serialized:
         end_location = text_serialized.index(GPT2_END_TEXT_STRING)
         text_serialized = text_serialized[:end_location]
+    if TransformerXLNetTokenTypes.BEGINNING_OF_PROMPT in text_serialized:
+        location = text_serialized.index(TransformerXLNetTokenTypes.BEGINNING_OF_PROMPT)
+        text_serialized = text_serialized[:location]
+    if TransformerXLNetTokenTypes.ENDING_OF_PROMPT in text_serialized:
+        location = text_serialized.index(TransformerXLNetTokenTypes.ENDING_OF_PROMPT)
+        text_serialized = text_serialized[:location]
+
+    if TransformerXLNetTokenTypes.ENDING_OF_PARAGRAPH in text_serialized:
+        text_serialized = text_serialized.replace(
+            TransformerXLNetTokenTypes.ENDING_OF_PARAGRAPH, "\n\n"
+        )
+
+    if TransformerXLNetTokenTypes.UNKNOWN_TOKEN in text_serialized:
+        text_serialized = text_serialized.replace(
+            TransformerXLNetTokenTypes.UNKNOWN_TOKEN, ""
+        )
 
     return text_serialized
 

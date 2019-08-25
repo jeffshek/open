@@ -63,5 +63,5 @@ class TestWriteUpCaches(TestCase):
 
         cache_key = get_cache_key_for_text_algo_parameter(**serializer.validated_data)
 
-        expected_cache_key = f"writeup_8b1a9953c4611296a827abf8c47804d7_5_40_0.7_10_0.7_english_gpt2-medium"
+        expected_cache_key = f"writeup_8b1a9953c4611296a827abf8c47804d7_5_40_0.7_10_0_english_gpt2-medium"
         self.assertEqual(cache_key, expected_cache_key)
