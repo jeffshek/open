@@ -16,6 +16,7 @@ from open.core.writeup.serializers import TextAlgorithmPromptSerializer
 from open.core.writeup.utilities.text_algo_serializers import (
     serialize_text_algo_api_response
 )
+from open.utilities.date_and_time import print_current_time
 
 logger = logging.getLogger(__name__)
 
@@ -160,6 +161,8 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         async with aiohttp.ClientSession() as session:
             async with session.post(url, data=prompt_serialized) as resp:
                 status = resp.status
+                print_current_time()
+                print(status)
 
                 # if the ml endpoints are hit too hard, we'll receive a 500 error
                 if resp.status != 200:
