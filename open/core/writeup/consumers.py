@@ -162,7 +162,6 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             async with session.post(url, data=prompt_serialized) as resp:
                 status = resp.status
                 print_current_time()
-                print(status)
 
                 # if the ml endpoints are hit too hard, we'll receive a 500 error
                 if resp.status != 200:
@@ -180,7 +179,6 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         await self.send_serialized_data(serialized_text_responses)
 
     async def send_serialized_data(self, returned_data):
-        print("Sending Results")
         await self.channel_layer.group_send(
             self.group_name_uuid,
             {"type": "api_serialized_message", "message": returned_data},
