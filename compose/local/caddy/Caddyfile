@@ -1,6 +1,6 @@
-http://open.senrigan.io, open.senrigan.io, 35.227.244.108:80, 35.227.244.108:443
+:2015
  {
-    proxy / django:5000 {
+    proxy / django:8008 {
         header_upstream Host {host}
         header_upstream X-Real-IP {remote}
         header_upstream X-Forwarded-For {remote}
