@@ -18,3 +18,5 @@ defaultEntryPoints = ["http"]
     passHostHeader = true
     [frontends.django.headers]
       HostsProxyHeaders = ['X-CSRFToken']
+    [frontends.django.routes.dr1]
+      rule = "Host:open.senrigan.io"
