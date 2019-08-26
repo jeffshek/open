@@ -171,8 +171,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         serialized_text_responses = serialize_text_algo_api_response(returned_data)
         await set_cached_results(cache_key, serialized_text_responses)
-
-        await self.send_serialized_data(returned_data)
+        await self.send_serialized_data(serialized_text_responses)
 
     async def send_serialized_data(self, returned_data):
         await self.channel_layer.group_send(
