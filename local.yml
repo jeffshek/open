@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   local_postgres_data: {}
+  caddy: {}
 
 services:
   django: &django
@@ -30,6 +31,19 @@ services:
       - local_postgres_data:/var/lib/postgresql/data
     env_file:
       - ./.envs/.local/.django
+
+  caddy:
+    build:
+      context: .
+      dockerfile: ./compose/local/caddy/Dockerfile
+    depends_on:
+      - django
+    volumes:
+      - caddy:/root/.caddy
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "2015:2015"
 
   redis:
     image: redis:5.0
