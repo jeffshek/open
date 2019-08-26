@@ -1,3 +1,5 @@
+from asgiref.sync import sync_to_async
+
 from open.core.writeup.constants import GPT2_END_TEXT_STRING, TransformerXLNetTokenTypes
 
 
@@ -28,7 +30,8 @@ def serialize_text_algo_individual_values(text):
     return text_serialized
 
 
-def serialize_text_algo_api_response(returned_data):
+def _serialize_text_algo_api_response(returned_data):
+    """ A Hack To Debug Async """
     text_responses = returned_data.copy()
     for key, value in returned_data.items():
         if "text_" not in key:
@@ -38,3 +41,17 @@ def serialize_text_algo_api_response(returned_data):
         text_responses[key] = value_serialized
 
     return text_responses
+
+
+@sync_to_async
+def serialize_text_algo_api_response(returned_data):
+    return _serialize_text_algo_api_response(returned_data)
+    # text_responses = returned_data.copy()
+    # for key, value in returned_data.items():
+    #     if "text_" not in key:
+    #         continue
+    #
+    #     value_serialized = serialize_text_algo_individual_values(value)
+    #     text_responses[key] = value_serialized
+    #
+    # return text_responses

@@ -13,7 +13,7 @@ from open.core.writeup.factories import WriteUpPromptFactory
 from open.core.writeup.utilities.access_permissions import user_can_read_prompt_instance
 from open.core.writeup.utilities.text_algo_serializers import (
     serialize_text_algo_individual_values,
-    serialize_text_algo_api_response,
+    _serialize_text_algo_api_response,
 )
 from open.users.factories import UserFactory
 
@@ -56,7 +56,7 @@ class TestGPT2SerializerUtilities(TestCase):
         text_with_spaces = " I have lot of spaces         "
         data = {"prompt": "Spiderman", "text_0": text_with_spaces}
 
-        serialized_data = serialize_text_algo_api_response(data)
+        serialized_data = _serialize_text_algo_api_response(data)
 
         expected_data = data.copy()
         expected_data["text_0"] = text_with_spaces.strip()
