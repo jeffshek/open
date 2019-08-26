@@ -33,16 +33,16 @@ services:
     env_file:
       - ./.envs/.local/.django
 
-  caddy:
-    build:
-      context: .
-      dockerfile: ./compose/local/caddy/Dockerfile
-    depends_on:
-      - django
-    volumes:
-      - caddy:/root/.caddy
-    ports:
-      - "2015:2015"
+#  caddy:
+#    build:
+#      context: .
+#      dockerfile: ./compose/local/caddy/Dockerfile
+#    depends_on:
+#      - django
+#    volumes:
+#      - caddy:/root/.caddy
+#    ports:
+#      - "2015:2015"
 
   redis:
     image: redis:5.0
