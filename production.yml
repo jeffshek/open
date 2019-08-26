@@ -15,18 +15,28 @@ services:
     volumes:
       - .:/app
 
-  caddy:
+  traefik:
     build:
       context: .
-      dockerfile: ./compose/production/caddy/Dockerfile
+      dockerfile: ./compose/production/traefik/Dockerfile
     depends_on:
       - django
-    image: gcr.io/proven-record-242223/open_caddy:latest
-    volumes:
-      - caddy:/root/.caddy
     ports:
+      # SSL termination happens at the LB layer, all traffic here is http
       - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
+
+#  caddy:
+#    build:
+#      context: .
+#      dockerfile: ./compose/production/caddy/Dockerfile
+#    depends_on:
+#      - django
+#    image: gcr.io/proven-record-242223/open_caddy:latest
+#    volumes:
+#      - caddy:/root/.caddy
+#    ports:
+#      - "0.0.0.0:80:80"
+#      - "0.0.0.0:443:443"
 
   cloud-sql-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.11

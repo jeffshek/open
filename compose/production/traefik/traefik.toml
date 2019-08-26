@@ -1,0 +1,20 @@
+logLevel = "INFO"
+# ssl termination happens on the GCP load balancer
+defaultEntryPoints = ["http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+[file]
+[backends]
+  [backends.django]
+    [backends.django.servers.server1]
+      url = "http://django:5000"
+
+[frontends]
+  [frontends.django]
+    backend = "django"
+    passHostHeader = true
+    [frontends.django.headers]
+      HostsProxyHeaders = ['X-CSRFToken']

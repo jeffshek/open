@@ -3,6 +3,7 @@ version: '3'
 volumes:
   local_postgres_data: {}
   caddy: {}
+  production_traefik: {}
 
 services:
   django: &django
@@ -19,7 +20,7 @@ services:
     env_file:
       - ./.envs/.local/.django
     ports:
-      - "8008:8008"
+      - "5000:5000"
     command: /local_django_start.sh
 
   postgres:
@@ -41,12 +42,19 @@ services:
     volumes:
       - caddy:/root/.caddy
     ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
       - "2015:2015"
 
   redis:
     image: redis:5.0
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    depends_on:
+      - django
+    ports:
+      - "0.0.0.0:80:80"
 
 #  celeryworker:
 #    <<: *django
