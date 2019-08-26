@@ -19,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/traefik/Dockerfile
+    image: gcr.io/proven-record-242223/open_traefik:latest
     depends_on:
       - django
     ports:
