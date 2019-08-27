@@ -59,7 +59,7 @@ def check_if_cache_key_for_parameters_is_running(cache_key):
 
 
 @database_sync_to_async
-def set_if_request_is_running_in_cache(cache_key):
+def set_request_flag_that_request_is_running_in_cache(cache_key):
     processing_cache_key = get_cache_key_for_processing_algo_parameter(cache_key)
     # set the cache to say this request is already running for 60 seconds
     # if it doesn't get the result by then, something is probably wrong
@@ -161,6 +161,19 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         )
 
     async def _receive_new_request(self, data):
+        """
+        this function is kind of overwhelming (sorry), but what i'm doing is
+        putting a few caches because running inference even with
+        p100 gpus is still slow for transformer architectures
+
+        the first cache checks if this request has been made before
+        with the specific settings of word length, temp, etc
+
+        the second cache sees if this request is already running,
+        in most circumstances, that's overengineering, but some requests
+        can take over ten seconds to run, so the worst case would be if
+        it duplicated this request
+        """
         serializer = TextAlgorithmPromptSerializer(data=data)
 
         # don't throw exceptions in the regular pattern raise_exception=True, all
@@ -188,7 +201,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         # if it doesnt' exist, add a state flag to say this is going to be running
         # so it will automatically broadcast back when if the frontend makes a duplicate request
-        await set_if_request_is_running_in_cache(cache_key)
+        await set_request_flag_that_request_is_running_in_cache(cache_key)
 
         # switch auth styles, passing it here makes it a little bit more cross-operable
         # since aiohttp doesn't pass headers in the same way as the requests library
@@ -212,17 +225,6 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         """
-        this function is kind of overwhelming (sorry), but what i'm doing is
-        putting a few caches because running inference even with
-        p100 gpus is still slow for transformer architectures
-
-        the first cache checks if this request has been made before
-        with the specific settings of word length, temp, etc
-
-        the second cache sees if this request is already running,
-        in most circumstances, that's overengineering, but some requests
-        can take over ten seconds to run, so the worst case would be if
-        it duplicated this request
 
         TODO:
         - async/channels can only be tested with pytest, so configure pytest
