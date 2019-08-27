@@ -25,7 +25,7 @@ pool = Pool(10)
 logger = logging.getLogger(__name__)
 
 
-def on_success(response):
+def on_post_success_to_microservice(response):
     if response.status_code != 200:
         return
 
@@ -36,7 +36,7 @@ def on_success(response):
     cache.set(cache_key, serialized)
 
 
-def on_error(ex):
+def on_error_to_microservice(ex):
     logger.exception(f"Post requests failed: {ex}")
 
 
@@ -60,12 +60,10 @@ def check_if_cache_key_for_parameters_is_running(cache_key):
 
 @database_sync_to_async
 def set_if_request_is_running_in_cache(cache_key):
-    is_cache_key_already_running = get_cache_key_for_processing_algo_parameter(
-        cache_key
-    )
+    processing_cache_key = get_cache_key_for_processing_algo_parameter(cache_key)
     # set the cache to say this request is already running for 60 seconds
     # if it doesn't get the result by then, something is probably wrong
-    cache.set(is_cache_key_already_running, True, 60)
+    cache.set(processing_cache_key, True, 60)
 
 
 def get_api_endpoint_from_model_name(model_name):
@@ -158,19 +156,19 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         pool.apply_async(
             requests.post,
             args=[url, prompt_serialized],
-            callback=on_success,
-            error_callback=on_error,
+            callback=on_post_success_to_microservice,
+            error_callback=on_error_to_microservice,
         )
 
-    async def _receive_new_request(self, text_data_json):
-        serializer = TextAlgorithmPromptSerializer(data=text_data_json)
+    async def _receive_new_request(self, data):
+        serializer = TextAlgorithmPromptSerializer(data=data)
 
         # don't throw exceptions in the regular pattern raise_exception=True, all
         # exceptions need to be properly handled when using channels
         valid = serializer.is_valid()
 
         if not valid:
-            return await self.return_invalid_data_prompt(text_data_json)
+            return await self.return_invalid_data_prompt(data)
 
         prompt_serialized = serializer.validated_data
 
@@ -208,6 +206,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         await self.post_to_microservice(url, prompt_serialized)
 
     async def _receive_updated_response(self, data):
+        """ Send updates from a microservice back to the frontend """
         serialized_text_responses = await serialize_text_algo_api_response(data)
         await self.send_serialized_data(serialized_text_responses)
 
@@ -238,6 +237,8 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             logger.exception(f"Missing Message Type {text_data}")
             return
 
+        # use this as a routing channel that that will decipher if messages are coming
+        # in from microservices or from the frontend
         if message_type == WebsocketMessageTypes.NEW_REQUEST:
             await self._receive_new_request(text_data_json)
         elif message_type == WebsocketMessageTypes.UPDATED_RESPONSE:
@@ -266,11 +267,13 @@ class WriteUpGPT2MediumConsumerMock(AsyncWriteUpGPT2MediumConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["prompt"]
 
-        post_message = {"prompt": message}
-        post_message["text_0"] = ". I am a test. That's wonderful."
-        post_message["text_1"] = "Today, I saw potato in the fields."
-        post_message["text_2"] = "! Our crops are growing."
-        post_message["text_3"] = "How will we drink coffee tomorrow?"
+        post_message = {
+            "prompt": message,
+            "text_0": ". I am a test. That's wonderful.",
+            "text_1": "Today, I saw potato in the fields.",
+            "text_2": "! Our crops are growing.",
+            "text_3": "How will we drink coffee tomorrow?",
+        }
 
         await self.channel_layer.group_send(
             self.session_group_name_uuid,

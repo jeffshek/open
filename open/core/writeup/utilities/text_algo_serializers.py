@@ -32,6 +32,7 @@ def serialize_text_algo_individual_values(text):
 
 def serialize_text_algo_api_response_sync(returned_data):
     """ Was A Hack To Debug Async """
+    # TODO - I think you should be able to merge this back into one function
     text_responses = returned_data.copy()
     for key, value in returned_data.items():
         if "text_" not in key:
