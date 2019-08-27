@@ -109,3 +109,9 @@ PROMPT_SHARE_STATES_CHOICES = [
     (PromptShareStates.PUBLISHED_LINK_ACCESS_ONLY, "Link Access Only"),
     (PromptShareStates.PUBLISHED, "Published"),
 ]
+
+
+class WebsocketMessageTypes:
+    NEW_REQUEST = "new_request"
+    UPDATED_RESPONSE = "updated_response"
+    COMPLETED_RESPONSE = "completed_response"

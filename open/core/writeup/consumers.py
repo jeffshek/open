@@ -1,7 +1,9 @@
 import json
 import logging
+from json import JSONDecodeError
+from multiprocessing.dummy import Pool
 
-import aiohttp
+import requests
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.conf import settings
@@ -11,14 +13,26 @@ from open.core.writeup.caches import (
     get_cache_key_for_text_algo_parameter,
     get_cache_key_for_processing_algo_parameter,
 )
-from open.core.writeup.constants import MLModelNames
+from open.core.writeup.constants import MLModelNames, WebsocketMessageTypes
 from open.core.writeup.serializers import TextAlgorithmPromptSerializer
 from open.core.writeup.utilities.text_algo_serializers import (
     serialize_text_algo_api_response
 )
-from open.utilities.date_and_time import print_current_time
 
+# use a pool to run a post requests, otherwise it blocks
+pool = Pool(10)
 logger = logging.getLogger(__name__)
+
+
+def on_success(r):
+    if r.status_code == 200:
+        print(f"Post succeed: {r}")
+    else:
+        print(f"Post failed: {r}")
+
+
+def on_error(ex):
+    print(f"Post requests failed: {ex}")
 
 
 @database_sync_to_async
@@ -44,7 +58,7 @@ def set_if_request_is_running_in_cache(cache_key):
     is_cache_key_already_running = get_cache_key_for_processing_algo_parameter(
         cache_key
     )
-    # set the cache to say this request is already running for 180 seconds
+    # set the cache to say this request is already running for 60 seconds
     # if it doesn't get the result by then, something is probably wrong
     cache.set(is_cache_key_already_running, True, 60)
 
@@ -65,8 +79,8 @@ def get_api_endpoint_from_model_name(model_name):
 
 class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        group_name = self.scope["url_route"]["kwargs"]["session_uuid"]
-        self.group_name_uuid = "session_%s" % group_name
+        self.group_name = self.scope["url_route"]["kwargs"]["session_uuid"]
+        self.group_name_uuid = "session_%s" % self.group_name
 
         await self.channel_layer.group_add(self.group_name_uuid, self.channel_name)
         await self.accept()
@@ -101,29 +115,51 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             {"type": "api_serialized_message", "message": error_msg},
         )
 
-    async def receive(self, text_data):
+    async def post_to_microservice(self, url, prompt_serialized):
         """
-        this function is kind of overwhelming (sorry), but what i'm doing is
-        putting a few caches because running inference even with
-        p100 gpus is still slow for transformer architectures
+        below is the before code, however aiohttp posts ends up as a blocking function ...
+        this was so hard to diagnose, very frustrating.
 
-        the first cache checks if this request has been made before
-        with the specific settings of word length, temp, etc
+        tbf - i still don't understand why aiohttp's ends up blocking the rest of django channels
+        the reason it looks like httpx works is just because the timeout explodes so quickly
 
-        the second cache sees if this request is already running,
-        in most circumstances, that's overengineering, but some requests
-        can take over ten seconds to run, so the worst case would be if
-        it duplicated this request
+        async with aiohttp.ClientSession() as session:
+        await session.post(url, data=prompt_serialized)
 
-        TODO:
-        - async/channels can only be tested with pytest, so configure pytest
+        async with aiohttp.ClientSession() as session:
+            await self.fetch(url, data=prompt_serialized, session=session)
+
+
+        ### another frustrating attempt with httpx, it sort of worked, but was ugly
+
+        client = httpx.AsyncClient()
+        try:
+            print_current_time()
+            await client.post(url, data=prompt_serialized)
+        except Exception:
+            print_current_time()
+            # this post will timeout, but that's okay because it's a hack.
+            # we don't really care about the message content from the post here, it takes too long to run
+            # instead, we just need the service endpoints to have gotten the message and begin transmitting back
+            # via the websocket channels the updated tokens
+            pass
+        finally:
+            client.close()
+
         """
 
-        text_data_json = json.loads(text_data)
+        pool.apply_async(
+            requests.post,
+            args=[url, prompt_serialized],
+            callback=on_success,
+            error_callback=on_error,
+        )
+
+    async def _receive_new_request(self, text_data_json):
         serializer = TextAlgorithmPromptSerializer(data=text_data_json)
 
         # don't throw exceptions in the regular pattern raise_exception=True, all
-        # exceptions need to be properly handled
+        # exceptions need to be properly handled when using channels
         valid = serializer.is_valid()
 
         if not valid:
@@ -155,28 +191,49 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         # the ml endpoints are protected via an api_key to prevent abuse
         prompt_serialized["api_key"] = settings.ML_SERVICE_ENDPOINT_API_KEY
 
+        # pass the websocket_uuid for the ML endpoints to know how to communicate
+        prompt_serialized["websocket_uuid"] = self.group_name
+        prompt_serialized["cache_key"] = cache_key
+
         model_name = prompt_serialized["model_name"]
         url = get_api_endpoint_from_model_name(model_name)
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, data=prompt_serialized) as resp:
-                status = resp.status
-                print_current_time()
+        await self.post_to_microservice(url, prompt_serialized)
 
-                # if the ml endpoints are hit too hard, we'll receive a 500 error
-                if resp.status != 200:
-                    return await self.return_invalid_api_response(
-                        prompt_serialized, resp, status, url
-                    )
-
-                returned_data = await resp.json()
-
-        serialized_text_responses = await serialize_text_algo_api_response(
-            returned_data
-        )
-        await set_cached_results(cache_key, serialized_text_responses)
-
+    async def _receive_updated_response(self, data):
+        serialized_text_responses = await serialize_text_algo_api_response(data)
         await self.send_serialized_data(serialized_text_responses)
+
+    async def receive(self, text_data):
+        """
+        this function is kind of overwhelming (sorry), but what i'm doing is
+        putting a few caches because running inference even with
+        p100 gpus is still slow for transformer architectures
+
+        the first cache checks if this request has been made before
+        with the specific settings of word length, temp, etc
+
+        the second cache sees if this request is already running,
+        in most circumstances, that's overengineering, but some requests
+        can take over ten seconds to run, so the worst case would be if
+        it duplicated this request
+
+        TODO:
+        - async/channels can only be tested with pytest, so configure pytest
+        """
+        try:
+            text_data_json = json.loads(text_data)
+            message_type = text_data_json["message_type"]
+        except (JSONDecodeError, KeyError):
+            logger.exception(f"Invalid JSON. Got {text_data}")
+            return
+
+        if message_type == WebsocketMessageTypes.NEW_REQUEST:
+            await self._receive_new_request(text_data_json)
+        elif message_type == WebsocketMessageTypes.UPDATED_RESPONSE:
+            await self._receive_updated_response(text_data_json)
+        else:
+            logger.exception(f"Invalid Message Type Received {message_type}")
 
     async def send_serialized_data(self, returned_data):
         await self.channel_layer.group_send(
@@ -188,6 +245,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         message = event["message"]
 
         await self.send(text_data=json.dumps({"message": message}))
+        print("Should Have Sent")
 
 
 class WriteUpGPT2MediumConsumerMock(AsyncWriteUpGPT2MediumConsumer):

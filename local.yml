@@ -20,7 +20,7 @@ services:
     env_file:
       - ./.envs/.local/.django
     ports:
-      - "5000:5000"
+      - "0.0.0.0:5000:5000"
     command: /local_django_start.sh
 
   postgres:
