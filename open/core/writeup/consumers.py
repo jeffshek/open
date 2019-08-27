@@ -16,7 +16,8 @@ from open.core.writeup.caches import (
 from open.core.writeup.constants import MLModelNames, WebsocketMessageTypes
 from open.core.writeup.serializers import TextAlgorithmPromptSerializer
 from open.core.writeup.utilities.text_algo_serializers import (
-    serialize_text_algo_api_response
+    serialize_text_algo_api_response,
+    serialize_text_algo_api_response_sync,
 )
 
 # use a pool to run a post requests, otherwise it blocks
@@ -24,15 +25,19 @@ pool = Pool(10)
 logger = logging.getLogger(__name__)
 
 
-def on_success(r):
-    if r.status_code == 200:
-        print(f"Post succeed: {r}")
-    else:
-        print(f"Post failed: {r}")
+def on_success(response):
+    if response.status_code != 200:
+        return
+
+    # after completion, we want to store the full results in a cache
+    data = response.json()
+    serialized = serialize_text_algo_api_response_sync(data)
+    cache_key = data["cache_key"]
+    cache.set(cache_key, serialized)
 
 
 def on_error(ex):
-    print(f"Post requests failed: {ex}")
+    logger.exception(f"Post requests failed: {ex}")
 
 
 @database_sync_to_async
@@ -80,13 +85,17 @@ def get_api_endpoint_from_model_name(model_name):
 class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.group_name = self.scope["url_route"]["kwargs"]["session_uuid"]
-        self.group_name_uuid = "session_%s" % self.group_name
+        self.session_group_name_uuid = "session_%s" % self.group_name
 
-        await self.channel_layer.group_add(self.group_name_uuid, self.channel_name)
+        await self.channel_layer.group_add(
+            self.session_group_name_uuid, self.channel_name
+        )
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.group_name_uuid, self.channel_name)
+        await self.channel_layer.group_discard(
+            self.session_group_name_uuid, self.channel_name
+        )
 
     async def return_invalid_data_prompt(self, data):
         # make the prompt match back what was sent, this is used by the frontend
@@ -96,7 +105,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             "text_0": "Invalid Data Was Passed",
         }
         await self.channel_layer.group_send(
-            self.group_name_uuid,
+            self.session_group_name_uuid,
             {"type": "api_serialized_message", "message": error_msg},
         )
 
@@ -111,13 +120,13 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             "text_0": "An Error Occurred",
         }
         return await self.channel_layer.group_send(
-            self.group_name_uuid,
+            self.session_group_name_uuid,
             {"type": "api_serialized_message", "message": error_msg},
         )
 
     async def post_to_microservice(self, url, prompt_serialized):
         """
-        below is the before code, however aiohttp posts ends up as a blocking function ...
+        below is the multiple attempts of code, however aiohttp posts ends up as a blocking function ...
         this was so hard to diagnose, very frustrating.
 
         tbf - i still don't understand why aiohttp's ends up blocking the rest of django channels
@@ -134,10 +143,8 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
         client = httpx.AsyncClient()
         try:
-            print_current_time()
             await client.post(url, data=prompt_serialized)
         except Exception:
-            print_current_time()
             # this post will timeout, but that's okay because it's a hack.
             # we don't really care about the message content from the post here, it takes too long to run
             # instead, we just need the service endpoints to have gotten the message and begin transmitting back
@@ -147,7 +154,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             client.close()
 
         """
-
+        # this is the only way that DOES not block django channels, whereas everything else did?!
         pool.apply_async(
             requests.post,
             args=[url, prompt_serialized],
@@ -224,8 +231,11 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         try:
             text_data_json = json.loads(text_data)
             message_type = text_data_json["message_type"]
-        except (JSONDecodeError, KeyError):
+        except JSONDecodeError:
             logger.exception(f"Invalid JSON. Got {text_data}")
+            return
+        except KeyError:
+            logger.exception(f"Missing Message Type {text_data}")
             return
 
         if message_type == WebsocketMessageTypes.NEW_REQUEST:
@@ -237,15 +247,13 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
 
     async def send_serialized_data(self, returned_data):
         await self.channel_layer.group_send(
-            self.group_name_uuid,
+            self.session_group_name_uuid,
             {"type": "api_serialized_message", "message": returned_data},
         )
 
     async def api_serialized_message(self, event):
         message = event["message"]
-
         await self.send(text_data=json.dumps({"message": message}))
-        print("Should Have Sent")
 
 
 class WriteUpGPT2MediumConsumerMock(AsyncWriteUpGPT2MediumConsumer):
@@ -265,6 +273,6 @@ class WriteUpGPT2MediumConsumerMock(AsyncWriteUpGPT2MediumConsumer):
         post_message["text_3"] = "How will we drink coffee tomorrow?"
 
         await self.channel_layer.group_send(
-            self.group_name_uuid,
+            self.session_group_name_uuid,
             {"type": "api_serialized_message", "message": post_message},
         )
