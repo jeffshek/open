@@ -5,7 +5,7 @@ argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
 asgiref==3.2.1
 asn1crypto==0.24.0
 async-timeout==3.0.1
-autobahn==19.8.1
+autobahn==19.9.1
 Automat==0.7.0
 celery==4.3.0  # https://github.com/celery/celery
 channels==2.2.0
