@@ -113,5 +113,6 @@ PROMPT_SHARE_STATES_CHOICES = [
 
 class WebsocketMessageTypes:
     NEW_REQUEST = "new_request"
+    CANCEL_REQUEST = "cancel_request"
     UPDATED_RESPONSE = "updated_response"
     COMPLETED_RESPONSE = "completed_response"

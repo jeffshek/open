@@ -233,10 +233,10 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         try:
             text_data_json = json.loads(text_data)
             message_type = text_data_json["message_type"]
-        except JSONDecodeError:
+        except JSONDecodeError as exc:
             logger.exception(f"Invalid JSON. Got {text_data}")
             return
-        except KeyError:
+        except KeyError as exc:
             logger.exception(f"Missing Message Type {text_data}")
             return
 
