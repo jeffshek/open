@@ -197,6 +197,7 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
             cache_key
         )
         if duplicate_request:
+            print("Duplicate request already running.")
             return
 
         # if it doesnt' exist, add a state flag to say this is going to be running
