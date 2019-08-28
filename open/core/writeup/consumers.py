@@ -244,7 +244,10 @@ class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
         # in from microservices or from the frontend
         if message_type == WebsocketMessageTypes.NEW_REQUEST:
             await self._receive_new_request(text_data_json)
-        elif message_type == WebsocketMessageTypes.UPDATED_RESPONSE:
+        elif message_type in [
+            WebsocketMessageTypes.UPDATED_RESPONSE,
+            WebsocketMessageTypes.COMPLETED_RESPONSE,
+        ]:
             await self._receive_updated_response(text_data_json)
         else:
             logger.exception(f"Invalid Message Type Received {message_type}")
