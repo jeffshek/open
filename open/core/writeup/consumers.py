@@ -74,6 +74,9 @@ def get_api_endpoint_from_model_name(model_name):
         MLModelNames.TRANSFO_XL_WT103: settings.TRANSFORMERS_XL_API_ENDPOINT,
     }
 
+    if model_name not in model_mapping_to_endpoints:
+        logger.exception(f"Invalid Model Name Was Passed {model_name}")
+
     # default to gpt2 for now until you feel confident
     url = model_mapping_to_endpoints.get(model_name, settings.GPT2_MEDIUM_API_ENDPOINT)
 
