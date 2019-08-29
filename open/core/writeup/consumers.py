@@ -69,18 +69,14 @@ def set_request_flag_that_request_is_running_in_cache(cache_key):
 def get_api_endpoint_from_model_name(model_name):
     model_mapping_to_endpoints = {
         MLModelNames.GPT2_MEDIUM: settings.GPT2_MEDIUM_API_ENDPOINT,
+        MLModelNames.GPT2_LARGE: settings.GPT2_LARGE_API_ENDPOINT,
+        MLModelNames.GPT2_SMALL: settings.GPT2_SMALL_API_ENDPOINT,
         MLModelNames.XLNET_BASE_CASED: settings.XLNET_BASE_CASED_API_ENDPOINT,
         MLModelNames.XLNET_LARGE_CASED: settings.XLNET_LARGE_CASED_API_ENDPOINT,
         MLModelNames.TRANSFO_XL_WT103: settings.TRANSFORMERS_XL_API_ENDPOINT,
     }
 
-    if model_name not in model_mapping_to_endpoints:
-        logger.exception(f"Invalid Model Name Was Passed {model_name}")
-
-    # default to gpt2 for now until you feel confident
-    url = model_mapping_to_endpoints.get(model_name, settings.GPT2_MEDIUM_API_ENDPOINT)
-
-    return url
+    return model_mapping_to_endpoints[model_name]
 
 
 class AsyncWriteUpGPT2MediumConsumer(AsyncWebsocketConsumer):
