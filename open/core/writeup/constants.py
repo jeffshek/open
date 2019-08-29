@@ -54,12 +54,16 @@ class MLModelNames:
     XLNET_LARGE_CASED = "xlnet-large-cased"
     GPT2_MEDIUM = "gpt2-medium"
     TRANSFO_XL_WT103 = "transfo-xl-wt103"
+    GPT2_SMALL = "gpt2"
+    GPT2_LARGE = "gpt2-large"
 
 
 ML_MODEL_NAME_CHOICES = [
     (MLModelNames.XLNET_LARGE_CASED, "XLNet Large Cased"),
     (MLModelNames.XLNET_BASE_CASED, "XLNet Base Cased"),
     (MLModelNames.GPT2_MEDIUM, "GPT2 Medium"),
+    (MLModelNames.GPT2_SMALL, "GPT2 Small"),
+    (MLModelNames.GPT2_LARGE, "GPT2 Large"),
     # robots in disguise ...
     (MLModelNames.TRANSFO_XL_WT103, "Transformer XL WT 103"),
 ]
