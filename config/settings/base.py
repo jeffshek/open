@@ -325,6 +325,9 @@ ML_SERVICE_ENDPOINT_API_KEY = env(
 GPT2_SMALL_API_ENDPOINT = env(
     "GPT2_SMALL_API_ENDPOINT", default="https://www.google.com/gpt2"
 )
+GPT2_SMALL_LEGAL_API_ENDPOINT = env(
+    "GPT2_SMALL_LEGAL_API_ENDPOINT", default="https://www.google.com/gpt2"
+)
 GPT2_MEDIUM_API_ENDPOINT = env(
     "GPT2_MEDIUM_API_ENDPOINT", default="https://www.google.com/gpt2"
 )
