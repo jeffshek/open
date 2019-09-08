@@ -11,7 +11,7 @@ from open.core.writeup.models import (
 class WriteUpPromptAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
-        "text",
+        # "text",
         "title",
         "user",
         "email",
