@@ -4,7 +4,17 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
+SECONDS_PER_MINUTE = 60
+MINUTES_PER_HOUR = 60
+
 app = Celery("open")
+
+app.conf.beat_schedule = {
+    "check-all-services-running": {
+        "task": "open.core.tasks.check_services_running",
+        "schedule": 1 * SECONDS_PER_MINUTE,
+    }
+}
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

@@ -49,13 +49,17 @@ services:
     ports:
       - 5432:5432
 
-#  celeryworker:
-#    <<: *django
-#    image: open_production_celeryworker
-#    command: /start-celeryworker.sh
-#
-#  celerybeat:
-#    <<: *django
-#    image: open_production_celerybeat
-#    command: /start-celerybeat.sh
+  celeryworker:
+    <<: *django
+    image: gcr.io/proven-record-242223/open:latest
+    command: /start-celeryworker.sh
+    env_file:
+      - ./credentials/open/production/django.txt
+
+  celerybeat:
+    <<: *django
+    image: gcr.io/proven-record-242223/open:latest
+    command: /start-celerybeat.sh
+    env_file:
+      - ./credentials/open/production/django.txt
 

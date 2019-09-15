@@ -352,3 +352,8 @@ CORS_ORIGIN_WHITELIST = [
     "https://www.betterself.io",
     "https://open.senrigan.io",
 ]
+
+
+# CELERY_HEART_BEAT =
+CELERY_BROKER_HEARTBEAT = 10
+BROKER_HEARTBEAT = 10
