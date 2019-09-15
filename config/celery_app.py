@@ -12,7 +12,8 @@ app = Celery("open")
 app.conf.beat_schedule = {
     "check-all-services-running": {
         "task": "open.core.tasks.check_services_running",
-        "schedule": 1 * SECONDS_PER_MINUTE,
+        # run every 30 minutes to make sure all the ml-services are running
+        "schedule": 30 * SECONDS_PER_MINUTE,
     }
 }
 

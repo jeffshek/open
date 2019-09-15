@@ -1,13 +1,15 @@
 import logging
 
-
 from .base import *  # noqa
 from .base import env
+from config.constants import LOCAL
 
 print("LOCAL - SETTINGS")
 
 # this is way too slow on channels if it's true
 DEBUG = False
+
+ENVIRONMENT = LOCAL
 
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
