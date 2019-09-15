@@ -13,9 +13,7 @@ def check_services_running():
     if settings.ENVIRONMENT != PRODUCTION:
         return
 
-    print(settings.ML_SERVICE_ENDPOINT_API_KEY)
-
-    data = {
+    post_data = {
         "prompt": "We know that this is an important moment in the history of our country he said. We are proud to support the work of the American Civil Liberties Union and we will continue to fight for the rights of all Americans. The ACLU is currently suing the government over its surveillance programs. The ACLU said it had been monitoring the surveillance program since September 2011.",
         "temperature": 1,
         "api_key": settings.ML_SERVICE_ENDPOINT_API_KEY,
@@ -32,10 +30,9 @@ def check_services_running():
     ]
 
     for url in endpoints:
-        response = requests.post(url, json=data)
+        response = requests.post(url, json=post_data)
         data = response.json()
 
         assert response.status_code == 200
-
         # make sure it returns text_4
         assert len(data["text_4"]) > 30
