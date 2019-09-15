@@ -13,6 +13,8 @@ def check_services_running():
     if settings.ENVIRONMENT != PRODUCTION:
         return
 
+    print(settings.ML_SERVICE_ENDPOINT_API_KEY)
+
     data = {
         "prompt": "We know that this is an important moment in the history of our country he said. We are proud to support the work of the American Civil Liberties Union and we will continue to fight for the rights of all Americans. The ACLU is currently suing the government over its surveillance programs. The ACLU said it had been monitoring the surveillance program since September 2011.",
         "temperature": 1,
