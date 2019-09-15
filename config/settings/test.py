@@ -1,5 +1,8 @@
+from config.constants import TESTING
 from .base import *  # noqa
 from .base import env
+
+ENVIRONMENT = TESTING
 
 print("TEST - SETTINGS")
 

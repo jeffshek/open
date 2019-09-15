@@ -4,10 +4,14 @@ Base settings to build other settings files upon.
 
 import environ
 
+from config.constants import LOCAL
+
 ROOT_DIR = environ.Path(__file__) - 3  # (open/config/settings/base.py - 3 = open/)
 APPS_DIR = ROOT_DIR.path("open")
 
 env = environ.Env()
+
+ENVIRONMENT = LOCAL
 
 READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
 if READ_DOT_ENV_FILE:
