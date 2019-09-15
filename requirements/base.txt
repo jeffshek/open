@@ -5,7 +5,7 @@ argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
 asgiref==3.2.1
 asn1crypto==0.24.0
 async-timeout==3.0.1
-autobahn==19.8.1
+autobahn==19.9.3
 Automat==0.7.0
 celery==4.3.0  # https://github.com/celery/celery
 channels==2.2.0
@@ -15,16 +15,16 @@ contextvars==2.4
 coreapi==2.3.3  # https://github.com/core-api/python-client
 cryptography==2.7
 daphne==2.3.0
-django==2.2.4  # https://www.djangoproject.com/
+django==2.2.5  # https://www.djangoproject.com/
 django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
-django-cors-headers==3.0.2
+django-cors-headers==3.1.0
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-fsm==2.6.1
 django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 django-rest-auth==0.9.5
-djangorestframework==3.10.2  # https://github.com/encode/django-rest-framework
+djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.0
 hyperlink==19.0.0
@@ -33,8 +33,8 @@ immutables==0.9
 incremental==17.5.0
 msgpack==0.6.1
 multidict==4.5.2
-numpy==1.17.0
-pandas==0.25.0
+numpy==1.17.2
+pandas==0.25.1
 Pillow==6.1.0  # https://github.com/python-pillow/Pillow
 profilehooks==1.11.0
 PyHamcrest==1.9.0
@@ -44,7 +44,7 @@ pytz==2019.2  # https://github.com/stub42/pytz
 PyYAML==5.1.2
 redis==3.3.8  # https://github.com/antirez/redis
 sentry-asgi==0.2.0
-sentry-sdk==0.11.1  # https://github.com/getsentry/sentry-python
+sentry-sdk==0.11.2  # https://github.com/getsentry/sentry-python
 twisted==19.7.0
 txaio==18.8.1
 typing-extensions==3.7.4
