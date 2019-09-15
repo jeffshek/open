@@ -50,16 +50,24 @@ services:
       - 5432:5432
 
   celeryworker:
-    <<: *django
     image: gcr.io/proven-record-242223/open:latest
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - ./credentials/open/production/django.txt
+    volumes:
+      - .:/app
     command: /start-celeryworker.sh
-    env_file:
-      - ./credentials/open/production/django.txt
 
-  celerybeat:
-    <<: *django
-    image: gcr.io/proven-record-242223/open:latest
-    command: /start-celerybeat.sh
-    env_file:
-      - ./credentials/open/production/django.txt
+    celerybeat:
+      image: gcr.io/proven-record-242223/open:latest
+      depends_on:
+        - redis
+        - postgres
+      env_file:
+        - ./credentials/open/production/django.txt
+      volumes:
+        - .:/app
+      command: /start-celerybeat.sh
 

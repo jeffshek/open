@@ -79,7 +79,6 @@ services:
 
   celerybeat:
     image: gcr.io/proven-record-242223/open:latest
-    command: /start-celerybeat.sh
     depends_on:
       - redis
       - postgres
@@ -87,3 +86,4 @@ services:
       - ./.envs/.local/.django
     volumes:
       - .:/app
+    command: /start-celerybeat.sh
