@@ -60,14 +60,14 @@ services:
       - .:/app
     command: /start-celeryworker.sh
 
-    celerybeat:
-      image: gcr.io/proven-record-242223/open:latest
-      depends_on:
-        - redis
-        - postgres
-      env_file:
-        - ./credentials/open/production/django.txt
-      volumes:
-        - .:/app
-      command: /start-celerybeat.sh
+  celerybeat:
+    image: gcr.io/proven-record-242223/open:latest
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - ./credentials/open/production/django.txt
+    volumes:
+      - .:/app
+    command: /start-celerybeat.sh
 
