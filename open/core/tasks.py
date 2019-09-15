@@ -32,7 +32,7 @@ def check_services_running():
     ]
 
     for url in endpoints:
-        response = requests.post(url, data=data)
+        response = requests.post(url, json=data)
         data = response.json()
 
         assert response.status_code == 200
