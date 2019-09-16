@@ -69,6 +69,11 @@ def set_request_flag_that_request_is_running_in_cache(cache_key):
 def get_api_endpoint_from_model_name(model_name):
     model_mapping_to_endpoints = {
         MLModelNames.GPT2_MEDIUM: settings.GPT2_MEDIUM_API_ENDPOINT,
+        MLModelNames.GPT2_MEDIUM_LEGAL: settings.GPT2_MEDIUM_LEGAL_API_ENDPOINT,
+        MLModelNames.GPT2_MEDIUM_HP: settings.GPT2_MEDIUM_HP_API_ENDPOINT,
+        MLModelNames.GPT2_MEDIUM_GOT: settings.GPT2_MEDIUM_GOT_API_ENDPOINT,
+        MLModelNames.GPT2_MEDIUM_RESEARCH: settings.GPT2_MEDIUM_RESEARCH_API_ENDPOINT,
+        MLModelNames.GPT2_MEDIUM_LYRICS: settings.GPT2_MEDIUM_LYRICS_API_ENDPOINT,
         MLModelNames.GPT2_LARGE: settings.GPT2_LARGE_API_ENDPOINT,
         MLModelNames.GPT2_SMALL: settings.GPT2_SMALL_API_ENDPOINT,
         MLModelNames.GPT2_SMALL_LEGAL: settings.GPT2_SMALL_LEGAL_API_ENDPOINT,
