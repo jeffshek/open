@@ -56,15 +56,27 @@ class MLModelNames:
     TRANSFO_XL_WT103 = "transfo-xl-wt103"
     GPT2_SMALL = "gpt2"
     GPT2_LARGE = "gpt2-large"
+    # all the new self-generated
     GPT2_SMALL_LEGAL = "gpt2-small-legal"
+    GPT2_MEDIUM_LEGAL = "gpt2-medium-legal"
+    GPT2_MEDIUM_HP = "gpt2-medium-hp"
+    GPT2_MEDIUM_GOT = "gpt2-medium-got"
+    GPT2_MEDIUM_RESEARCH = "gpt2-medium-research"
+    GPT2_MEDIUM_LYRICS = "gpt2-medium-lyrics"
 
 
 ML_MODEL_NAME_CHOICES = [
     (MLModelNames.XLNET_LARGE_CASED, "XLNet Large Cased"),
     (MLModelNames.XLNET_BASE_CASED, "XLNet Base Cased"),
-    (MLModelNames.GPT2_MEDIUM, "GPT2 Medium"),
     (MLModelNames.GPT2_SMALL, "GPT2 Small"),
     (MLModelNames.GPT2_SMALL_LEGAL, "GPT2 Small Legal"),
+    (MLModelNames.GPT2_MEDIUM, "GPT2 Medium"),
+    (MLModelNames.GPT2_MEDIUM_LEGAL, "GPT2 Medium Legal"),
+    (MLModelNames.GPT2_MEDIUM_HP, "GPT2 Medium HP"),
+    (MLModelNames.GPT2_MEDIUM_GOT, "GPT2 Medium GOT"),
+    (MLModelNames.GPT2_MEDIUM_RESEARCH, "GPT2 Medium Research"),
+    (MLModelNames.GPT2_MEDIUM_LYRICS, "GPT2 Medium Lyrics"),
+    #
     (MLModelNames.GPT2_LARGE, "GPT2 Large"),
     # robots in disguise ...
     (MLModelNames.TRANSFO_XL_WT103, "Transformer XL WT 103"),
