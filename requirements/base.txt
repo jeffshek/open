@@ -1,5 +1,5 @@
 aiocontextvars==0.2.2
-aiohttp==3.5.4
+aiohttp==3.6.0
 aioredis==1.2.0
 argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
 asgiref==3.2.1
