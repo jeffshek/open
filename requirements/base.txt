@@ -44,7 +44,7 @@ pytz==2019.2  # https://github.com/stub42/pytz
 PyYAML==5.1.2
 redis==3.3.8  # https://github.com/antirez/redis
 sentry-asgi==0.2.0
-sentry-sdk==0.11.2  # https://github.com/getsentry/sentry-python
+sentry-sdk==0.12.2  # https://github.com/getsentry/sentry-python
 twisted==19.7.0
 txaio==18.8.1
 typing-extensions==3.7.4
