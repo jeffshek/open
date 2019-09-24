@@ -30,6 +30,7 @@ def check_services_running():
         settings.GPT2_MEDIUM_LYRICS_API_ENDPOINT,
         settings.GPT2_MEDIUM_LEGAL_API_ENDPOINT,
         settings.GPT2_MEDIUM_RESEARCH_API_ENDPOINT,
+        settings.GPT2_MEDIUM_COMPANIES_API_ENDPOINT,
     ]
 
     for url in endpoints:

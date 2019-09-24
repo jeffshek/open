@@ -63,6 +63,7 @@ class MLModelNames:
     GPT2_MEDIUM_GOT = "gpt2-medium-got"
     GPT2_MEDIUM_RESEARCH = "gpt2-medium-research"
     GPT2_MEDIUM_LYRICS = "gpt2-medium-lyrics"
+    GPT2_MEDIUM_COMPANIES = "gpt2-medium-companies"
 
 
 ML_MODEL_NAME_CHOICES = [
@@ -76,6 +77,7 @@ ML_MODEL_NAME_CHOICES = [
     (MLModelNames.GPT2_MEDIUM_GOT, "GPT2 Medium GOT"),
     (MLModelNames.GPT2_MEDIUM_RESEARCH, "GPT2 Medium Research"),
     (MLModelNames.GPT2_MEDIUM_LYRICS, "GPT2 Medium Lyrics"),
+    (MLModelNames.GPT2_MEDIUM_COMPANIES, "GPT2 Medium Companies"),
     #
     (MLModelNames.GPT2_LARGE, "GPT2 Large"),
     # robots in disguise ...
