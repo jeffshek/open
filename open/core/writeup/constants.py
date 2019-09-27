@@ -54,10 +54,10 @@ class MLModelNames:
     XLNET_LARGE_CASED = "xlnet-large-cased"
     GPT2_MEDIUM = "gpt2-medium"
     TRANSFO_XL_WT103 = "transfo-xl-wt103"
-    GPT2_SMALL = "gpt2"
+    # GPT2_SMALL = "gpt2"
     GPT2_LARGE = "gpt2-large"
     # all the new self-generated
-    GPT2_SMALL_LEGAL = "gpt2-small-legal"
+    # GPT2_SMALL_LEGAL = "gpt2-small-legal"
     GPT2_MEDIUM_LEGAL = "gpt2-medium-legal"
     GPT2_MEDIUM_HP = "gpt2-medium-hp"
     GPT2_MEDIUM_GOT = "gpt2-medium-got"
@@ -69,8 +69,8 @@ class MLModelNames:
 ML_MODEL_NAME_CHOICES = [
     (MLModelNames.XLNET_LARGE_CASED, "XLNet Large Cased"),
     (MLModelNames.XLNET_BASE_CASED, "XLNet Base Cased"),
-    (MLModelNames.GPT2_SMALL, "GPT2 Small"),
-    (MLModelNames.GPT2_SMALL_LEGAL, "GPT2 Small Legal"),
+    # (MLModelNames.GPT2_SMALL, "GPT2 Small"),
+    # (MLModelNames.GPT2_SMALL_LEGAL, "GPT2 Small Legal"),
     (MLModelNames.GPT2_MEDIUM, "GPT2 Medium"),
     (MLModelNames.GPT2_MEDIUM_LEGAL, "GPT2 Medium Legal"),
     (MLModelNames.GPT2_MEDIUM_HP, "GPT2 Medium HP"),
