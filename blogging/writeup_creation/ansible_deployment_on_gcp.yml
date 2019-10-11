@@ -1,0 +1,14 @@
+- name: Deploy to Open
+  # startup scripts does most of the hard work, but make sure
+  # you're only deploying to things that finished from startup scripts
+  hosts: open_django:&finished_startup
+  gather_facts: true
+  become: true
+
+  post_tasks:
+    - name: Run Startup Script
+      shell: |
+        google_metadata_script_runner --script-type startup --debug
+      args:
+        chdir: /
+      become: yes
