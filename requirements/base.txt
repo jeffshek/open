@@ -39,7 +39,7 @@ Pillow==6.1.0  # https://github.com/python-pillow/Pillow
 profilehooks==1.11.0
 PyHamcrest==1.9.0
 python-coveralls==2.9.3
-python-slugify==3.0.3  # https://github.com/un33k/python-slugify
+python-slugify==3.0.6  # https://github.com/un33k/python-slugify
 pytz==2019.2  # https://github.com/stub42/pytz
 PyYAML==5.1.2
 redis==3.3.8  # https://github.com/antirez/redis
