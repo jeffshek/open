@@ -342,14 +342,8 @@ GPT2_MEDIUM_LEGAL_API_ENDPOINT = env(
 GPT2_MEDIUM_HP_API_ENDPOINT = env(
     "GPT2_MEDIUM_HP_API_ENDPOINT", default="http://www.google.com/gpt2"
 )
-GPT2_MEDIUM_GOT_API_ENDPOINT = env(
-    "GPT2_MEDIUM_GOT_API_ENDPOINT", default="http://www.google.com/gpt2"
-)
 GPT2_MEDIUM_RESEARCH_API_ENDPOINT = env(
     "GPT2_MEDIUM_RESEARCH_API_ENDPOINT", default="http://www.google.com/gpt2"
-)
-GPT2_MEDIUM_LYRICS_API_ENDPOINT = env(
-    "GPT2_MEDIUM_LYRICS_API_ENDPOINT", default="http://www.google.com/gpt2"
 )
 GPT2_MEDIUM_COMPANIES_API_ENDPOINT = env(
     "GPT2_MEDIUM_COMPANIES_API_ENDPOINT", default="http://www.google.com/gpt2"

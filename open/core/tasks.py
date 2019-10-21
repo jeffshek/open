@@ -24,9 +24,7 @@ def check_services_running():
     endpoints = [
         settings.GPT2_MEDIUM_API_ENDPOINT,
         settings.GPT2_LARGE_API_ENDPOINT,
-        settings.GPT2_MEDIUM_GOT_API_ENDPOINT,
         settings.GPT2_MEDIUM_HP_API_ENDPOINT,
-        settings.GPT2_MEDIUM_LYRICS_API_ENDPOINT,
         settings.GPT2_MEDIUM_LEGAL_API_ENDPOINT,
         settings.GPT2_MEDIUM_RESEARCH_API_ENDPOINT,
         settings.GPT2_MEDIUM_COMPANIES_API_ENDPOINT,
