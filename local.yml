@@ -12,7 +12,8 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
     image: gcr.io/proven-record-242223/open:latest
     # watch out for sequential failures, postgres will quickly lock up
-    restart: on-failure
+    # restart: on-failure
+    # restart: no 
     depends_on:
       - postgres
     volumes:
