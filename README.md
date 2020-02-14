@@ -4,7 +4,6 @@
 [![codebeat badge](https://codebeat.co/badges/11be282f-cbaa-4c8f-bfb9-539e1c7e2366)](https://codebeat.co/projects/github-com-jeffshek-open-master)
 ![CookieCutter](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)
 [![Coverage Status](https://coveralls.io/repos/github/jeffshek/open/badge.svg?branch=master)](https://coveralls.io/github/jeffshek/open?branch=master)
-[![HitCount](http://hits.dwyl.io/jeffshek/open.svg)](http://hits.dwyl.io/jeffshek/open)
 
 Hi. This my personal repo I'm using to contain all my open source ideas. It serves as my justification to try out new
 ideas, but with an overengineered infrastructure and libraries to support scaling and doing things "my way".
