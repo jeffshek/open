@@ -127,8 +127,8 @@ class TestAccessPermissionsForPrompts(TestCase):
 
 class TestAPIEndpointsUrlCorrect(TestCase):
     def test_api_endpoints_correctly_returned(self):
-        returned_endpoint = get_api_endpoint_from_model_name(MLModelNames.GPT2_MEDIUM)
-        self.assertEqual(returned_endpoint, settings.GPT2_MEDIUM_API_ENDPOINT)
+        returned_endpoint = get_api_endpoint_from_model_name(MLModelNames.GPT2_LARGE)
+        self.assertEqual(returned_endpoint, settings.GPT2_LARGE_API_ENDPOINT)
 
     def test_api_endpoints_correctly_returned_two(self):
         returned_endpoint = get_api_endpoint_from_model_name(
