@@ -12,7 +12,7 @@ If you're familiar with Django, this will be very similar. Unfortunately due to 
  support.
 
 ##### Table of Contents  
-- [WriteUp.AI](#writeupai)  
+- [WriteUp.AI](#httpswriteupai)  
 - [Development Setup](#development)  
 - [What's Next](#whats-next)  
 
