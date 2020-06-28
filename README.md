@@ -12,9 +12,9 @@ If you're familiar with Django, this will be very similar. Unfortunately due to 
  support.
 
 ##### Table of Contents  
-- [WriteUp.AI](#writeup.ai)  
-- [Development Setup](#Development)  
-- [What's Next](#What's Next)  
+- [WriteUp.AI](#writeupai)  
+- [Development Setup](#development)  
+- [What's Next](#whats-next)  
 
 ## What's Next
 
