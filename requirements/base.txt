@@ -31,7 +31,8 @@ hyperlink==19.0.0
 idna-ssl==1.1.0
 immutables==0.9
 incremental==17.5.0
-msgpack==1.0.0
+# ERROR: channels-redis 2.4.0 has requirement msgpack~=0.6.0, but you'll have msgpack 1.0.0 which is incompatible.
+msgpack==0.6.0
 multidict==4.5.2
 numpy==1.17.2
 pandas==0.25.1
@@ -45,7 +46,7 @@ PyYAML==5.1.2
 redis==3.3.8  # https://github.com/antirez/redis
 sentry-asgi==0.2.0
 sentry-sdk==0.12.2  # https://github.com/getsentry/sentry-python
-twisted==19.7.0
+twisted==20.3.0
 txaio==18.8.1
 typing-extensions==3.7.4
 websocket-client==0.56.0 # need this for now to profile and find speedups
