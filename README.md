@@ -11,10 +11,14 @@ ideas, but with an overengineered infrastructure and libraries to support scalin
 If you're familiar with Django, this will be very similar. Unfortunately due to time constraints, I can't offer free
  support.
 
-In the future, I'm expecting to move a lot of machine learning projects about health into this repo.
+##### Table of Contents  
+- [WriteUp.AI](#writeup.ai)  
+- [Development Setup](#Development)  
+- [What's Next](#What's Next)  
 
-In the upcoming month, as I move things over bit by bit, this will be home to
+## What's Next
 
+In the future, I'm expecting to move a lot of machine learning projects about health into this repo. In the upcoming month, as I move things over bit by bit, this will be home to
 * [BetterSelf](https://www.betterself.io)
 * A drug discovery generator
 * A clinical trial analytics engine
