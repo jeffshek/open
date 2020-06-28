@@ -2,7 +2,6 @@ version: '3'
 
 volumes:
   local_postgres_data: {}
-  caddy: {}
   production_traefik: {}
 
 services:
@@ -13,7 +12,7 @@ services:
     image: gcr.io/proven-record-242223/open:latest
     # watch out for sequential failures, postgres will quickly lock up
     # restart: on-failure
-    # restart: no 
+    # restart: no
     depends_on:
       - postgres
     volumes:
@@ -33,17 +32,6 @@ services:
       - local_postgres_data:/var/lib/postgresql/data
     env_file:
       - ./.envs/.local/.django
-
-#  caddy:
-#    build:
-#      context: .
-#      dockerfile: ./compose/local/caddy/Dockerfile
-#    depends_on:
-#      - django
-#    volumes:
-#      - caddy:/root/.caddy
-#    ports:
-#      - "2015:2015"
 
   redis:
     image: redis:5.0
