@@ -31,7 +31,7 @@ hyperlink==19.0.0
 idna-ssl==1.1.0
 immutables==0.9
 incremental==17.5.0
-msgpack==0.6.1
+msgpack==1.0.0
 multidict==4.5.2
 numpy==1.17.2
 pandas==0.25.1
