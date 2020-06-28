@@ -24,7 +24,7 @@ In the future, I'm expecting to move a lot of machine learning projects about he
 * A clinical trial analytics engine
 * More applied machine learning projects in health and medicine
 
-## writeup.ai
+## https://writeup.ai
 ### Lots of Credit To ....
 * [OpenAI](https://openai.com/blog/better-language-models/) for generating and releasing GPT-2 Medium
 * [HuggingFace](https://github.com/huggingface/pytorch-transformers) for making PyTorch extensions
