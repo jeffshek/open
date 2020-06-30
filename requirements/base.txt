@@ -29,7 +29,7 @@ flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.0
 hyperlink==19.0.0
 idna-ssl==1.1.0
-immutables==0.9
+immutables==0.14
 incremental==17.5.0
 # ERROR: channels-redis 2.4.0 has requirement msgpack~=0.6.0, but you'll have msgpack 1.0.0 which is incompatible.
 msgpack==0.6.0
