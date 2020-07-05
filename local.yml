@@ -30,8 +30,12 @@ services:
     image: open_production_postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
+      - .:/app
     env_file:
       - ./.envs/.local/.django
+    ports:
+      # 5432 is freq taken by some other instance running postgres
+      - "15432:5432"
 
   redis:
     image: redis:5.0
