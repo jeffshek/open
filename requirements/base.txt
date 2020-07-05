@@ -26,7 +26,7 @@ django-redis==4.12.1  # https://github.com/niwinz/django-redis
 django-rest-auth==0.9.5
 djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
-hiredis==1.0.0
+hiredis==1.0.1
 hyperlink==19.0.0
 idna-ssl==1.1.0
 immutables==0.14
