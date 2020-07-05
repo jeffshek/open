@@ -9,6 +9,8 @@ from config.constants import LOCAL
 ROOT_DIR = environ.Path(__file__) - 3  # (open/config/settings/base.py - 3 = open/)
 APPS_DIR = ROOT_DIR.path("open")
 
+BETTERSELF_DIR = APPS_DIR.path("core/betterself/")
+
 env = environ.Env()
 
 ENVIRONMENT = LOCAL
