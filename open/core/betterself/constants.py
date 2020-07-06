@@ -6,6 +6,7 @@ class BetterSelfResourceConstants:
     RESTful constants used in URLs, useful for URL lookups
     """
 
+    MEASUREMENTS = "measurements"
     INGREDIENTS = "ingredients"
     INGREDIENT_COMPOSITIONS = "ingredient_compositions"
     SUPPLEMENTS = "supplements"
@@ -20,8 +21,8 @@ class BetterSelfResourceConstants:
     DAILY_PRODUCTIVITY_LOGS = "productivity_logs"
     SLEEP_LOGS = "sleep_logs"
     USER_ACTIVITY = "user_activities"
-
-    MEASUREMENTS = "measurements"
+    USER_ACTIVITY_LOGS = "user_activity_logs"
+    WELL_BEING_LOG = "well_being_logs"
 
 
 WEB_INPUT_SOURCE = "web"
