@@ -1,17 +1,17 @@
 from django.db.models import (
     CharField,
-    TextField,
     ForeignKey,
     IntegerField,
     DateTimeField,
+    CASCADE,
 )
 
 from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURCE
-from open.core.betterself.models.user_activity import UserActivity
+from open.core.betterself.models.activity import Activity
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
-class UserActivityLog(BaseModelWithUserGeneratedContent):
+class ActivityLog(BaseModelWithUserGeneratedContent):
     """
     Represents any particular type of event a user may have done
         - ie. Meditation, running, take dog the park, etc.
@@ -23,17 +23,16 @@ class UserActivityLog(BaseModelWithUserGeneratedContent):
     I just haven't figured the most appropriate way to model / store such information.
     """
 
-    user_activity = ForeignKey(UserActivity)
+    activity = ForeignKey(Activity, on_delete=CASCADE)
     source = CharField(
         max_length=50, choices=INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE
     )
     duration_minutes = IntegerField(default=0)
     time = DateTimeField()
-    notes = TextField(default="")
 
     class Meta:
-        unique_together = (("time", "user", "user_activity"),)
+        unique_together = (("time", "user", "activity"),)
         ordering = ["user", "-time"]
 
     def __str__(self):
-        return "{} {}".format(self.user_activity, self.time)
+        return "{} {}".format(self.activity, self.time)

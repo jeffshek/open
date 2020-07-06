@@ -1,9 +1,9 @@
-from django.db.models import CharField, BooleanField, TextField
+from django.db.models import CharField, BooleanField
 
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
-class UserActivity(BaseModelWithUserGeneratedContent):
+class Activity(BaseModelWithUserGeneratedContent):
     """
     Users will probably put stuff like "Ate Breakfast", but ideally I want something that can
     support an Activity like "Morning Routine" would consists of multiple ActivityActions
@@ -28,7 +28,6 @@ class UserActivity(BaseModelWithUserGeneratedContent):
     is_negative_activity = BooleanField(default=False)
     # I find certain events are complete days, ie. Being sick with an impacted wisdom tooth was the worst.
     is_all_day_activity = BooleanField(default=False)
-    notes = TextField(default="")
 
     class Meta:
         unique_together = (("name", "user"),)

@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.db.models import CharField, TextField, DateTimeField
+from django.db.models import CharField, DateTimeField
 
 from open.core.betterself.constants import INPUT_SOURCES_TUPLES
 from open.utilities.models import BaseModelWithUserGeneratedContent
@@ -14,7 +14,6 @@ class SleepLog(BaseModelWithUserGeneratedContent):
     source = CharField(max_length=50, choices=INPUT_SOURCES_TUPLES)
     start_time = DateTimeField()
     end_time = DateTimeField()
-    notes = TextField(default="")
 
     class Meta:
         verbose_name = "Sleep Log"

@@ -1,6 +1,5 @@
 from django.db.models import (
     CharField,
-    TextField,
     DateTimeField,
     PositiveSmallIntegerField,
 )
@@ -29,7 +28,6 @@ class WellBeingLog(BaseModelWithUserGeneratedContent):
     source = CharField(
         max_length=50, choices=INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE
     )
-    notes = TextField(default="")
 
     class Meta:
         unique_together = ("user", "time")

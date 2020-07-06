@@ -1,4 +1,4 @@
-from django.db.models import CharField, DateField, PositiveIntegerField, TextField
+from django.db.models import CharField, DateField, PositiveIntegerField
 
 from open.core.betterself.constants import INPUT_SOURCES_TUPLES
 from open.utilities.models import BaseModelWithUserGeneratedContent
@@ -18,7 +18,6 @@ class DailyProductivityLog(BaseModelWithUserGeneratedContent):
     neutral_time_minutes = PositiveIntegerField(null=True, blank=True)
     distracting_time_minutes = PositiveIntegerField(null=True, blank=True)
     very_distracting_time_minutes = PositiveIntegerField(null=True, blank=True)
-    notes = TextField(default="")
 
     class Meta:
         verbose_name = "Daily Productivity Log"

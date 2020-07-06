@@ -1,6 +1,6 @@
 import uuid
 
-from django.db.models import DateTimeField, UUIDField, ForeignKey, CASCADE
+from django.db.models import DateTimeField, UUIDField, ForeignKey, CASCADE, TextField
 from django.utils import timezone
 from model_utils.models import TimeStampedModel
 
@@ -24,6 +24,7 @@ class BaseModel(TimeStampedModel):
 
 class BaseModelWithUserGeneratedContent(BaseModel):
     user = ForeignKey(User, null=False, blank=False, on_delete=CASCADE)
+    notes = TextField(default="")
 
     class Meta:
         abstract = True

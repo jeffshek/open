@@ -16,8 +16,8 @@ class BetterSelfResourceConstants:
     SUPPLEMENT_LOGS = "supplement_logs"
     DAILY_PRODUCTIVITY_LOGS = "productivity_logs"
     SLEEP_LOGS = "sleep_logs"
-    USER_ACTIVITY = "user_activities"
-    USER_ACTIVITY_LOGS = "user_activity_logs"
+    ACTIVITIES = "activities"
+    ACTIVITY_LOGS = "activity_logs"
     WELL_BEING_LOG = "well_being_logs"
 
 

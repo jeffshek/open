@@ -1,14 +1,14 @@
-from open.core.betterself.constants import WEB_INPUT_SOURCE, INPUT_SOURCES_TUPLES
-from open.core.betterself.models.supplement import Supplement
-from open.utilities.models import BaseModelWithUserGeneratedContent
 from django.db.models import (
     ForeignKey,
     DecimalField,
     CASCADE,
     CharField,
     DateTimeField,
-    TextField,
 )
+
+from open.core.betterself.constants import WEB_INPUT_SOURCE, INPUT_SOURCES_TUPLES
+from open.core.betterself.models.supplement import Supplement
+from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
 class SupplementLog(BaseModelWithUserGeneratedContent):
@@ -20,7 +20,6 @@ class SupplementLog(BaseModelWithUserGeneratedContent):
     # what time did the user take the five hour energy? use the time model
     # so eventually (maybe never) can do half-life analysis
     time = DateTimeField()
-    notes = TextField(default="")
 
     class Meta:
         unique_together = ("user", "time", "supplement")

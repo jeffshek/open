@@ -1,4 +1,4 @@
-from django.db.models import CharField, ManyToManyField, TextField
+from django.db.models import CharField, ManyToManyField
 
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.utilities.models import BaseModelWithUserGeneratedContent
@@ -12,7 +12,6 @@ class Supplement(BaseModelWithUserGeneratedContent):
 
     name = CharField(max_length=300)
     ingredient_compositions = ManyToManyField(IngredientComposition, blank=True)
-    notes = TextField(default="")
 
     class Meta:
         unique_together = ("user", "name")
