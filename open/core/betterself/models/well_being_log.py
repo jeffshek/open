@@ -34,8 +34,8 @@ class WellBeingLog(BaseModelWithUserGeneratedContent):
     class Meta:
         unique_together = ("user", "time")
         ordering = ["user", "-time"]
-        verbose_name = "Mood Log"
-        verbose_name_plural = "Mood Logs"
+        verbose_name = "Well Being Log"
+        verbose_name_plural = "Well Being Logs"
 
     def __str__(self):
         return "User - {}, Mood - {} at {}".format(self.user, self.value, self.time)

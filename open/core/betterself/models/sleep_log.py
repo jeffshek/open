@@ -17,8 +17,8 @@ class SleepLog(BaseModelWithUserGeneratedContent):
     notes = TextField(default="")
 
     class Meta:
-        verbose_name = "Sleep Activity Log"
-        verbose_name_plural = "Sleep Activity Logs"
+        verbose_name = "Sleep Log"
+        verbose_name_plural = "Sleep Logs"
         ordering = ["user", "-end_time"]
 
     def __str__(self):

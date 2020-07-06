@@ -13,10 +13,6 @@ class BetterSelfResourceConstants:
     # note - changed the plural of this, before it was called supplements_stacks and that felt stupid
     SUPPLEMENT_STACKS = "supplement_stacks"
     SUPPLEMENT_STACK_COMPOSITIONS = "supplement_stack_compositions"
-    SLEEP = "sleep"
-    EVENTS = "events"
-    MOODS = "moods"
-    REMINDERS = "reminders"
     SUPPLEMENT_LOGS = "supplement_logs"
     DAILY_PRODUCTIVITY_LOGS = "productivity_logs"
     SLEEP_LOGS = "sleep_logs"
