@@ -11,3 +11,8 @@ def print_current_time():
 def get_utc_now():
     utc_now = datetime.now(tz=pytz.UTC)
     return utc_now
+
+
+def get_utc_date():
+    now = get_utc_now()
+    return now.date()
