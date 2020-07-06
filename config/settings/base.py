@@ -10,6 +10,7 @@ ROOT_DIR = environ.Path(__file__) - 3  # (open/config/settings/base.py - 3 = ope
 APPS_DIR = ROOT_DIR.path("open")
 
 BETTERSELF_DIR = APPS_DIR.path("core/betterself/")
+WRITEUP_DIR = APPS_DIR.path("core/writeup/")
 
 env = environ.Env()
 

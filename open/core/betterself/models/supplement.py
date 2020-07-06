@@ -14,8 +14,6 @@ class Supplement(BaseModelWithUserGeneratedContent):
     ingredient_compositions = ManyToManyField(IngredientComposition, blank=True)
     notes = TextField(default="")
 
-    # quantity is an event type of attribute, so its not here.
-
     class Meta:
         unique_together = ("user", "name")
         ordering = ["user", "name"]
