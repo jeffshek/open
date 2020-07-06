@@ -21,7 +21,7 @@ django-cors-headers==3.1.0
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-fsm==2.7.0
-django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
+django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
 django-redis==4.12.1  # https://github.com/niwinz/django-redis
 django-rest-auth==0.9.5
 djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
