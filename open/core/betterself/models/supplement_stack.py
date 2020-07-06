@@ -2,7 +2,7 @@ from open.utilities.fields import DEFAULT_MODELS_CHAR_FIELD
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
-class UserSupplementStack(BaseModelWithUserGeneratedContent):
+class SupplementStack(BaseModelWithUserGeneratedContent):
     # name = CharField(max_length=300, blank=False, default="")
     name = DEFAULT_MODELS_CHAR_FIELD
 
