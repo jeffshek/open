@@ -1,3 +1,4 @@
+from rest_framework.fields import UUIDField
 from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.models.ingredient import Ingredient
@@ -31,3 +32,20 @@ class IngredientReadSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ("uuid", "notes", "name", "half_life_minutes")
+
+
+class IngredientCreateSerializer(ModelSerializer):
+    uuid = UUIDField(required=False, read_only=True)
+
+    class Meta:
+        model = Ingredient
+        fields = ("uuid", "notes", "name", "half_life_minutes")
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        create_model = self.Meta.model
+        name = validated_data.pop("name")
+        obj, _ = create_model.objects.get_or_create(
+            user=user, name=name, defaults=validated_data
+        )
+        return obj

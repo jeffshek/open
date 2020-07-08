@@ -1,6 +1,6 @@
 from django.urls import path
 from open.core.betterself.constants import BetterSelfResourceConstants as RESOURCES
-from open.core.betterself.views import MeasurementListView, IngredientListView
+from open.core.betterself.views import MeasurementListView, IngredientCreateListView
 
 urlpatterns = [
     path(
@@ -10,7 +10,7 @@ urlpatterns = [
     ),
     path(
         f"{RESOURCES.INGREDIENTS}/",
-        view=IngredientListView.as_view(),
+        view=IngredientCreateListView.as_view(),
         name=RESOURCES.INGREDIENTS,
     ),
 ]
