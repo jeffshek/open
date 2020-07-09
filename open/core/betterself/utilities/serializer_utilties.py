@@ -9,4 +9,4 @@ def validate_model_uuid(model, uuid, user=None):
             model.objects.get(uuid=uuid)
 
     except ObjectDoesNotExist:
-        raise ValidationError(f"Cannot Find {model}")
+        raise ValidationError(f"Cannot Find {model._meta.verbose_name.title()} UUID")

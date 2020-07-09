@@ -6,10 +6,12 @@ from rest_framework.views import APIView
 
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
-from open.core.betterself.serializers_2 import (
+from open.core.betterself.serializers.ingredients import (
     IngredientReadSerializer,
     IngredientCreateSerializer,
     IngredientUpdateSerializer,
+)
+from open.core.betterself.serializers.ingredient_compositions import (
     IngredientCompositionReadSerializer,
     IngredientCompositionCreateSerializer,
     IngredientCompositionUpdateSerializer,

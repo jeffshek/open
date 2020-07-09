@@ -218,3 +218,31 @@ class TestIngredientCompositionGetUpdateDelete(TestCase):
 
         self.assertEqual(response.status_code, 200, data)
         self.assertEqual(data["ingredient"]["uuid"], ingredient_uuid)
+
+    def test_update_view_with_invalid_user_permission(self):
+        """
+        No one should be able to access other people's data
+        """
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        params = {"notes": "fake spoof"}
+
+        response = self.client_2.post(url, data=params)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_update_view_with_bad_data(self):
+        """ This won't update with an incorrect alternative user """
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        no_permission_ingredient = IngredientFactory(user=self.user_2)
+        no_permission_ingredient_uuid = str(no_permission_ingredient.uuid)
+
+        params = {"ingredient_uuid": no_permission_ingredient_uuid}
+
+        response = self.client_1.post(url, data=params)
+        data = response.data
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("ingredient_uuid", data)
