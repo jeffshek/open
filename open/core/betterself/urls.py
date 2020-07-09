@@ -3,7 +3,7 @@ from open.core.betterself.constants import BetterSelfResourceConstants as RESOUR
 from open.core.betterself.views import (
     MeasurementListView,
     IngredientCreateListView,
-    IngredientUpdateView,
+    IngredientGetUpdateView,
 )
 
 urlpatterns = [
@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path(
         f"{RESOURCES.INGREDIENTS}/<uuid:uuid>/",
-        view=IngredientUpdateView.as_view(),
+        view=IngredientGetUpdateView.as_view(),
         name=RESOURCES.INGREDIENTS,
     ),
 ]

@@ -16,7 +16,7 @@ python manage.py test --pattern="*test_ingredient_views.py" --keepdb
 """
 
 
-class TestIngredientView(TestCase):
+class TestIngredientCreateListView(TestCase):
     url_name = BetterSelfResourceConstants.INGREDIENTS
     model_class_factory = IngredientFactory
     model_class = Ingredient
@@ -52,14 +52,18 @@ class TestIngredientView(TestCase):
         self.client_2.force_login(self.user_2)
 
     def test_view(self):
-        name = "FOO"
-        self.model_class_factory(name=name, user=self.user_1)
+        names_to_create = ["a", "b", "c", "d", "e", "f"]
+        for name in names_to_create:
+            self.model_class_factory.create(name=name, user=self.user_1)
+
+        # create_batch = 5
+        # self.model_class_factory.create_batch(create_batch, user=self.user_1)
 
         data = self.client_1.get(self.url).data
         datum = data[0]
 
-        self.assertEqual(len(data), 1)
-        self.assertEqual(datum["name"], name)
+        self.assertEqual(len(data), 6)
+        self.assertTrue(datum["name"] in names_to_create)
 
     def test_no_access_view(self):
         name = "FOO"
@@ -116,6 +120,51 @@ class TestIngredientView(TestCase):
         """
         expected_error_found = "non_field_errors" in data
         self.assertTrue(expected_error_found)
+
+
+class TestIngredientGetUpdateDelete(TestCase):
+    url_name = BetterSelfResourceConstants.INGREDIENTS
+    model_class_factory = IngredientFactory
+    model_class = Ingredient
+
+    @classmethod
+    def setUpClass(cls):
+        cls.url = reverse(cls.url_name)
+        super().setUpClass()
+
+    @classmethod
+    def setUpTestData(cls):
+        user_1 = UserFactory()
+        user_2 = UserFactory()
+
+        cls.user_1_id = user_1.id
+        cls.user_2_id = user_2.id
+
+        # create a few instances that will never be used
+        cls.model_class_factory.create_batch(5)
+
+        super().setUpTestData()
+
+    def setUp(self):
+        self.user_1 = User.objects.get(id=self.user_1_id)
+        self.user_2 = User.objects.get(id=self.user_2_id)
+
+        # a user that owns the instance
+        self.client_1 = APIClient()
+        self.client_1.force_login(self.user_1)
+
+        # a user that shouldn't have access to the instance
+        self.client_2 = APIClient()
+        self.client_2.force_login(self.user_2)
+
+    def test_get_singular_resource(self):
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        response = self.client_1.get(url)
+        data = response.data
+
+        self.assertEqual(data["name"], instance.name)
 
     def test_delete_view_on_non_uuid_url(self):
         response = self.client_1.delete(self.url)

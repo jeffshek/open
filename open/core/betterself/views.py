@@ -52,10 +52,15 @@ class IngredientCreateListView(APIView):
         return Response(serialized_instance)
 
 
-class IngredientUpdateView(APIView):
+class IngredientGetUpdateView(APIView):
     model_class = Ingredient
     read_serializer_class = IngredientReadSerializer
     update_serializer_class = IngredientUpdateSerializer
+
+    def get(self, request, uuid):
+        instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)
+        data = self.read_serializer_class(instance).data
+        return Response(data)
 
     def post(self, request, uuid):
         instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)

@@ -23,7 +23,6 @@ class MeasurementReadSerializer(ModelSerializer):
         model = Measurement
         fields = (
             "uuid",
-            "notes",
             "name",
             "short_name",
             "is_liquid",
