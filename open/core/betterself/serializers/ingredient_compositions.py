@@ -48,14 +48,15 @@ class IngredientCompositionCreateUpdateSerializer(ModelSerializer):
     def validate(self, validated_data):
         user = self.context["request"].user
 
-        ingredient_uuid = validated_data.pop("ingredient")["uuid"]
-        measurement_uuid = validated_data.pop("measurement")["uuid"]
+        if validated_data.get("ingredient"):
+            ingredient_uuid = validated_data.pop("ingredient")["uuid"]
+            ingredient = Ingredient.objects.get(uuid=ingredient_uuid, user=user)
+            validated_data["ingredient"] = ingredient
 
-        ingredient = Ingredient.objects.get(uuid=ingredient_uuid, user=user)
-        measurement = Measurement.objects.get(uuid=measurement_uuid)
-
-        validated_data["ingredient"] = ingredient
-        validated_data["measurement"] = measurement
+        if validated_data.get("measurement"):
+            measurement_uuid = validated_data.pop("measurement")["uuid"]
+            measurement = Measurement.objects.get(uuid=measurement_uuid)
+            validated_data["measurement"] = measurement
 
         # check for uniqueconstraints issues with creation
         # for updates, probably be a little bit easier
@@ -77,39 +78,6 @@ class IngredientCompositionCreateUpdateSerializer(ModelSerializer):
         create_model = self.Meta.model
         obj = create_model.objects.create(**validated_data)
         return obj
-
-
-class IngredientCompositionUpdateSerializer(ModelSerializer):
-    ingredient_uuid = UUIDField(source="ingredient.uuid")
-    measurement_uuid = UUIDField(source="measurement.uuid")
-
-    def validate_ingredient_uuid(self, value):
-        user = self.context["request"].user
-        validate_model_uuid(Ingredient, uuid=value, user=user)
-        return value
-
-    def validate_measurement_uuid(self, value):
-        validate_model_uuid(Measurement, uuid=value)
-        return value
-
-    class Meta:
-        model = IngredientComposition
-        fields = ("ingredient_uuid", "measurement_uuid", "quantity", "notes")
-
-    def validate(self, validated_data):
-        user = self.context["request"].user
-
-        if validated_data.get("ingredient"):
-            ingredient_uuid = validated_data.pop("ingredient")["uuid"]
-            ingredient = Ingredient.objects.get(uuid=ingredient_uuid, user=user)
-            validated_data["ingredient"] = ingredient
-
-        if validated_data.get("measurement"):
-            measurement_uuid = validated_data.pop("measurement")["uuid"]
-            measurement = Measurement.objects.get(uuid=measurement_uuid)
-            validated_data["measurement"] = measurement
-
-        return validated_data
 
     def update(self, instance, validated_data):
         for key, value in validated_data.items():
