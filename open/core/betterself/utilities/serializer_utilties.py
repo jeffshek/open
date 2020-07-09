@@ -1,4 +1,5 @@
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.exceptions import ValidationError
 
 
 def validate_model_uuid(model, uuid, user=None):
