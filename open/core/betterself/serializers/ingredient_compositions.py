@@ -19,7 +19,7 @@ class IngredientCompositionReadSerializer(ModelSerializer):
         fields = ("uuid", "ingredient", "measurement", "quantity", "notes")
 
 
-class IngredientCompositionCreateSerializer(ModelSerializer):
+class IngredientCompositionCreateUpdateSerializer(ModelSerializer):
     uuid = UUIDField(required=False, read_only=True)
     user = HiddenField(default=CurrentUserDefault())
     ingredient_uuid = UUIDField(source="ingredient.uuid")
@@ -35,7 +35,6 @@ class IngredientCompositionCreateSerializer(ModelSerializer):
             "user",
             "notes",
         )
-        # the uniquetogether validator doesn't work with UUIDs
 
     def validate_ingredient_uuid(self, value):
         user = self.context["request"].user
@@ -58,14 +57,19 @@ class IngredientCompositionCreateSerializer(ModelSerializer):
         validated_data["ingredient"] = ingredient
         validated_data["measurement"] = measurement
 
-        if self.Meta.model.objects.filter(
-            ingredient=ingredient,
-            measurement=measurement,
-            quantity=validated_data["quantity"],
-        ).exists():
-            raise ValidationError(
-                f"Fields user, ingredient, measurement, and quantity are not unique!"
-            )
+        # check for uniqueconstraints issues with creation
+        # for updates, probably be a little bit easier
+        # and skip for now
+        if not self.instance:
+            if self.Meta.model.objects.filter(
+                user=user,
+                ingredient=ingredient,
+                measurement=measurement,
+                quantity=validated_data["quantity"],
+            ).exists():
+                raise ValidationError(
+                    f"Fields user, ingredient, measurement, and quantity are not unique!"
+                )
 
         return validated_data
 

@@ -13,7 +13,7 @@ from open.core.betterself.serializers.ingredients import (
 )
 from open.core.betterself.serializers.ingredient_compositions import (
     IngredientCompositionReadSerializer,
-    IngredientCompositionCreateSerializer,
+    IngredientCompositionCreateUpdateSerializer,
     IngredientCompositionUpdateSerializer,
 )
 
@@ -80,7 +80,7 @@ class IngredientGetUpdateView(APIView):
 class IngredientCompositionCreateListView(APIView):
     model_class = IngredientComposition
     read_serializer_class = IngredientCompositionReadSerializer
-    create_serializer_class = IngredientCompositionCreateSerializer
+    create_serializer_class = IngredientCompositionCreateUpdateSerializer
 
     def get(self, request):
         instances = self.model_class.objects.filter(user=request.user)
