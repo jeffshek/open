@@ -1,7 +1,7 @@
 from django.urls import path
 from open.core.betterself.constants import BetterSelfResourceConstants as RESOURCES
-from open.core.betterself.views.measurement import (
-    MeasurementListView,
+from open.core.betterself.views.measurement import MeasurementListView
+from open.core.betterself.views.ingredients import (
     IngredientCreateListView,
     IngredientGetUpdateView,
 )
