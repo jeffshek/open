@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,10 +12,6 @@ from open.core.betterself.serializers import (
     IngredientCreateSerializer,
     IngredientUpdateSerializer,
 )
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class MeasurementListView(APIView):
@@ -28,6 +26,9 @@ class MeasurementListView(APIView):
         serializer = self.read_serializer_class(instances, many=True)
         data = serializer.data
         return Response(data=data)
+
+
+logger = logging.getLogger(__name__)
 
 
 class IngredientCreateListView(APIView):

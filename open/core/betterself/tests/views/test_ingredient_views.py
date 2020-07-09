@@ -84,16 +84,6 @@ class TestIngredientCreateListView(TestCase):
         self.assertEqual(data["name"], "name")
 
     def test_create_view_with_conflicting_uniqueness(self):
-        """
-        I don't know if I like this yet, I'm allowing multiple
-        create attempts to not have a conflict and to simply override
-        the data ...
-
-        Actually nevermind, I don't like this. It allows someone to overwrite
-        valuable notes by accident - for instance, if someone creates the same
-        ingredient twice by accident, and they have data in some non-required field,
-        poof it goes back to blank. That would be bad.
-        """
         post_data = {
             "name": "name",
             "notes": "notes1",
@@ -110,6 +100,7 @@ class TestIngredientCreateListView(TestCase):
             "notes": "notes2",
         }
 
+        # don't let you recreate something that already's been made
         response = self.client_1.post(self.url, data=post_data)
         self.assertEqual(response.status_code, 400, response.data)
 
@@ -202,6 +193,7 @@ class TestIngredientGetUpdateDelete(TestCase):
         self.assertEqual(data["notes"], revised_notes, data)
 
     def test_update_view_with_bad_data(self):
+        """ This won't update even if you try to use an alternative user """
         instance = self.model_class_factory(user=self.user_1)
         url = instance.get_update_url()
 
