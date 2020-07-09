@@ -1,5 +1,4 @@
 from django.db.models import PositiveIntegerField, CharField
-from rest_framework.reverse import reverse
 
 from open.core.betterself.constants import BetterSelfResourceConstants
 from open.utilities.models import BaseModelWithUserGeneratedContent
@@ -22,9 +21,3 @@ class Ingredient(BaseModelWithUserGeneratedContent):
 
     class Meta:
         unique_together = ("name", "user")
-
-    def get_update_url(self):
-        instance_uuid = str(self.uuid)
-        kwargs = {"uuid": instance_uuid}
-        update_url = reverse(self.RESOURCE_NAME, kwargs=kwargs)
-        return update_url

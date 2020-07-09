@@ -3,6 +3,7 @@ import uuid
 from django.db.models import DateTimeField, UUIDField, ForeignKey, CASCADE, TextField
 from django.utils import timezone
 from model_utils.models import TimeStampedModel
+from rest_framework.reverse import reverse
 
 from open.users.models import User
 
@@ -28,3 +29,9 @@ class BaseModelWithUserGeneratedContent(BaseModel):
 
     class Meta:
         abstract = True
+
+    def get_update_url(self):
+        instance_uuid = str(self.uuid)
+        kwargs = {"uuid": instance_uuid}
+        update_url = reverse(self.RESOURCE_NAME, kwargs=kwargs)
+        return update_url

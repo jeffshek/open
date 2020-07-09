@@ -1,5 +1,4 @@
 from django.db.models import ForeignKey, DecimalField, CASCADE
-from django.urls import reverse
 
 from open.core.betterself.constants import BetterSelfResourceConstants
 from open.core.betterself.models.ingredient import Ingredient
@@ -26,9 +25,3 @@ class IngredientComposition(BaseModelWithUserGeneratedContent):
 
     def __str__(self):
         return f"IngredientComposition | {self.ingredient.name} {self.quantity} {self.measurement.name}"
-
-    def get_update_url(self):
-        instance_uuid = str(self.uuid)
-        kwargs = {"uuid": instance_uuid}
-        update_url = reverse(self.RESOURCE_NAME, kwargs=kwargs)
-        return update_url

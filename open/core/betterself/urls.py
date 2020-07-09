@@ -9,6 +9,10 @@ from open.core.betterself.views.ingredient_compositions import (
     IngredientCompositionCreateListView,
     IngredientCompositionGetUpdateView,
 )
+from open.core.betterself.views.supplements import (
+    SupplementCreateListView,
+    SupplementGetUpdateView,
+)
 
 urlpatterns = [
     path(
@@ -35,5 +39,15 @@ urlpatterns = [
         f"{RESOURCES.INGREDIENT_COMPOSITIONS}/<uuid:uuid>/",
         view=IngredientCompositionGetUpdateView.as_view(),
         name=RESOURCES.INGREDIENT_COMPOSITIONS,
+    ),
+    path(
+        f"{RESOURCES.SUPPLEMENTS}/",
+        view=SupplementCreateListView.as_view(),
+        name=RESOURCES.SUPPLEMENTS,
+    ),
+    path(
+        f"{RESOURCES.SUPPLEMENTS}/<uuid:uuid>/",
+        view=SupplementGetUpdateView.as_view(),
+        name=RESOURCES.SUPPLEMENTS,
     ),
 ]

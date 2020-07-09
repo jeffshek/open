@@ -54,12 +54,13 @@ class IngredientCompositionFactory(DjangoModelFactory):
 
 
 class SupplementFactory(DjangoModelFactory):
-    name = Faker("street_suffix")
+    name = Faker("user_name")
     user = SubFactory(UserFactory)
     notes = LazyAttribute(lambda obj: "%s notes" % obj.name)
 
     class Meta:
         model = Supplement
+        django_get_or_create = ["name", "user"]
 
     @post_generation
     def ingredient_composition(self, create, extracted, **kwargs):
@@ -74,7 +75,7 @@ class SupplementFactory(DjangoModelFactory):
 
 
 class SupplementStackFactory(DjangoModelFactory):
-    name = Faker("street_suffix")
+    name = Faker("user_name")
     user = SubFactory(UserFactory)
 
     class Meta:
