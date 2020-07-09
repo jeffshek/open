@@ -1,5 +1,6 @@
 from django.db.models import ForeignKey, DecimalField, CASCADE
 
+from open.core.betterself.constants import BetterSelfResourceConstants
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.measurement import Measurement
 from open.utilities.models import BaseModelWithUserGeneratedContent
@@ -7,6 +8,8 @@ from open.utilities.models import BaseModelWithUserGeneratedContent
 
 class IngredientComposition(BaseModelWithUserGeneratedContent):
     """ Creatine, 5, grams """
+
+    RESOURCE_NAME = BetterSelfResourceConstants.INGREDIENT_COMPOSITIONS
 
     ingredient = ForeignKey(Ingredient, on_delete=CASCADE)
     # users should fill this in if they want to use a composition ... otherwise, they could

@@ -7,7 +7,7 @@ from factory import (
     post_generation,
     SelfAttribute,
 )
-from factory.fuzzy import FuzzyInteger
+from factory.fuzzy import FuzzyInteger, FuzzyChoice
 
 from open.core.betterself.constants import API_INPUT_SOURCE, BetterSelfFactoryConstants
 from open.core.betterself.models.activity import Activity
@@ -36,10 +36,11 @@ class IngredientFactory(DjangoModelFactory):
 
 
 class MeasurementFactory(DjangoModelFactory):
-    name = BetterSelfFactoryConstants.DEFAULT_MEASUREMENT_NAME
+    name = FuzzyChoice(["Milligram", "Gram", "Pound", "Unit", "Kilogram", "Many Units"])
 
     class Meta:
         model = Measurement
+        django_get_or_create = ("name",)
 
 
 class IngredientCompositionFactory(DjangoModelFactory):
@@ -53,12 +54,13 @@ class IngredientCompositionFactory(DjangoModelFactory):
 
 
 class SupplementFactory(DjangoModelFactory):
-    name = Faker("street_suffix")
+    name = Faker("user_name")
     user = SubFactory(UserFactory)
     notes = LazyAttribute(lambda obj: "%s notes" % obj.name)
 
     class Meta:
         model = Supplement
+        django_get_or_create = ["name", "user"]
 
     @post_generation
     def ingredient_composition(self, create, extracted, **kwargs):
@@ -73,7 +75,7 @@ class SupplementFactory(DjangoModelFactory):
 
 
 class SupplementStackFactory(DjangoModelFactory):
-    name = Faker("street_suffix")
+    name = Faker("user_name")
     user = SubFactory(UserFactory)
 
     class Meta:

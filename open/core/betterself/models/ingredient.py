@@ -1,9 +1,12 @@
 from django.db.models import PositiveIntegerField, CharField
 
+from open.core.betterself.constants import BetterSelfResourceConstants
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
 class Ingredient(BaseModelWithUserGeneratedContent):
+    RESOURCE_NAME = BetterSelfResourceConstants.INGREDIENTS
+
     # if some ingredient is longer than 300 characters, prob shouldn't take it.
     # if anyone ever reads up reading this, 1,3 dimethylamylamine is probably a great
     # example of if you can't pronounce it, don't take it.

@@ -35,7 +35,8 @@ services:
       - ./.envs/.local/.django
     ports:
       # 5432 is freq taken by some other instance running postgres
-      - "15432:5432"
+      # i have too many side projects ... so i kind of have to use a random port
+      - "25432:5432"
 
   redis:
     image: redis:5.0

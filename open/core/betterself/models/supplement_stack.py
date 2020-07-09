@@ -3,7 +3,6 @@ from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
 class SupplementStack(BaseModelWithUserGeneratedContent):
-    # name = CharField(max_length=300, blank=False, default="")
     name = DEFAULT_MODELS_CHAR_FIELD
 
     class Meta:

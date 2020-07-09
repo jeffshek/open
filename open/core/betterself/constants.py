@@ -69,3 +69,14 @@ class BetterSelfFactoryConstants:
         "name": DEFAULT_INGREDIENT_NAME_1,
         "short_name": DEFAULT_MEASUREMENT_SHORT_NAME,
     }
+
+
+class BetterSelfTestContants:
+    NAME_1 = "WOW"
+    NOTES_1 = "ATE A CHEESEBURGER"
+
+    NAME_2 = "SAD"
+    NOTES_2 = "FELL DOWN STAIRS"
+
+    # a semantically correct uuid, but doesn't belong to anything
+    INVALID_UUID = "d0acd6e3-41c4-45ac-a821-376aa273c40a"
