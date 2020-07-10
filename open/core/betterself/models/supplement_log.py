@@ -6,12 +6,18 @@ from django.db.models import (
     DateTimeField,
 )
 
-from open.core.betterself.constants import WEB_INPUT_SOURCE, INPUT_SOURCES_TUPLES
+from open.core.betterself.constants import (
+    WEB_INPUT_SOURCE,
+    INPUT_SOURCES_TUPLES,
+    BetterSelfResourceConstants,
+)
 from open.core.betterself.models.supplement import Supplement
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
 class SupplementLog(BaseModelWithUserGeneratedContent):
+    RESOURCE_NAME = BetterSelfResourceConstants.SUPPLEMENT_LOGS
+
     supplement = ForeignKey(Supplement, on_delete=CASCADE)
     source = CharField(
         max_length=50, choices=INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE
@@ -29,8 +35,4 @@ class SupplementLog(BaseModelWithUserGeneratedContent):
 
     def __str__(self):
         formatted_time = self.time.strftime("%Y-%m-%d %I:%M%p")
-        formatted_quantity = "{:.0f}".format(self.quantity)
-
-        return "{quantity} {obj.supplement} " "{time} from {obj.source} event".format(
-            obj=self, time=formatted_time, quantity=formatted_quantity
-        )
+        return f"{self.quantity:.0f} {self.supplement.name} {formatted_time} from {self.source} event"

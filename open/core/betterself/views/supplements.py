@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from open.core.betterself.models.supplement import Supplement
-from open.core.betterself.serializers.supplements import (
+from open.core.betterself.serializers.supplement_serializers import (
     SupplementReadSerializer,
     SupplementCreateUpdateSerializer,
 )

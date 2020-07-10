@@ -4,21 +4,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from open.core.betterself.models.ingredient import Ingredient
-from open.core.betterself.serializers.ingredients import (
-    IngredientReadSerializer,
-    IngredientCreateSerializer,
-    IngredientUpdateSerializer,
-)
-
 logger = logging.getLogger(__name__)
 
 
-class IngredientCreateListView(APIView):
-    model_class = Ingredient
-    read_serializer_class = IngredientReadSerializer
-    create_serializer_class = IngredientCreateSerializer
-
+class BaseCreateListView(APIView):
     def get(self, request):
         instances = self.model_class.objects.filter(user=request.user)
         serializer = self.read_serializer_class(instances, many=True)
@@ -36,11 +25,7 @@ class IngredientCreateListView(APIView):
         return Response(serialized_instance)
 
 
-class IngredientGetUpdateView(APIView):
-    model_class = Ingredient
-    read_serializer_class = IngredientReadSerializer
-    update_serializer_class = IngredientUpdateSerializer
-
+class BaseGetUpdateDeleteView(APIView):
     def get(self, request, uuid):
         instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)
         data = self.read_serializer_class(instance).data

@@ -5,9 +5,13 @@ from rest_framework.serializers import ModelSerializer
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.core.betterself.models.measurement import Measurement
-from open.core.betterself.serializers.measurements import MeasurementReadSerializer
-from open.core.betterself.serializers.ingredients import IngredientReadSerializer
-from open.core.betterself.utilities.serializer_utilties import validate_model_uuid
+from open.core.betterself.serializers.measurement_serializers import (
+    MeasurementReadSerializer,
+)
+from open.core.betterself.serializers.ingredient_serializers import (
+    IngredientReadSerializer,
+)
+from open.core.betterself.serializers.validators import validate_model_uuid
 
 
 class IngredientCompositionReadSerializer(ModelSerializer):

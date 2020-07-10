@@ -19,6 +19,7 @@ repos:
     -   id: name-tests-test
         files: tests/.+\.py$
         args: ['--django']  # Use args: ['--django'] to match test*.py instead.
+        exclude: mixins*
 -   repo: https://github.com/ambv/black
     rev: stable
     hooks:
