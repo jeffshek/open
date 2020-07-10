@@ -45,9 +45,9 @@ class TestSupplementLogViews(BetterSelfResourceViewTestCaseMixin, TestCase):
         response = self.client_1.post(self.url, data=post_data)
         self.assertEqual(response.status_code, 200, response.data)
 
-        # data = response.data
-        # ingredient_name = data["ingredient"]["name"]
-        # self.assertEqual(ingredient.name, ingredient_name)
+        data = response.data
+        supplement_name = data["supplement"]["name"]
+        self.assertEqual(supplement.name, supplement_name)
 
     def test_create_view_with_bad_supplement(self):
         time = get_utc_now()
