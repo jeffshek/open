@@ -2,7 +2,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from open.core.betterself.models.measurement import Measurement
-from open.core.betterself.serializers.measurements import MeasurementReadSerializer
+from open.core.betterself.serializers.measurement_serializers import (
+    MeasurementReadSerializer,
+)
 
 
 class MeasurementListView(APIView):

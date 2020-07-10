@@ -5,7 +5,9 @@ from rest_framework.serializers import ModelSerializer
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.core.betterself.models.measurement import Measurement
-from open.core.betterself.serializers.measurements import MeasurementReadSerializer
+from open.core.betterself.serializers.measurement_serializers import (
+    MeasurementReadSerializer,
+)
 from open.core.betterself.serializers.ingredient_serializers import (
     IngredientReadSerializer,
 )

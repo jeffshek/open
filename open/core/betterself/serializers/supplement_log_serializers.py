@@ -13,7 +13,9 @@ from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURC
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
-from open.core.betterself.serializers.simple_generic import create_name_uuid_serializer
+from open.core.betterself.serializers.simple_generic_serializer import (
+    create_name_uuid_serializer,
+)
 from open.core.betterself.serializers.validators import validate_model_uuid
 
 
