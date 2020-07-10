@@ -29,8 +29,4 @@ class SupplementLog(BaseModelWithUserGeneratedContent):
 
     def __str__(self):
         formatted_time = self.time.strftime("%Y-%m-%d %I:%M%p")
-        formatted_quantity = "{:.0f}".format(self.quantity)
-
-        return "{quantity} {obj.supplement} " "{time} from {obj.source} event".format(
-            obj=self, time=formatted_time, quantity=formatted_quantity
-        )
+        return f"{self.quantity:.0f} {self.supplement.name} {formatted_time} from {self.source} event"

@@ -16,6 +16,11 @@ from open.core.betterself.serializers.ingredient_compositions import (
 from open.core.betterself.utilities.serializer_utilties import validate_model_uuid
 
 
+def ingredient_composition_uuid_validator(uuid):
+    validate_model_uuid(IngredientComposition, uuid)
+    return uuid
+
+
 class SupplementReadSerializer(ModelSerializer):
     # a bit of a heavy serializer because the nest goes deep, but keep for now
     # optimize later
@@ -31,11 +36,6 @@ class SupplementReadSerializer(ModelSerializer):
             "notes",
             "ingredient_compositions",
         )
-
-
-def ingredient_composition_uuid_validator(uuid):
-    validate_model_uuid(IngredientComposition, uuid)
-    return uuid
 
 
 class SupplementCreateUpdateSerializer(ModelSerializer):
