@@ -1,7 +1,7 @@
 import logging
 
 from open.core.betterself.models.supplement_log import SupplementLog
-from open.core.betterself.serializers.supplement_logs import (
+from open.core.betterself.serializers.supplement_log_serializers import (
     SupplementLogReadSerializer,
     SupplementLogCreateUpdateSerializer,
 )
@@ -14,3 +14,9 @@ class SupplementLogCreateListView(BaseCreateListView):
     model_class = SupplementLog
     read_serializer_class = SupplementLogReadSerializer
     create_serializer_class = SupplementLogCreateUpdateSerializer
+
+
+class SupplementLogGetUpdateView(BaseCreateListView):
+    model_class = SupplementLog
+    read_serializer_class = SupplementLogReadSerializer
+    update_serializer_class = SupplementLogCreateUpdateSerializer

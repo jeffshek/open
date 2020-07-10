@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from open.core.betterself.models.ingredient_composition import IngredientComposition
-from open.core.betterself.serializers.ingredient_compositions import (
+from open.core.betterself.serializers.ingredient_composition_serializers import (
     IngredientCompositionReadSerializer,
     IngredientCompositionCreateUpdateSerializer,
 )
