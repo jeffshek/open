@@ -7,7 +7,7 @@ from factory import (
     post_generation,
     SelfAttribute,
 )
-from factory.fuzzy import FuzzyInteger
+from factory.fuzzy import FuzzyInteger, FuzzyDate
 
 from open.core.betterself.constants import API_INPUT_SOURCE
 from open.core.betterself.models.activity import Activity
@@ -23,7 +23,10 @@ from open.core.betterself.models.supplement_stack_composition import (
     SupplementStackComposition,
 )
 from open.users.factories import UserFactory
-from open.utilities.date_and_time import get_utc_now, get_utc_date
+from open.utilities.date_and_time import (
+    get_utc_now,
+    get_utc_date_relative_units_ago,
+)
 
 
 class IngredientFactory(DjangoModelFactory):
@@ -118,10 +121,13 @@ class DailyProductivityLogFactory(DjangoModelFactory):
     very_distracting_time_minutes = FuzzyInteger(10, 30)
 
     user = SubFactory(UserFactory)
-    date = LazyFunction(get_utc_date)
+    date = FuzzyDate(start_date=get_utc_date_relative_units_ago(years=2))
 
     class Meta:
         model = DailyProductivityLog
+        # this causes a problem i don't entirely understand why
+        # factory.errors.FactoryError: django_get_or_create - Unable to find initialization value for 'user, date' in factory DailyProductivityLogFactory
+        # django_get_or_create = ['user, date']
 
 
 class ActivityFactory(DjangoModelFactory):

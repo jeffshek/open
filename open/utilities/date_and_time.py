@@ -1,5 +1,6 @@
 from datetime import datetime
 import pytz
+from dateutil.relativedelta import relativedelta
 
 
 def print_current_time():
@@ -16,3 +17,20 @@ def get_utc_now():
 def get_utc_date():
     now = get_utc_now()
     return now.date()
+
+
+def get_utc_time_relative_units_ago(**kwargs):
+    if len(kwargs) != 1:
+        raise TypeError("This Function Only Accepts One Type")
+
+    utc_now = get_utc_now()
+    result = utc_now - relativedelta(**kwargs)
+    return result
+
+
+def get_utc_date_relative_units_ago(**kwargs):
+    if len(kwargs) != 1:
+        raise TypeError("This Function Only Accepts One Type")
+
+    result = get_utc_date() - relativedelta(**kwargs)
+    return result

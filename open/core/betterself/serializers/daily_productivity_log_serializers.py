@@ -1,6 +1,11 @@
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import DateField, ChoiceField
 from rest_framework.serializers import ModelSerializer
 
+from open.core.betterself.constants import (
+    BETTERSELF_LOG_INPUT_SOURCES,
+    WEB_INPUT_SOURCE,
+)
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
 from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
 from open.core.betterself.serializers.validators import ModelValidatorsMixin
@@ -24,6 +29,10 @@ class DailyProductivityLogReadSerializer(ModelSerializer):
 class DailyProductivityLogCreateUpdateSerializer(
     BaseCreateUpdateSerializer, ModelValidatorsMixin
 ):
+    # allow an regular isoformat of milliseconds also be passed
+    date = DateField(input_formats=["iso-8601"])
+    source = ChoiceField(choices=BETTERSELF_LOG_INPUT_SOURCES, default=WEB_INPUT_SOURCE)
+
     class Meta:
         model = DailyProductivityLog
         fields = (
@@ -35,6 +44,7 @@ class DailyProductivityLogCreateUpdateSerializer(
             "distracting_time_minutes",
             "very_distracting_time_minutes",
             "notes",
+            "user",
         )
 
     def validate(self, validated_data):

@@ -20,6 +20,9 @@ class BetterSelfResourceViewTestCaseMixin(object):
         cls.current_time = get_utc_now()
         cls.current_time_isoformat = cls.current_time.isoformat()
 
+        cls.current_date = cls.current_time.date()
+        cls.current_date_isoformat = cls.current_date.isoformat()
+
         super().setUpClass()
 
     @classmethod

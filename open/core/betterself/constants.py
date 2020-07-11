@@ -77,6 +77,7 @@ class TEST_CONSTANTS:
 
     NAME_2 = "SAD"
     NOTES_2 = "FELL DOWN STAIRS"
+    NOTES_3 = "imma be productive and cure cancer"
 
     # a semantically correct uuid, but doesn't belong to anything
     INVALID_UUID = "d0acd6e3-41c4-45ac-a821-376aa273c40a"

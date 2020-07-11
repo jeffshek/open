@@ -12,7 +12,6 @@ from open.core.betterself.tests.mixins.resource_mixin import (
     GetTestsMixin,
     DeleteTestsMixin,
 )
-from open.utilities.date_and_time import get_utc_now
 
 User = get_user_model()
 
@@ -28,11 +27,10 @@ class ActivityLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
 
     def test_create_view(self):
         activity = ActivityFactory(name=TEST_CONSTANTS.NAME_1, user=self.user_1)
-        current_time = get_utc_now()
 
         post_data = {
             "activity_uuid": str(activity.uuid),
-            "time": current_time.isoformat(),
+            "time": self.current_time_isoformat,
         }
 
         response = self.client_1.post(self.url, data=post_data)

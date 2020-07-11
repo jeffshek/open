@@ -8,6 +8,10 @@ from open.core.betterself.views.activity_views import (
     ActivityGetUpdateView,
     ActivityCreateListView,
 )
+from open.core.betterself.views.daily_productivity_log_views import (
+    DailyProductivityLogCreateListView,
+    DailyProductivityLogGetUpdateView,
+)
 from open.core.betterself.views.measurement import MeasurementListView
 from open.core.betterself.views.ingredient_views import (
     IngredientCreateListView,
@@ -91,5 +95,15 @@ urlpatterns = [
         f"{RESOURCES.ACTIVITY_LOGS}/<uuid:uuid>/",
         view=ActivityLogGetUpdateView.as_view(),
         name=RESOURCES.ACTIVITY_LOGS,
+    ),
+    path(
+        f"{RESOURCES.DAILY_PRODUCTIVITY_LOGS}/",
+        view=DailyProductivityLogCreateListView.as_view(),
+        name=RESOURCES.DAILY_PRODUCTIVITY_LOGS,
+    ),
+    path(
+        f"{RESOURCES.DAILY_PRODUCTIVITY_LOGS}/<uuid:uuid>/",
+        view=DailyProductivityLogGetUpdateView.as_view(),
+        name=RESOURCES.DAILY_PRODUCTIVITY_LOGS,
     ),
 ]
