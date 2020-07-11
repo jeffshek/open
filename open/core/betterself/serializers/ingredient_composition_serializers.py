@@ -50,6 +50,7 @@ class IngredientCompositionCreateUpdateSerializer(BaseCreateUpdateSerializer):
 
     def validate(self, validated_data):
         user = self.context["request"].user
+        is_creating_instance = not self.instance
 
         if validated_data.get("ingredient"):
             ingredient_uuid = validated_data.pop("ingredient")["uuid"]
@@ -64,7 +65,7 @@ class IngredientCompositionCreateUpdateSerializer(BaseCreateUpdateSerializer):
         # check for uniqueconstraints issues with creation
         # for updates, probably be a little bit easier
         # and skip for now
-        if not self.instance:
+        if is_creating_instance:
             if self.Meta.model.objects.filter(
                 user=user,
                 ingredient=ingredient,
