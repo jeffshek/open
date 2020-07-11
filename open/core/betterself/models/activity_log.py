@@ -6,7 +6,11 @@ from django.db.models import (
     CASCADE,
 )
 
-from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURCE
+from open.core.betterself.constants import (
+    INPUT_SOURCES_TUPLES,
+    WEB_INPUT_SOURCE,
+    BetterSelfResourceConstants,
+)
 from open.core.betterself.models.activity import Activity
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
@@ -22,6 +26,8 @@ class ActivityLog(BaseModelWithUserGeneratedContent):
 
     I just haven't figured the most appropriate way to model / store such information.
     """
+
+    RESOURCE_NAME = BetterSelfResourceConstants.ACTIVITY_LOGS
 
     activity = ForeignKey(Activity, on_delete=CASCADE)
     source = CharField(

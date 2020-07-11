@@ -1,19 +1,25 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from rest_framework.test import APIClient
 
 from open.users.factories import UserFactory
 from open.users.models import User
+from open.utilities.date_and_time import get_utc_now
 
 
 class BetterSelfResourceViewTestCaseMixin(object):
     # need to have these attributes!
-    # url_name = BetterSelfResourceConstants.SUPPLEMENT_LOGS
-    # model_class_factory = SupplementLogFactory
-    # model_class = SupplementLog
+    url_name = None
+    model_class_factory = None
+    model_class = None
 
     @classmethod
     def setUpClass(cls):
         cls.url = reverse(cls.url_name)
+
+        cls.current_time = get_utc_now()
+        cls.current_time_isoformat = cls.current_time.isoformat()
+
         super().setUpClass()
 
     @classmethod
@@ -43,6 +49,7 @@ class BetterSelfResourceViewTestCaseMixin(object):
 
         super().setUp()
 
+    # TODO - separate these out into a seaparate mixin ..
     def test_view(self):
         self.model_class.objects.count()
         self.model_class_factory.create_batch(5, user=self.user_1)
@@ -55,3 +62,48 @@ class BetterSelfResourceViewTestCaseMixin(object):
 
         data = self.client_2.get(self.url).data
         self.assertEqual(len(data), 0)
+
+
+class DeleteTestsMixin:
+    def test_delete_view_on_non_uuid_url(self):
+        response = self.client_1.delete(self.url)
+        self.assertEqual(response.status_code, 405, response.data)
+
+    def test_delete_view(self):
+        instance = self.model_class_factory(user=self.user_1)
+        instance_id = instance.id
+
+        url = instance.get_update_url()
+
+        response = self.client_1.delete(url)
+        self.assertEqual(response.status_code, 204, response.data)
+
+        with self.assertRaises(ObjectDoesNotExist):
+            self.model_class.objects.get(id=instance_id)
+
+
+class GetTestsMixin:
+    def test_get_singular_resource(self):
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        response = self.client_1.get(url)
+        data = response.data
+
+        for key, value in data.items():
+            instance_value = getattr(instance, key)
+            if isinstance(instance_value, (str, bool)):
+                # if the field stored on the db level is the right noe
+                self.assertEqual(instance_value, value)
+
+    def test_update_view_with_invalid_user_permission(self):
+        """
+        No one should be able to access other people's data
+        """
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        params = {"notes": "fake spoof"}
+
+        response = self.client_2.post(url, data=params)
+        self.assertEqual(response.status_code, 404, response.data)

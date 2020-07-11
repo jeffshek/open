@@ -1,5 +1,13 @@
 from django.urls import path
 from open.core.betterself.constants import BetterSelfResourceConstants as RESOURCES
+from open.core.betterself.views.activity_log_views import (
+    ActivityLogCreateListView,
+    ActivityLogGetUpdateView,
+)
+from open.core.betterself.views.activity_views import (
+    ActivityGetUpdateView,
+    ActivityCreateListView,
+)
 from open.core.betterself.views.measurement import MeasurementListView
 from open.core.betterself.views.ingredient_views import (
     IngredientCreateListView,
@@ -63,5 +71,25 @@ urlpatterns = [
         f"{RESOURCES.SUPPLEMENT_LOGS}/<uuid:uuid>/",
         view=SupplementLogGetUpdateView.as_view(),
         name=RESOURCES.SUPPLEMENT_LOGS,
+    ),
+    path(
+        f"{RESOURCES.ACTIVITIES}/",
+        view=ActivityCreateListView.as_view(),
+        name=RESOURCES.ACTIVITIES,
+    ),
+    path(
+        f"{RESOURCES.ACTIVITIES}/<uuid:uuid>/",
+        view=ActivityGetUpdateView.as_view(),
+        name=RESOURCES.ACTIVITIES,
+    ),
+    path(
+        f"{RESOURCES.ACTIVITY_LOGS}/",
+        view=ActivityLogCreateListView.as_view(),
+        name=RESOURCES.ACTIVITY_LOGS,
+    ),
+    path(
+        f"{RESOURCES.ACTIVITY_LOGS}/<uuid:uuid>/",
+        view=ActivityLogGetUpdateView.as_view(),
+        name=RESOURCES.ACTIVITY_LOGS,
     ),
 ]

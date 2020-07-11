@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from open.core.betterself.constants import BetterSelfResourceConstants
@@ -11,6 +10,8 @@ from open.core.betterself.factories import (
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
+    DeleteTestsMixin,
+    GetTestsMixin,
 )
 
 User = get_user_model()
@@ -24,19 +25,6 @@ class TestIngredientCompositionView(BetterSelfResourceViewTestCaseMixin, TestCas
     url_name = BetterSelfResourceConstants.INGREDIENT_COMPOSITIONS
     model_class_factory = IngredientCompositionFactory
     model_class = IngredientComposition
-
-    def test_view(self):
-        self.model_class.objects.count()
-        self.model_class_factory.create_batch(5, user=self.user_1)
-
-        data = self.client_1.get(self.url).data
-        self.assertEqual(len(data), 5)
-
-    def test_no_access_view(self):
-        self.model_class_factory(user=self.user_1)
-
-        data = self.client_2.get(self.url).data
-        self.assertEqual(len(data), 0)
 
     def test_create_view(self):
         ingredient = IngredientFactory(user=self.user_1)
@@ -104,36 +92,11 @@ class TestIngredientCompositionView(BetterSelfResourceViewTestCaseMixin, TestCas
 
 
 class TestIngredientCompositionGetUpdateDelete(
-    BetterSelfResourceViewTestCaseMixin, TestCase
+    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, GetTestsMixin, TestCase
 ):
     url_name = BetterSelfResourceConstants.INGREDIENT_COMPOSITIONS
     model_class_factory = IngredientCompositionFactory
     model_class = IngredientComposition
-
-    def test_get_singular_resource(self):
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        response = self.client_1.get(url)
-        data = response.data
-
-        self.assertEqual(float(data["quantity"]), instance.quantity)
-
-    def test_delete_view_on_non_uuid_url(self):
-        response = self.client_1.delete(self.url)
-        self.assertEqual(response.status_code, 405, response.data)
-
-    def test_delete_view(self):
-        instance = self.model_class_factory(user=self.user_1)
-        instance_id = instance.id
-
-        url = instance.get_update_url()
-
-        response = self.client_1.delete(url)
-        self.assertEqual(response.status_code, 204, response.data)
-
-        with self.assertRaises(ObjectDoesNotExist):
-            self.model_class.objects.get(id=instance_id)
 
     def test_update_view_for_quantities(self):
         instance = self.model_class_factory(quantity=10, user=self.user_1,)
@@ -160,18 +123,6 @@ class TestIngredientCompositionGetUpdateDelete(
 
         self.assertEqual(response.status_code, 200, data)
         self.assertEqual(data["ingredient"]["uuid"], ingredient_uuid)
-
-    def test_update_view_with_invalid_user_permission(self):
-        """
-        No one should be able to access other people's data
-        """
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        params = {"notes": "fake spoof"}
-
-        response = self.client_2.post(url, data=params)
-        self.assertEqual(response.status_code, 404, response.data)
 
     def test_update_view_with_bad_data(self):
         """ This won't update with an incorrect alternative user """
