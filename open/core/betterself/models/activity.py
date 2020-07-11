@@ -1,5 +1,6 @@
 from django.db.models import CharField, BooleanField
 
+from open.core.betterself.constants import BetterSelfResourceConstants
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
@@ -11,6 +12,8 @@ class Activity(BaseModelWithUserGeneratedContent):
     This is why it's set as foreign key from ActivityEvent, I don't want to overengineer and build
     the entire foreign key relationships, but I also don't want to build a crappy hole that I have to dig out of.
     """
+
+    RESOURCE_NAME = BetterSelfResourceConstants.ACTIVITIES
 
     name = CharField(max_length=300)
     # Was this significant? IE. Got married? Had a Kid? (Congrats!) Had surgery? New Job? Decided to quit smoking?

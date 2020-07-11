@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from rest_framework.test import APIClient
 
@@ -7,9 +8,9 @@ from open.users.models import User
 
 class BetterSelfResourceViewTestCaseMixin(object):
     # need to have these attributes!
-    # url_name = BetterSelfResourceConstants.SUPPLEMENT_LOGS
-    # model_class_factory = SupplementLogFactory
-    # model_class = SupplementLog
+    url_name = None
+    model_class_factory = None
+    model_class = None
 
     @classmethod
     def setUpClass(cls):
@@ -43,6 +44,7 @@ class BetterSelfResourceViewTestCaseMixin(object):
 
         super().setUp()
 
+    # TODO - separate these out into a seaparate mixin ..
     def test_view(self):
         self.model_class.objects.count()
         self.model_class_factory.create_batch(5, user=self.user_1)
@@ -55,3 +57,21 @@ class BetterSelfResourceViewTestCaseMixin(object):
 
         data = self.client_2.get(self.url).data
         self.assertEqual(len(data), 0)
+
+
+class DeleteTestsMixin:
+    def test_delete_view_on_non_uuid_url(self):
+        response = self.client_1.delete(self.url)
+        self.assertEqual(response.status_code, 405, response.data)
+
+    def test_delete_view(self):
+        instance = self.model_class_factory(user=self.user_1)
+        instance_id = instance.id
+
+        url = instance.get_update_url()
+
+        response = self.client_1.delete(url)
+        self.assertEqual(response.status_code, 204, response.data)
+
+        with self.assertRaises(ObjectDoesNotExist):
+            self.model_class.objects.get(id=instance_id)

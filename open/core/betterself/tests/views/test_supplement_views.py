@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from open.core.betterself.constants import (
@@ -13,6 +12,7 @@ from open.core.betterself.factories import (
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
+    DeleteTestsMixin,
 )
 from open.core.betterself.utilities.serializer_utilties import iterable_to_uuids_list
 
@@ -65,32 +65,24 @@ class TestSupplementsView(BetterSelfResourceViewTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 400, response.data)
         self.assertIn("ingredient_composition_uuids", response.data)
 
-    class TestSupplementGetUpdateDelete(TestCase):
-        url_name = BetterSelfResourceConstants.INGREDIENT_COMPOSITIONS
-        model_class_factory = SupplementFactory
-        model_class = Supplement
 
-        def test_get_singular_resource(self):
-            instance = self.model_class_factory(user=self.user_1)
-            url = instance.get_update_url()
+class TestSupplementGetUpdateDelete(
+    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, TestCase
+):
+    url_name = BetterSelfResourceConstants.SUPPLEMENTS
+    model_class_factory = SupplementFactory
+    model_class = Supplement
 
-            response = self.client_1.get(url)
-            data = response.data
+    def test_get_singular_resource(self):
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
 
-            self.assertEqual(float(data["quantity"]), instance.quantity)
+        response = self.client_1.get(url)
+        self.assertEqual(response.status_code, 200, response.data)
+        data = response.data
 
-        def test_delete_view_on_non_uuid_url(self):
-            response = self.client_1.delete(self.url)
-            self.assertEqual(response.status_code, 405, response.data)
-
-        def test_delete_view(self):
-            instance = self.model_class_factory(user=self.user_1)
-            instance_id = instance.id
-
-            url = instance.get_update_url()
-
-            response = self.client_1.delete(url)
-            self.assertEqual(response.status_code, 204, response.data)
-
-            with self.assertRaises(ObjectDoesNotExist):
-                self.model_class.objects.get(id=instance_id)
+        for key, value in data.items():
+            instance_value = getattr(instance, key)
+            if isinstance(instance_value, (str, bool)):
+                # if the field stored on the db level is the right noe
+                self.assertEqual(instance_value, value)
