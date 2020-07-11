@@ -23,7 +23,6 @@ services:
       # SSL termination happens at the LB layer, all traffic here is http
       - "0.0.0.0:80:80"
 
-
   cloud-sql-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.11
     command: >
