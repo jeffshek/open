@@ -71,7 +71,7 @@ class BetterSelfFactoryConstants:
     }
 
 
-class BetterSelfTestContants:
+class TEST_CONSTANTS:
     NAME_1 = "WOW"
     NOTES_1 = "ATE A CHEESEBURGER"
 

@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from open.core.betterself.constants import (
     BetterSelfResourceConstants,
-    BetterSelfTestContants,
+    TEST_CONSTANTS,
 )
 from open.core.betterself.factories import ActivityFactory, ActivityLogFactory
 from open.core.betterself.models.activity_log import ActivityLog
@@ -27,7 +27,7 @@ class ActivityLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
     model_class = ActivityLog
 
     def test_create_view(self):
-        activity = ActivityFactory(name=BetterSelfTestContants.NAME_1, user=self.user_1)
+        activity = ActivityFactory(name=TEST_CONSTANTS.NAME_1, user=self.user_1)
         current_time = get_utc_now()
 
         post_data = {
@@ -40,10 +40,10 @@ class ActivityLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
 
         data = response.data
         value_name = data["activity"]["name"]
-        self.assertEqual(BetterSelfTestContants.NAME_1, value_name)
+        self.assertEqual(TEST_CONSTANTS.NAME_1, value_name)
 
     def test_create_view_with_bad_activity_no_permission(self):
-        activity = ActivityFactory(name=BetterSelfTestContants.NAME_1, user=self.user_2)
+        activity = ActivityFactory(name=TEST_CONSTANTS.NAME_1, user=self.user_2)
 
         post_data = {
             "activity_uuid": str(activity.uuid),
@@ -54,7 +54,7 @@ class ActivityLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
         self.assertEqual(response.status_code, 400, response.data)
 
     def test_create_view_with_conflicting_unique(self):
-        activity = ActivityFactory(name=BetterSelfTestContants.NAME_1, user=self.user_1)
+        activity = ActivityFactory(name=TEST_CONSTANTS.NAME_1, user=self.user_1)
 
         post_data = {
             "activity_uuid": str(activity.uuid),

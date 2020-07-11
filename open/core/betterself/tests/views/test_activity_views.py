@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from open.core.betterself.constants import (
     BetterSelfResourceConstants,
-    BetterSelfTestContants,
+    TEST_CONSTANTS,
 )
 from open.core.betterself.factories import ActivityFactory
 from open.core.betterself.models.activity import Activity
@@ -26,7 +26,7 @@ class TestActivityView(BetterSelfResourceViewTestCaseMixin, TestCase):
 
     def test_create_view(self):
         post_data = {
-            "name": BetterSelfTestContants.NAME_1,
+            "name": TEST_CONSTANTS.NAME_1,
         }
 
         response = self.client_1.post(self.url, data=post_data)
@@ -34,11 +34,11 @@ class TestActivityView(BetterSelfResourceViewTestCaseMixin, TestCase):
 
         data = response.data
         value_name = data["name"]
-        self.assertEqual(BetterSelfTestContants.NAME_1, value_name)
+        self.assertEqual(TEST_CONSTANTS.NAME_1, value_name)
 
     def test_create_view_with_conflicting_uniqueness(self):
         post_data = {
-            "name": BetterSelfTestContants.NAME_1,
+            "name": TEST_CONSTANTS.NAME_1,
         }
 
         response = self.client_1.post(self.url, data=post_data)
@@ -78,17 +78,17 @@ class TestIngredientCompositionGetUpdateDelete(
 
     def test_update_view_for_name(self):
         instance = self.model_class_factory(
-            user=self.user_1, name=BetterSelfTestContants.NAME_2
+            user=self.user_1, name=TEST_CONSTANTS.NAME_2
         )
         url = instance.get_update_url()
 
-        params = {"name": BetterSelfTestContants.NAME_1}
+        params = {"name": TEST_CONSTANTS.NAME_1}
 
         response = self.client_1.post(url, data=params)
         data = response.data
 
         self.assertEqual(response.status_code, 200, data)
-        self.assertEqual(data["name"], BetterSelfTestContants.NAME_1, data)
+        self.assertEqual(data["name"], TEST_CONSTANTS.NAME_1, data)
 
     def test_update_view_with_invalid_user_permission(self):
         """

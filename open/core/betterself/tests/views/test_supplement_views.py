@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from open.core.betterself.constants import (
     BetterSelfResourceConstants,
-    BetterSelfTestContants as CONSTANTS,
+    TEST_CONSTANTS as CONSTANTS,
 )
 from open.core.betterself.factories import (
     SupplementFactory,

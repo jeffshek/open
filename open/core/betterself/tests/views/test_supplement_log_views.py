@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from open.core.betterself.constants import (
     BetterSelfResourceConstants,
-    BetterSelfTestContants,
+    TEST_CONSTANTS,
 )
 from open.core.betterself.factories import (
     SupplementLogFactory,
@@ -54,7 +54,7 @@ class TestSupplementLogViews(BetterSelfResourceViewTestCaseMixin, TestCase):
         time = get_utc_now()
 
         post_data = {
-            "supplement_uuid": BetterSelfTestContants.INVALID_UUID,
+            "supplement_uuid": TEST_CONSTANTS.INVALID_UUID,
             "time": time.isoformat(),
             "quantity": 5,
         }

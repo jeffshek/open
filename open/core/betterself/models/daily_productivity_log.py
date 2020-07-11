@@ -1,6 +1,9 @@
 from django.db.models import CharField, DateField, PositiveIntegerField
 
-from open.core.betterself.constants import INPUT_SOURCES_TUPLES
+from open.core.betterself.constants import (
+    INPUT_SOURCES_TUPLES,
+    BetterSelfResourceConstants,
+)
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
@@ -9,6 +12,8 @@ class DailyProductivityLog(BaseModelWithUserGeneratedContent):
     Represents the daily over-view of how productive a user was on that day, mimics
     RescueTime's concept of productive time, mildly productive, etc.
     """
+
+    RESOURCE_NAME = BetterSelfResourceConstants.DAILY_PRODUCTIVITY_LOGS
 
     source = CharField(max_length=50, choices=INPUT_SOURCES_TUPLES)
     date = DateField()

@@ -4,7 +4,11 @@ from django.db.models import (
     PositiveSmallIntegerField,
 )
 
-from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURCE
+from open.core.betterself.constants import (
+    INPUT_SOURCES_TUPLES,
+    WEB_INPUT_SOURCE,
+    BetterSelfResourceConstants,
+)
 from open.utilities.date_and_time import get_utc_now
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
@@ -17,6 +21,8 @@ class WellBeingLog(BaseModelWithUserGeneratedContent):
 
     Capture enough data to be helpful to diagnose chronic
     """
+
+    RESOURCE_NAME = BetterSelfResourceConstants.WELL_BEING_LOG
 
     time = DateTimeField(default=get_utc_now)
 
