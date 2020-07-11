@@ -36,6 +36,8 @@ class SupplementReadSerializer(ModelSerializer):
 
 
 class SupplementCreateUpdateSerializer(ModelSerializer):
+    # don't use BaseCreateUpdateSerializer because we have
+    # custom overrides on the many to many
     ingredient_composition_uuids = ListField(
         child=UUIDField(validators=[ingredient_composition_uuid_validator]),
         required=False,

@@ -13,7 +13,7 @@ from open.core.betterself.views.supplement_log_views import (
     SupplementLogCreateListView,
     SupplementLogGetUpdateView,
 )
-from open.core.betterself.views.supplements import (
+from open.core.betterself.views.supplement_views import (
     SupplementCreateListView,
     SupplementGetUpdateView,
 )

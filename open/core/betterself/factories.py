@@ -7,9 +7,9 @@ from factory import (
     post_generation,
     SelfAttribute,
 )
-from factory.fuzzy import FuzzyInteger, FuzzyChoice
+from factory.fuzzy import FuzzyInteger
 
-from open.core.betterself.constants import API_INPUT_SOURCE, BetterSelfFactoryConstants
+from open.core.betterself.constants import API_INPUT_SOURCE
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
@@ -28,15 +28,16 @@ from open.utilities.date_and_time import get_utc_now, get_utc_date
 
 class IngredientFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
-    name = BetterSelfFactoryConstants.DEFAULT_INGREDIENT_NAME_1
-    half_life_minutes = BetterSelfFactoryConstants.DEFAULT_INGREDIENT_HL_MINUTE_1
+    name = Faker("user_name")
+    half_life_minutes = FuzzyInteger(1, 10)
 
     class Meta:
         model = Ingredient
+        django_get_or_create = ("name", "user")
 
 
 class MeasurementFactory(DjangoModelFactory):
-    name = FuzzyChoice(["Milligram", "Gram", "Pound", "Unit", "Kilogram", "Many Units"])
+    name = Faker("user_name")
 
     class Meta:
         model = Measurement

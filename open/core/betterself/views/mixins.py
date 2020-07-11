@@ -8,6 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 class BaseCreateListView(APIView):
+    model_class = None
+    read_serializer_class = None
+    create_serializer_class = None
+
     def get(self, request):
         instances = self.model_class.objects.filter(user=request.user)
         serializer = self.read_serializer_class(instances, many=True)
@@ -26,6 +30,10 @@ class BaseCreateListView(APIView):
 
 
 class BaseGetUpdateDeleteView(APIView):
+    model_class = None
+    read_serializer_class = None
+    update_serializer_class = None
+
     def get(self, request, uuid):
         instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)
         data = self.read_serializer_class(instance).data

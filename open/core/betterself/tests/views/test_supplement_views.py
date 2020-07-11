@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
-from django.urls import reverse
-from rest_framework.test import APIClient
 
 from open.core.betterself.constants import (
     BetterSelfResourceConstants,
@@ -13,8 +11,10 @@ from open.core.betterself.factories import (
     IngredientCompositionFactory,
 )
 from open.core.betterself.models.supplement import Supplement
+from open.core.betterself.tests.mixins.resource_mixin import (
+    BetterSelfResourceViewTestCaseMixin,
+)
 from open.core.betterself.utilities.serializer_utilties import iterable_to_uuids_list
-from open.users.factories import UserFactory
 
 User = get_user_model()
 
@@ -23,53 +23,10 @@ python manage.py test --pattern="*test_supplement_views.py" --keepdb
 """
 
 
-class TestSupplementsView(TestCase):
+class TestSupplementsView(BetterSelfResourceViewTestCaseMixin, TestCase):
     url_name = BetterSelfResourceConstants.SUPPLEMENTS
     model_class_factory = SupplementFactory
     model_class = Supplement
-
-    @classmethod
-    def setUpClass(cls):
-        cls.url = reverse(cls.url_name)
-        super().setUpClass()
-
-    @classmethod
-    def setUpTestData(cls):
-        user_1 = UserFactory()
-        user_2 = UserFactory()
-
-        cls.user_1_id = user_1.id
-        cls.user_2_id = user_2.id
-
-        # create a few instances that will never be used
-        cls.model_class_factory.create_batch(5)
-
-        super().setUpTestData()
-
-    def setUp(self):
-        self.user_1 = User.objects.get(id=self.user_1_id)
-        self.user_2 = User.objects.get(id=self.user_2_id)
-
-        # a user that owns the instance
-        self.client_1 = APIClient()
-        self.client_1.force_login(self.user_1)
-
-        # a user that shouldn't have access to the instance
-        self.client_2 = APIClient()
-        self.client_2.force_login(self.user_2)
-
-    def test_view(self):
-        self.model_class.objects.count()
-        self.model_class_factory.create_batch(5, user=self.user_1)
-
-        data = self.client_1.get(self.url).data
-        self.assertEqual(len(data), 5)
-
-    def test_no_access_view(self):
-        self.model_class_factory(user=self.user_1)
-
-        data = self.client_2.get(self.url).data
-        self.assertEqual(len(data), 0)
 
     def test_create_view(self):
         post_data = {"name": CONSTANTS.NAME_1, "notes": CONSTANTS.NOTES_1}
@@ -112,36 +69,6 @@ class TestSupplementsView(TestCase):
         url_name = BetterSelfResourceConstants.INGREDIENT_COMPOSITIONS
         model_class_factory = SupplementFactory
         model_class = Supplement
-
-        @classmethod
-        def setUpClass(cls):
-            cls.url = reverse(cls.url_name)
-            super().setUpClass()
-
-        @classmethod
-        def setUpTestData(cls):
-            user_1 = UserFactory()
-            user_2 = UserFactory()
-
-            cls.user_1_id = user_1.id
-            cls.user_2_id = user_2.id
-
-            # create a few instances that will never be used
-            cls.model_class_factory.create_batch(5)
-
-            super().setUpTestData()
-
-        def setUp(self):
-            self.user_1 = User.objects.get(id=self.user_1_id)
-            self.user_2 = User.objects.get(id=self.user_2_id)
-
-            # a user that owns the instance
-            self.client_1 = APIClient()
-            self.client_1.force_login(self.user_1)
-
-            # a user that shouldn't have access to the instance
-            self.client_2 = APIClient()
-            self.client_2.force_login(self.user_2)
 
         def test_get_singular_resource(self):
             instance = self.model_class_factory(user=self.user_1)

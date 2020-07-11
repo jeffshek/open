@@ -1,16 +1,17 @@
 from django.core.exceptions import ValidationError
-from rest_framework.fields import UUIDField, HiddenField, CurrentUserDefault
+from rest_framework.fields import UUIDField
 from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.core.betterself.models.measurement import Measurement
-from open.core.betterself.serializers.measurement_serializers import (
-    MeasurementReadSerializer,
-)
 from open.core.betterself.serializers.ingredient_serializers import (
     IngredientReadSerializer,
 )
+from open.core.betterself.serializers.measurement_serializers import (
+    MeasurementReadSerializer,
+)
+from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
 from open.core.betterself.serializers.validators import validate_model_uuid
 
 
@@ -23,9 +24,7 @@ class IngredientCompositionReadSerializer(ModelSerializer):
         fields = ("uuid", "ingredient", "measurement", "quantity", "notes")
 
 
-class IngredientCompositionCreateUpdateSerializer(ModelSerializer):
-    uuid = UUIDField(required=False, read_only=True)
-    user = HiddenField(default=CurrentUserDefault())
+class IngredientCompositionCreateUpdateSerializer(BaseCreateUpdateSerializer):
     ingredient_uuid = UUIDField(source="ingredient.uuid")
     measurement_uuid = UUIDField(source="measurement.uuid")
 
@@ -77,15 +76,3 @@ class IngredientCompositionCreateUpdateSerializer(ModelSerializer):
                 )
 
         return validated_data
-
-    def create(self, validated_data):
-        create_model = self.Meta.model
-        obj = create_model.objects.create(**validated_data)
-        return obj
-
-    def update(self, instance, validated_data):
-        for key, value in validated_data.items():
-            setattr(instance, key, value)
-
-        instance.save()
-        return instance

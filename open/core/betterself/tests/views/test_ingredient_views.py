@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
-from django.urls import reverse
-from rest_framework.test import APIClient
 
 from open.core.betterself.constants import BetterSelfResourceConstants
 from open.core.betterself.factories import IngredientFactory
 from open.core.betterself.models.ingredient import Ingredient
-from open.users.factories import UserFactory
+from open.core.betterself.tests.mixins.resource_mixin import (
+    BetterSelfResourceViewTestCaseMixin,
+)
 
 User = get_user_model()
 
@@ -16,40 +16,10 @@ python manage.py test --pattern="*test_ingredient_views.py" --keepdb
 """
 
 
-class TestIngredientCreateListView(TestCase):
+class TestIngredientCreateListView(BetterSelfResourceViewTestCaseMixin, TestCase):
     url_name = BetterSelfResourceConstants.INGREDIENTS
     model_class_factory = IngredientFactory
     model_class = Ingredient
-
-    @classmethod
-    def setUpClass(cls):
-        cls.url = reverse(cls.url_name)
-        super().setUpClass()
-
-    @classmethod
-    def setUpTestData(cls):
-        user_1 = UserFactory()
-        user_2 = UserFactory()
-
-        cls.user_1_id = user_1.id
-        cls.user_2_id = user_2.id
-
-        # create a few instances that will never be used
-        cls.model_class_factory.create_batch(5)
-
-        super().setUpTestData()
-
-    def setUp(self):
-        self.user_1 = User.objects.get(id=self.user_1_id)
-        self.user_2 = User.objects.get(id=self.user_2_id)
-
-        # a user that owns the instance
-        self.client_1 = APIClient()
-        self.client_1.force_login(self.user_1)
-
-        # a user that shouldn't have access to the instance
-        self.client_2 = APIClient()
-        self.client_2.force_login(self.user_2)
 
     def test_view(self):
         names_to_create = ["a", "b", "c", "d", "e", "f"]
@@ -110,40 +80,10 @@ class TestIngredientCreateListView(TestCase):
         self.assertTrue(expected_error_found)
 
 
-class TestIngredientGetUpdateDelete(TestCase):
+class TestIngredientGetUpdateDelete(BetterSelfResourceViewTestCaseMixin, TestCase):
     url_name = BetterSelfResourceConstants.INGREDIENTS
     model_class_factory = IngredientFactory
     model_class = Ingredient
-
-    @classmethod
-    def setUpClass(cls):
-        cls.url = reverse(cls.url_name)
-        super().setUpClass()
-
-    @classmethod
-    def setUpTestData(cls):
-        user_1 = UserFactory()
-        user_2 = UserFactory()
-
-        cls.user_1_id = user_1.id
-        cls.user_2_id = user_2.id
-
-        # create a few instances that will never be used
-        cls.model_class_factory.create_batch(5)
-
-        super().setUpTestData()
-
-    def setUp(self):
-        self.user_1 = User.objects.get(id=self.user_1_id)
-        self.user_2 = User.objects.get(id=self.user_2_id)
-
-        # a user that owns the instance
-        self.client_1 = APIClient()
-        self.client_1.force_login(self.user_1)
-
-        # a user that shouldn't have access to the instance
-        self.client_2 = APIClient()
-        self.client_2.force_login(self.user_2)
 
     def test_get_singular_resource(self):
         instance = self.model_class_factory(user=self.user_1)
