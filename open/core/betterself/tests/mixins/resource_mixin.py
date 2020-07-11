@@ -4,6 +4,7 @@ from rest_framework.test import APIClient
 
 from open.users.factories import UserFactory
 from open.users.models import User
+from open.utilities.date_and_time import get_utc_now
 
 
 class BetterSelfResourceViewTestCaseMixin(object):
@@ -15,6 +16,10 @@ class BetterSelfResourceViewTestCaseMixin(object):
     @classmethod
     def setUpClass(cls):
         cls.url = reverse(cls.url_name)
+
+        cls.current_time = get_utc_now()
+        cls.current_time_isoformat = cls.current_time.isoformat()
+
         super().setUpClass()
 
     @classmethod
@@ -75,3 +80,30 @@ class DeleteTestsMixin:
 
         with self.assertRaises(ObjectDoesNotExist):
             self.model_class.objects.get(id=instance_id)
+
+
+class GetTestsMixin:
+    def test_get_singular_resource(self):
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        response = self.client_1.get(url)
+        data = response.data
+
+        for key, value in data.items():
+            instance_value = getattr(instance, key)
+            if isinstance(instance_value, (str, bool)):
+                # if the field stored on the db level is the right noe
+                self.assertEqual(instance_value, value)
+
+    def test_update_view_with_invalid_user_permission(self):
+        """
+        No one should be able to access other people's data
+        """
+        instance = self.model_class_factory(user=self.user_1)
+        url = instance.get_update_url()
+
+        params = {"notes": "fake spoof"}
+
+        response = self.client_2.post(url, data=params)
+        self.assertEqual(response.status_code, 404, response.data)

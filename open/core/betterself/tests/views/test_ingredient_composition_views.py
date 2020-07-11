@@ -11,6 +11,7 @@ from open.core.betterself.models.ingredient_composition import IngredientComposi
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
     DeleteTestsMixin,
+    GetTestsMixin,
 )
 
 User = get_user_model()
@@ -91,20 +92,11 @@ class TestIngredientCompositionView(BetterSelfResourceViewTestCaseMixin, TestCas
 
 
 class TestIngredientCompositionGetUpdateDelete(
-    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, TestCase
+    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, GetTestsMixin, TestCase
 ):
     url_name = BetterSelfResourceConstants.INGREDIENT_COMPOSITIONS
     model_class_factory = IngredientCompositionFactory
     model_class = IngredientComposition
-
-    def test_get_singular_resource(self):
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        response = self.client_1.get(url)
-        data = response.data
-
-        self.assertEqual(float(data["quantity"]), instance.quantity)
 
     def test_update_view_for_quantities(self):
         instance = self.model_class_factory(quantity=10, user=self.user_1,)
@@ -131,18 +123,6 @@ class TestIngredientCompositionGetUpdateDelete(
 
         self.assertEqual(response.status_code, 200, data)
         self.assertEqual(data["ingredient"]["uuid"], ingredient_uuid)
-
-    def test_update_view_with_invalid_user_permission(self):
-        """
-        No one should be able to access other people's data
-        """
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        params = {"notes": "fake spoof"}
-
-        response = self.client_2.post(url, data=params)
-        self.assertEqual(response.status_code, 404, response.data)
 
     def test_update_view_with_bad_data(self):
         """ This won't update with an incorrect alternative user """
