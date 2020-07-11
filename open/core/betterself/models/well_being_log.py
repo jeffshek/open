@@ -22,14 +22,14 @@ class WellBeingLog(BaseModelWithUserGeneratedContent):
     Capture enough data to be helpful to diagnose chronic
     """
 
-    RESOURCE_NAME = BetterSelfResourceConstants.WELL_BEING_LOG
+    RESOURCE_NAME = BetterSelfResourceConstants.WELL_BEING_LOGS
 
     time = DateTimeField(default=get_utc_now)
 
     # differentiate between feeling how a person may feel mentally versus physically
     # do as a score of 1-10
-    mental_value = PositiveSmallIntegerField()
-    physical_value = PositiveSmallIntegerField()
+    mental_value = PositiveSmallIntegerField(null=True, blank=True)
+    physical_value = PositiveSmallIntegerField(null=True, blank=True)
 
     source = CharField(
         max_length=50, choices=INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE

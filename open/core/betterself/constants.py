@@ -1,5 +1,7 @@
 from open.utilities.fields import create_django_choice_tuple_from_list
 
+DEMO_TESTING_ACCOUNT = "demo-testing@senrigan.io"
+
 
 class BetterSelfResourceConstants:
     """
@@ -18,7 +20,7 @@ class BetterSelfResourceConstants:
     SLEEP_LOGS = "sleep_logs"
     ACTIVITIES = "activities"
     ACTIVITY_LOGS = "activity_logs"
-    WELL_BEING_LOG = "well_being_logs"
+    WELL_BEING_LOGS = "well_being_logs"
 
 
 WEB_INPUT_SOURCE = "web"
