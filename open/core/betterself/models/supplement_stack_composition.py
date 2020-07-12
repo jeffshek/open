@@ -15,6 +15,7 @@ class SupplementStackComposition(BaseModelWithUserGeneratedContent):
 
     class Meta:
         unique_together = ("user", "supplement", "stack")
+        verbose_name = "Supplement Stack Composition"
 
     def __str__(self):
         return "{}-{}".format(self.stack, self.supplement)
