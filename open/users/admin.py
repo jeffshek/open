@@ -11,6 +11,14 @@ User = get_user_model()
 admin.site.site_header = "Open Control Panel"
 
 
+def create_demo_fixtures(modeladmin, request, queryset):
+    for instance in queryset:
+        return
+
+
+create_demo_fixtures.short_description = "Create Demo Fixtures"
+
+
 class TokenInline(admin.TabularInline):
     model = Token
 
@@ -23,3 +31,4 @@ class UserAdmin(auth_admin.UserAdmin):
     list_display = ["username", "email", "is_superuser"]
     search_fields = ["name", "email"]
     inlines = [TokenInline]
+    actions = [create_demo_fixtures]
