@@ -41,14 +41,14 @@ services:
   redis:
     image: redis:5.0
 
-  traefik:
-    build:
-      context: .
-      dockerfile: ./compose/production/traefik/Dockerfile
-    depends_on:
-      - django
-    ports:
-      - "0.0.0.0:80:80"
+#  traefik:
+#    build:
+#      context: .
+#      dockerfile: ./compose/production/traefik/Dockerfile
+#    depends_on:
+#      - django
+#    ports:
+#      - "0.0.0.0:80:80"
 
 #  celeryworker:
 #    <<: *django
@@ -60,24 +60,24 @@ services:
 #    ports: []
 #    command: /start-celeryworker.sh
 
-  celeryworker:
-    image: gcr.io/proven-record-242223/open:latest
-    depends_on:
-      - redis
-      - postgres
-    env_file:
-      - ./.envs/.local/.django
-    volumes:
-      - .:/app
-    command: /start-celeryworker.sh
-
-  celerybeat:
-    image: gcr.io/proven-record-242223/open:latest
-    depends_on:
-      - redis
-      - postgres
-    env_file:
-      - ./.envs/.local/.django
-    volumes:
-      - .:/app
-    command: /start-celerybeat.sh
+#  celeryworker:
+#    image: gcr.io/proven-record-242223/open:latest
+#    depends_on:
+#      - redis
+#      - postgres
+#    env_file:
+#      - ./.envs/.local/.django
+#    volumes:
+#      - .:/app
+#    command: /start-celeryworker.sh
+#
+#  celerybeat:
+#    image: gcr.io/proven-record-242223/open:latest
+#    depends_on:
+#      - redis
+#      - postgres
+#    env_file:
+#      - ./.envs/.local/.django
+#    volumes:
+#      - .:/app
+#    command: /start-celerybeat.sh
