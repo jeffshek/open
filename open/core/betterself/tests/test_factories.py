@@ -12,6 +12,8 @@ from open.core.betterself.factories import (
     ActivityLogFactory,
     ActivityFactory,
     DailyProductivityLogFactory,
+    SleepLogFactory,
+    WellBeingLogFactory,
 )
 
 User = get_user_model()
@@ -27,28 +29,34 @@ class TestBetterSelfFactories(TestCase):
         A quick and lazy way to make sure all factories fire correctly
         """
         factories_to_test = [
-            IngredientFactory,
-            MeasurementFactory,
-            IngredientCompositionFactory,
-            SupplementFactory,
-            SupplementStackFactory,
-            SupplementStackCompositionFactory,
-            SupplementLogFactory,
-            DailyProductivityLogFactory,
             ActivityFactory,
             ActivityLogFactory,
+            DailyProductivityLogFactory,
+            IngredientFactory,
+            IngredientCompositionFactory,
+            MeasurementFactory,
+            SleepLogFactory,
+            SupplementFactory,
+            SupplementLogFactory,
+            SupplementStackFactory,
+            SupplementStackCompositionFactory,
+            WellBeingLogFactory,
         ]
 
         for factory in factories_to_test:
             created_instance = factory()
             self.assertIsNotNone(created_instance)
 
-    def test_supplement_factory(self):
-        expected_name = "test"
-        supplement = SupplementFactory(name=expected_name)
-        self.assertEqual(supplement.name, expected_name)
+    def test_sleep_log_factory(self):
+        # this one is so unique i need to test it separately
+        sleep_logs = SleepLogFactory.create_batch(10)
+        instance = sleep_logs[0]
 
-    def test_supplement_log_factory(self):
-        quantity = 50
-        supplement_log = SupplementLogFactory(quantity=quantity)
-        self.assertEqual(supplement_log.quantity, quantity)
+        self.assertTrue(instance.end_time > instance.start_time)
+
+        sleep_time = instance.end_time - instance.start_time
+        sleep_time_seconds = sleep_time.seconds
+        sleep_time_hours = sleep_time_seconds // 3600
+
+        # should always range between at least 1 and 14 for test fixtures
+        self.assertTrue(14 > sleep_time_hours > 1)

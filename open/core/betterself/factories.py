@@ -16,6 +16,7 @@ from open.core.betterself.models.daily_productivity_log import DailyProductivity
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.core.betterself.models.measurement import Measurement
+from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.models.supplement_stack import SupplementStack
@@ -28,6 +29,7 @@ from open.utilities.date_and_time import (
     get_utc_now,
     get_utc_date_relative_units_ago,
     get_utc_time_relative_units_ago,
+    get_time_relative_units_ago,
 )
 
 
@@ -159,3 +161,18 @@ class WellBeingLogFactory(DjangoModelFactory):
     class Meta:
         model = WellBeingLog
         django_get_or_create = ["user", "time"]
+
+
+def sleep_start_time(sleep_end_time):
+    start_time = get_time_relative_units_ago(sleep_end_time, hours=8)
+    return start_time
+
+
+class SleepLogFactory(DjangoModelFactory):
+    user = SubFactory(UserFactory)
+    start_time = LazyAttribute(lambda instance: sleep_start_time(instance.end_time))
+    end_time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
+
+    class Meta:
+        model = SleepLog
+        django_get_or_create = ["user", "start_time", "end_time"]

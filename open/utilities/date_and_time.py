@@ -19,6 +19,11 @@ def get_utc_date():
     return now.date()
 
 
+def get_time_relative_units_ago(time, **kwargs):
+    result = time - relativedelta(**kwargs)
+    return result
+
+
 def get_utc_time_relative_units_ago(**kwargs):
     if len(kwargs) != 1:
         raise TypeError("This Function Only Accepts One Type")
