@@ -8,13 +8,14 @@ from open.users.utilities import create_user_api_tokens
 
 logger = logging.getLogger()
 
-"""
-This file is a hack and technically a bad practice ...
-"""
-
 
 def load_data(apps, schema_editor):
-    create_user_api_tokens()
+    User = apps.get_model("users", "User")
+    users = User.objects.all()
+
+    Token = apps.get_model("authtoken", "Token")
+    for user in users:
+        Token.objects.get_or_create(user=user)
 
 
 class Migration(migrations.Migration):
