@@ -1,7 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db.models import CharField, DateTimeField
 
-from open.core.betterself.constants import INPUT_SOURCES_TUPLES
+from open.core.betterself.constants import (
+    INPUT_SOURCES_TUPLES,
+    BetterSelfResourceConstants,
+)
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
@@ -10,6 +13,8 @@ class SleepLog(BaseModelWithUserGeneratedContent):
     Records per each time a person falls asleep that combined across 24 hours is a way to see how much sleep
     a person gets.
     """
+
+    RESOURCE_NAME = BetterSelfResourceConstants.SLEEP_LOGS
 
     source = CharField(max_length=50, choices=INPUT_SOURCES_TUPLES)
     start_time = DateTimeField()

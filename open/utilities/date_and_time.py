@@ -1,6 +1,13 @@
+from dateutil import parser
 from datetime import datetime
 import pytz
 from dateutil.relativedelta import relativedelta
+
+
+def parse_datetime_string(input):
+    """ Simple wrapper, just because I can use this utilities easier than remembering all the different ways to call the parser"""
+    result = parser.parse(input)
+    return result
 
 
 def print_current_time():
@@ -21,6 +28,11 @@ def get_utc_date():
 
 def get_time_relative_units_ago(time, **kwargs):
     result = time - relativedelta(**kwargs)
+    return result
+
+
+def get_time_relative_units_forward(time, **kwargs):
+    result = time + relativedelta(**kwargs)
     return result
 
 
