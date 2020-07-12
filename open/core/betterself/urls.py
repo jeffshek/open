@@ -1,4 +1,5 @@
 from django.urls import path
+
 from open.core.betterself.constants import BetterSelfResourceConstants as RESOURCES
 from open.core.betterself.views.activity_log_views import (
     ActivityLogCreateListView,
@@ -12,15 +13,15 @@ from open.core.betterself.views.daily_productivity_log_views import (
     DailyProductivityLogCreateListView,
     DailyProductivityLogGetUpdateView,
 )
-from open.core.betterself.views.measurement import MeasurementListView
-from open.core.betterself.views.ingredient_views import (
-    IngredientCreateListView,
-    IngredientGetUpdateView,
-)
 from open.core.betterself.views.ingredient_composition_views import (
     IngredientCompositionCreateListView,
     IngredientCompositionGetUpdateView,
 )
+from open.core.betterself.views.ingredient_views import (
+    IngredientCreateListView,
+    IngredientGetUpdateView,
+)
+from open.core.betterself.views.measurement import MeasurementListView
 from open.core.betterself.views.supplement_log_views import (
     SupplementLogCreateListView,
     SupplementLogGetUpdateView,
@@ -28,6 +29,10 @@ from open.core.betterself.views.supplement_log_views import (
 from open.core.betterself.views.supplement_views import (
     SupplementCreateListView,
     SupplementGetUpdateView,
+)
+from open.core.betterself.views.well_being_log_views import (
+    WellBeingLogGetUpdateView,
+    WellBeingLogCreateListView,
 )
 
 urlpatterns = [
@@ -105,5 +110,15 @@ urlpatterns = [
         f"{RESOURCES.DAILY_PRODUCTIVITY_LOGS}/<uuid:uuid>/",
         view=DailyProductivityLogGetUpdateView.as_view(),
         name=RESOURCES.DAILY_PRODUCTIVITY_LOGS,
+    ),
+    path(
+        f"{RESOURCES.WELL_BEING_LOGS}/",
+        view=WellBeingLogCreateListView.as_view(),
+        name=RESOURCES.WELL_BEING_LOGS,
+    ),
+    path(
+        f"{RESOURCES.WELL_BEING_LOGS}/<uuid:uuid>/",
+        view=WellBeingLogGetUpdateView.as_view(),
+        name=RESOURCES.WELL_BEING_LOGS,
     ),
 ]

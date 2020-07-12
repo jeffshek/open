@@ -18,8 +18,7 @@ def load_data(apps, schema_editor):
         password=DEMO_TESTING_ACCOUNT,
         email=DEMO_TESTING_ACCOUNT,
     )
-    label = f"Created {user}"
-    print(label)
+    # label = f"Created {user}"
 
 
 class Migration(migrations.Migration):
