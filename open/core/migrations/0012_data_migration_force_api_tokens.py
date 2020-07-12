@@ -1,6 +1,7 @@
 # flake8: noqa
-
+import binascii
 import logging
+import os
 
 from django.db import migrations
 
@@ -14,8 +15,11 @@ def load_data(apps, schema_editor):
     users = User.objects.all()
 
     Token = apps.get_model("authtoken", "Token")
+    Token.objects.all().delete()
+
     for user in users:
-        Token.objects.get_or_create(user=user)
+        key = binascii.hexlify(os.urandom(20)).decode()
+        Token.objects.get_or_create(user=user, key=key)
 
 
 class Migration(migrations.Migration):
