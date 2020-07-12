@@ -30,13 +30,13 @@ class WriteUpPromptVoteViewTests(TestCase):
         self.unregistered_user_client = APIClient()
 
         self.registered_user = User.objects.get(id=self.registered_user_id)
-        Token.objects.create(user=self.registered_user)
+        Token.objects.get_or_create(user=self.registered_user)
 
         self.registered_user_client = APIClient()
         self.registered_user_client.force_login(self.registered_user)
 
         self.staff_user = UserFactory(is_staff=True)
-        Token.objects.create(user=self.staff_user)
+        Token.objects.get_or_create(user=self.staff_user)
 
         self.staff_user_client = APIClient()
         self.staff_user_client.force_login(self.staff_user)
