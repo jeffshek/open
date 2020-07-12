@@ -22,6 +22,10 @@ from open.core.betterself.views.ingredient_views import (
     IngredientGetUpdateView,
 )
 from open.core.betterself.views.measurement import MeasurementListView
+from open.core.betterself.views.sleep_log_views import (
+    SleepLogCreateListView,
+    SleepLogGetUpdateView,
+)
 from open.core.betterself.views.supplement_log_views import (
     SupplementLogCreateListView,
     SupplementLogGetUpdateView,
@@ -120,5 +124,15 @@ urlpatterns = [
         f"{RESOURCES.WELL_BEING_LOGS}/<uuid:uuid>/",
         view=WellBeingLogGetUpdateView.as_view(),
         name=RESOURCES.WELL_BEING_LOGS,
+    ),
+    path(
+        f"{RESOURCES.SLEEP_LOGS}/",
+        view=SleepLogCreateListView.as_view(),
+        name=RESOURCES.SLEEP_LOGS,
+    ),
+    path(
+        f"{RESOURCES.SLEEP_LOGS}/<uuid:uuid>/",
+        view=SleepLogGetUpdateView.as_view(),
+        name=RESOURCES.SLEEP_LOGS,
     ),
 ]

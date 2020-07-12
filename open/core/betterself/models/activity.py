@@ -35,3 +35,4 @@ class Activity(BaseModelWithUserGeneratedContent):
     class Meta:
         unique_together = (("name", "user"),)
         ordering = ["name"]
+        verbose_name_plural = "Activities"
