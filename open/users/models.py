@@ -1,8 +1,10 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, UUIDField, BooleanField
+from django.db.models import CharField, UUIDField, BooleanField, DateTimeField
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from model_utils.fields import AutoLastModifiedField
 from rest_framework.authtoken.models import Token
 
 from open.constants import SIGNED_UP_FROM_DETAILS_CHOICE
@@ -21,6 +23,10 @@ class User(AbstractUser):
     # for specific features that are specific to an app
     is_writeup_user = BooleanField(default=False)
     is_betterself_user = BooleanField(default=False)
+
+    # doing this lets you insert records and modify the timestamps of created
+    created = DateTimeField(default=timezone.now, editable=False, blank=True)
+    modified = AutoLastModifiedField(_("modified"))
 
     def save(self, *args, **kwargs):
         needs_api_key = False

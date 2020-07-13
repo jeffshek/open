@@ -9,6 +9,10 @@ MOCK_USERNAME = "smokey-the-bear"
 MOCK_PASSWORD = "only-you-can-stop-forest-firrraaaaahss"
 MOCK_EMAIL = "cure-disease@gmail.com"
 
+"""
+dpy test open.users.tests --keepdb
+"""
+
 
 class TestUserRegistrationWithAPI(TestCase):
     def test_signup_process(self):

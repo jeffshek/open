@@ -9,28 +9,19 @@ from open.core.betterself.constants import DEMO_TESTING_ACCOUNT
 
 logger = logging.getLogger()
 
-"""
-This whole data migration was a fail.
-"""
-
 
 def load_data(apps, schema_editor):
     User = apps.get_model("users", "User")
-
-    # don't worry, i changed the password after the datamigration!
     adjusted_password = make_password(DEMO_TESTING_ACCOUNT)
 
-    user, _ = User.objects.get_or_create(
-        username=DEMO_TESTING_ACCOUNT,
-        password=adjusted_password,
-        email=DEMO_TESTING_ACCOUNT,
-    )
-    # label = f"Created {user}"
+    demo_user, _ = User.objects.get_or_create(username=DEMO_TESTING_ACCOUNT)
+    demo_user.password = adjusted_password
+    demo_user.save()
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("core", "0009_add_measurement_name_uniqueness"),
+        ("core", "0012_data_migration_force_api_tokens"),
     ]
 
     operations = [migrations.RunPython(load_data)]
