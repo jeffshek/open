@@ -30,6 +30,7 @@ class UserTokenSerializer(TokenSerializer):
         fields = ["key", "user"]
 
 
+# TODO - this view and serializer is on hold as you figure out registration (later)
 class UserCreateSerializer(ModelSerializer):
     username = CharField(validators=[UniqueValidator(queryset=User.objects.all())])
     # need to make email optional ... prob should think through signup form a little
@@ -37,6 +38,10 @@ class UserCreateSerializer(ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all())], required=False
     )
     password = CharField(write_only=True, min_length=8)
+
+    class Meta:
+        model = User
+        fields = ["username", "email"]
 
     # TODO test - does this work with just username / no email, etc.
 

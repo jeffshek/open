@@ -9,6 +9,10 @@ MOCK_USERNAME = "smokey-the-bear"
 MOCK_PASSWORD = "only-you-can-stop-forest-firrraaaaahss"
 MOCK_EMAIL = "cure-disease@gmail.com"
 
+"""
+dpy test open.users.tests --keepdb
+"""
+
 
 class TestUserRegistrationWithAPI(TestCase):
     def test_signup_process(self):
@@ -28,6 +32,24 @@ class TestUserRegistrationWithAPI(TestCase):
 
         user_exists = User.objects.filter(username=MOCK_USERNAME)
         self.assertTrue(user_exists)
+
+    # def test_signup_process(self):
+    #     url = reverse("rest_register")
+    #     data = {
+    #         "username": MOCK_USERNAME,
+    #         "password1": "machine-learning",
+    #         "password2": "machine-learning",
+    #         "email": MOCK_EMAIL,
+    #     }
+    #
+    #     client = APIClient()
+    #     response = client.post(url, data=data)
+    #
+    #     # if successful, 201
+    #     self.assertEqual(response.status_code, 201)
+    #
+    #     user_exists = User.objects.filter(username=MOCK_USERNAME)
+    #     self.assertTrue(user_exists)
 
     def test_signup_process_with_invalid_username(self):
         # create the user, so it shouldn't be creatable
