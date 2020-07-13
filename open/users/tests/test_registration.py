@@ -33,24 +33,6 @@ class TestUserRegistrationWithAPI(TestCase):
         user_exists = User.objects.filter(username=MOCK_USERNAME)
         self.assertTrue(user_exists)
 
-    # def test_signup_process(self):
-    #     url = reverse("rest_register")
-    #     data = {
-    #         "username": MOCK_USERNAME,
-    #         "password1": "machine-learning",
-    #         "password2": "machine-learning",
-    #         "email": MOCK_EMAIL,
-    #     }
-    #
-    #     client = APIClient()
-    #     response = client.post(url, data=data)
-    #
-    #     # if successful, 201
-    #     self.assertEqual(response.status_code, 201)
-    #
-    #     user_exists = User.objects.filter(username=MOCK_USERNAME)
-    #     self.assertTrue(user_exists)
-
     def test_signup_process_with_invalid_username(self):
         # create the user, so it shouldn't be creatable
         User.objects.create_user(username=MOCK_USERNAME)

@@ -19,7 +19,16 @@ class SimpleUserReadSerializer(ModelSerializer):
 class UserReadSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("name", "uuid", "signed_up_from", "created", "modified")
+        fields = (
+            "name",
+            "uuid",
+            "signed_up_from",
+            "date_joined",
+            "username",
+            "email",
+            "created",
+            "modified",
+        )
 
 
 class UserTokenSerializer(TokenSerializer):

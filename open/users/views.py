@@ -1,13 +1,9 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
-from django.views.generic import DetailView, RedirectView, UpdateView
-
-
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_auth.registration.views import SocialLoginView
-from rest_auth.serializers import LoginSerializer
+from rest_auth.serializers import LoginSerializer, JWTSerializer
 from rest_auth.views import LoginView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
@@ -19,24 +15,39 @@ from open.users.serializers import UserCreateSerializer, UserTokenSerializer
 User = get_user_model()
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class EmptyView(APIView):
+    """
+    Empty View that returns nothing because django-all-auth tries to resolve a form, but we don't use forms
+    since this is only an API ...
+    """
 
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+    authentication_classes = ()
+    permission_classes = ()
 
-
-user_detail_view = UserDetailView.as_view()
+    def get(self, *args):
+        return Response()
 
 
 class LoginNoCSRFAPIView(LoginView):
     authentication_classes = (TokenAuthentication,)
     serializer_class = LoginSerializer
 
+    def post(self, *args):
+        # leave for debugging temporarily
+        return super().post(*args)
+
+    def get_response_serializer(self):
+        # override default response serializer to also include user and token (this is used by redux to set userinfo)
+        if getattr(settings, "REST_USE_JWT", False):
+            response_serializer = JWTSerializer
+        else:
+            response_serializer = UserTokenSerializer
+        return response_serializer
+
 
 class RegisterNoCSRFAPIView(APIView):
     # from stackoverflow
-    # for sign up fields, don't want/need an auth class
+    # for registration forms, don't want/need an auth class
     authentication_classes = ()
     permission_classes = ()
 
@@ -48,32 +59,6 @@ class RegisterNoCSRFAPIView(APIView):
         token, _ = Token.objects.get_or_create(user=user)
         response_serializer = UserTokenSerializer(token)
         return Response(response_serializer.data)
-
-
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-
-    model = User
-    fields = ["name"]
-
-    def get_success_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
-
-    def get_object(self):
-        return User.objects.get(username=self.request.user.username)
-
-
-user_update_view = UserUpdateView.as_view()
-
-
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-
-    permanent = False
-
-    def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
-
-
-user_redirect_view = UserRedirectView.as_view()
 
 
 class GitHubLogin(SocialLoginView):
