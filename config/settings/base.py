@@ -352,7 +352,6 @@ GPT2_MEDIUM_COMPANIES_API_ENDPOINT = env(
     "GPT2_MEDIUM_COMPANIES_API_ENDPOINT", default="http://www.google.com/gpt2"
 )
 
-
 GPT2_LARGE_API_ENDPOINT = env(
     "GPT2_LARGE_API_ENDPOINT", default="https://www.google.com/gpt2"
 )
@@ -367,10 +366,11 @@ TRANSFORMERS_XL_API_ENDPOINT = env(
     default="https://www.google.com/transformers_xl_wt_103",
 )
 
-
 CORS_ORIGIN_WHITELIST = [
     "https://writeup.ai",
     "https://betterself.io",
     "https://www.betterself.io",
     "https://open.senrigan.io",
+    "https://app.betterself.io",
+    "https://betterself.io",
 ]
