@@ -88,6 +88,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://betterself.io",
     "https://www.betterself.io",
     "http://localhost:8008",
+    "http://localhost:5000",
     "http://localhost:8000",
     "http://localhost:3000",
 ]
