@@ -5,7 +5,7 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import RedirectView
 
-from open.users.views import GitHubLogin
+from open.users.views import GitHubLogin, LoginNoCSRFAPIView, RegisterNoCSRFAPIView
 
 # need a special view to make sure favicon always works
 favicon_view = RedirectView.as_view(
@@ -25,6 +25,12 @@ urlpatterns = [
         default_views.permission_denied,
         kwargs={"exception": Exception("Shame On You")},
         name="unnamed",
+    ),
+    path("rest-auth/login/", LoginNoCSRFAPIView.as_view(), name="rest_login"),
+    path(
+        "rest-auth/registration/",
+        RegisterNoCSRFAPIView.as_view(),
+        name="rest_registration",
     ),
     path("rest-auth/", include("rest_auth.urls")),
     path("rest-auth/registration/", include("rest_auth.registration.urls")),
