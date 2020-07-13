@@ -1,11 +1,10 @@
 from django.urls import path
 
-from open.users.views import EmptyView
+from open.users.views import EmptyView, UserDetailsView
 
 app_name = "users"
 
 urlpatterns = [
     path("~redirect/", view=EmptyView.as_view(), name="redirect"),
-    # path("~update/", view=user_update_view, name="update"),
-    # path("<str:username>/", view=user_detail_view, name="detail"),
+    path("details/", view=UserDetailsView.as_view(), name="details"),
 ]

@@ -10,7 +10,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from open.users.serializers import UserCreateSerializer, UserTokenSerializer
+from open.users.serializers import (
+    UserCreateSerializer,
+    UserTokenSerializer,
+    UserReadSerializer,
+)
 
 User = get_user_model()
 
@@ -59,6 +63,13 @@ class RegisterNoCSRFAPIView(APIView):
         token, _ = Token.objects.get_or_create(user=user)
         response_serializer = UserTokenSerializer(token)
         return Response(response_serializer.data)
+
+
+class UserDetailsView(APIView):
+    def get(self, request):
+        user = request.user
+        serializer = UserReadSerializer(user)
+        return Response(serializer.data)
 
 
 class GitHubLogin(SocialLoginView):
