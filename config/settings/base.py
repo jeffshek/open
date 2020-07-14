@@ -373,4 +373,6 @@ CORS_ORIGIN_WHITELIST = [
     "https://open.senrigan.io",
     "https://app.betterself.io",
     "https://betterself.io",
+    # TODO - Remove, this is a temporary hack since my computer has been having CPU issues ...
+    "http://localhost:5000",
 ]
