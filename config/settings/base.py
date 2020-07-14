@@ -375,4 +375,5 @@ CORS_ORIGIN_WHITELIST = [
     "https://betterself.io",
     # TODO - Remove, this is a temporary hack since my computer has been having CPU issues ...
     "http://localhost:5000",
+    "http://localhost:3000",
 ]
