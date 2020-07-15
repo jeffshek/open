@@ -8,6 +8,7 @@ from open.core.betterself.factories import (
     SupplementFactory,
     SupplementLogFactory,
     WellBeingLogFactory,
+    SleepLogFactory,
 )
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
@@ -16,6 +17,7 @@ from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 
 # from open.core.betterself.models.sleep_log import SleepLog
+from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.models.supplement_stack import SupplementStack
@@ -41,7 +43,7 @@ def create_demo_fixtures_for_user(user):
         DailyProductivityLog,
         Ingredient,
         IngredientComposition,
-        # SleepLog,
+        SleepLog,
         Supplement,
         SupplementLog,
         SupplementStack,
@@ -61,8 +63,6 @@ def create_demo_fixtures_for_user(user):
     DailyProductivityLogFactory.create_batch(daily_logs_to_create, user=user)
     ingredients = IngredientFactory.create_batch(fixture_to_create, user=user)
 
-    # TODO - Completely forgot about SleepLogs
-    # SleepLogFactory
     for ingredient in ingredients:
         supplement = SupplementFactory.create(user=user, name=ingredient.name)
         SupplementLogFactory.create_batch(
@@ -70,5 +70,6 @@ def create_demo_fixtures_for_user(user):
         )
 
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
+    SleepLogFactory.create_batch(daily_logs_to_create, user=user)
 
     logger.info(f"Successfully Created Demo Fixtures for {user.username}")
