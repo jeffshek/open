@@ -43,7 +43,7 @@ urlpatterns = [
     # and route traffic based on API variants. this is to offload websocket servers
     # and traditional REST servers
     path("api/writeup/v1/", include("open.core.writeup.urls")),
-    path("betterself/v2/", include("open.core.betterself.urls")),
+    path("api/betterself/v2/", include("open.core.betterself.urls")),
     path("users/", include("open.users.urls")),
 ]
 
