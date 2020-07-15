@@ -1,5 +1,7 @@
 import logging
 
+from dateutil import relativedelta
+
 from open.core.betterself.factories import (
     ActivityFactory,
     ActivityLogFactory,
@@ -25,6 +27,7 @@ from open.core.betterself.models.supplement_stack_composition import (
     SupplementStackComposition,
 )
 from open.core.betterself.models.well_being_log import WellBeingLog
+from open.utilities.date_and_time import get_utc_now
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +73,14 @@ def create_demo_fixtures_for_user(user):
         )
 
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
-    SleepLogFactory.create_batch(daily_logs_to_create, user=user)
+
+    utc_now = get_utc_now()
+    sleep_dates = []
+    for index in range(daily_logs_to_create):
+        sleep_date = utc_now - relativedelta.relativedelta(days=index)
+        sleep_dates.append(sleep_date)
+
+    for sleep_date in sleep_dates:
+        SleepLogFactory(end_time=sleep_date, user=user)
 
     logger.info(f"Successfully Created Demo Fixtures for {user.username}")
