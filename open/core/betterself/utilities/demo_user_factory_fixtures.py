@@ -11,6 +11,7 @@ from open.core.betterself.factories import (
     SupplementLogFactory,
     WellBeingLogFactory,
     SleepLogFactory,
+    IngredientCompositionFactory,
 )
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
@@ -67,7 +68,14 @@ def create_demo_fixtures_for_user(user):
     ingredients = IngredientFactory.create_batch(fixture_to_create, user=user)
 
     for ingredient in ingredients:
-        supplement = SupplementFactory.create(user=user, name=ingredient.name)
+        ingredient_composition = IngredientCompositionFactory(
+            ingredient=ingredient, user=user
+        )
+        supplement = SupplementFactory.create(
+            user=user,
+            name=ingredient.name,
+            ingredient_compositions=[ingredient_composition],
+        )
         SupplementLogFactory.create_batch(
             fixture_to_create, user=user, supplement=supplement
         )

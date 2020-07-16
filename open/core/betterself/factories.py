@@ -73,7 +73,7 @@ class SupplementFactory(DjangoModelFactory):
         django_get_or_create = ["name", "user"]
 
     @post_generation
-    def ingredient_composition(self, create, extracted, **kwargs):
+    def ingredient_compositions(self, create, extracted, **kwargs):
         if not create:
             # Simple build, do nothing.
             return
