@@ -28,6 +28,8 @@ services:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
     image: open_production_postgres
+    # always keep postgres on, it's easier that way
+    restart: always
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
       - .:/app

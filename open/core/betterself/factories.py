@@ -37,6 +37,7 @@ class IngredientFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     name = Faker("user_name")
     half_life_minutes = FuzzyInteger(1, 10)
+    notes = Faker("text")
 
     class Meta:
         model = Ingredient
@@ -56,6 +57,7 @@ class IngredientCompositionFactory(DjangoModelFactory):
     ingredient = SubFactory(IngredientFactory)
     measurement = SubFactory(MeasurementFactory)
     quantity = FuzzyInteger(1, 10)
+    notes = Faker("text")
 
     class Meta:
         model = IngredientComposition
@@ -64,7 +66,7 @@ class IngredientCompositionFactory(DjangoModelFactory):
 class SupplementFactory(DjangoModelFactory):
     name = Faker("user_name")
     user = SubFactory(UserFactory)
-    notes = LazyAttribute(lambda obj: "%s notes" % obj.name)
+    notes = Faker("text")
 
     class Meta:
         model = Supplement
@@ -85,6 +87,7 @@ class SupplementFactory(DjangoModelFactory):
 class SupplementStackFactory(DjangoModelFactory):
     name = Faker("user_name")
     user = SubFactory(UserFactory)
+    notes = Faker("text")
 
     class Meta:
         model = SupplementStack
@@ -99,6 +102,7 @@ class SupplementStackCompositionFactory(DjangoModelFactory):
     stack = SubFactory(
         SupplementStackFactory, user=LazyAttribute(lambda a: a.factory_parent.user)
     )
+    notes = Faker("text")
 
     class Meta:
         model = SupplementStackComposition
@@ -110,6 +114,7 @@ class SupplementLogFactory(DjangoModelFactory):
     time = LazyFunction(get_utc_now)
     user = SubFactory(UserFactory)
     supplement = SubFactory(SupplementFactory)
+    notes = Faker("text")
 
     class Meta:
         model = SupplementLog
@@ -127,6 +132,8 @@ class DailyProductivityLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     date = FuzzyDate(start_date=get_utc_date_relative_units_ago(years=2))
 
+    notes = Faker("text")
+
     class Meta:
         model = DailyProductivityLog
         # this causes a problem i don't entirely understand why
@@ -137,6 +144,7 @@ class DailyProductivityLogFactory(DjangoModelFactory):
 class ActivityFactory(DjangoModelFactory):
     name = Faker("name")
     user = SubFactory(UserFactory)
+    notes = Faker("text")
 
     class Meta:
         model = Activity
@@ -147,6 +155,7 @@ class ActivityLogFactory(DjangoModelFactory):
     time = LazyFunction(get_utc_now)
     activity = SubFactory(ActivityFactory, user=SelfAttribute("..user"))
     duration_minutes = FuzzyInteger(0, 100)
+    notes = Faker("text")
 
     class Meta:
         model = ActivityLog
@@ -157,6 +166,7 @@ class WellBeingLogFactory(DjangoModelFactory):
     time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
     mental_value = FuzzyInteger(0, 10)
     physical_value = FuzzyInteger(0, 10)
+    notes = Faker("text")
 
     class Meta:
         model = WellBeingLog
@@ -172,6 +182,7 @@ class SleepLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     start_time = LazyAttribute(lambda instance: sleep_start_time(instance.end_time))
     end_time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
+    notes = Faker("text")
 
     class Meta:
         model = SleepLog
