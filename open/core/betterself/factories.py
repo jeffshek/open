@@ -7,7 +7,7 @@ from factory import (
     post_generation,
     SelfAttribute,
 )
-from factory.fuzzy import FuzzyInteger, FuzzyDate, FuzzyDateTime
+from factory.fuzzy import FuzzyInteger, FuzzyDate, FuzzyDateTime, FuzzyChoice
 
 from open.core.betterself.constants import API_INPUT_SOURCE
 from open.core.betterself.models.activity import Activity
@@ -46,6 +46,7 @@ class IngredientFactory(DjangoModelFactory):
 
 class MeasurementFactory(DjangoModelFactory):
     name = Faker("user_name")
+    short_name = FuzzyChoice(["mL", "g", "kg", "mg"])
 
     class Meta:
         model = Measurement

@@ -32,7 +32,7 @@ class IngredientCompositionReadSerializer(ModelSerializer):
         )
 
     def get_generated_name(self, instance):
-        name = f"{instance.ingredient.name} {instance.quantity}{instance.measurement.short_name}"
+        name = f"{instance.ingredient.name} {instance.quantity:.2f}{instance.measurement.short_name}"
         return name
 
 
