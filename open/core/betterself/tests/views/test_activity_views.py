@@ -10,6 +10,7 @@ from open.core.betterself.models.activity import Activity
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
     DeleteTestsMixin,
+    GetTestsMixin,
 )
 
 User = get_user_model()
@@ -57,24 +58,11 @@ class TestActivityView(BetterSelfResourceViewTestCaseMixin, TestCase):
 
 
 class TestIngredientCompositionGetUpdateDelete(
-    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, TestCase
+    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, TestCase, GetTestsMixin
 ):
     url_name = BetterSelfResourceConstants.ACTIVITIES
     model_class_factory = ActivityFactory
     model_class = Activity
-
-    def test_get_singular_resource(self):
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        response = self.client_1.get(url)
-        data = response.data
-
-        for key, value in data.items():
-            instance_value = getattr(instance, key)
-            if isinstance(instance_value, (str, bool)):
-                # if the field stored on the db level is the right noe
-                self.assertEqual(instance_value, value)
 
     def test_update_view_for_name(self):
         instance = self.model_class_factory(

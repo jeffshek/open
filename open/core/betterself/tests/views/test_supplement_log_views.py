@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from open.core.betterself.constants import (
@@ -13,6 +12,8 @@ from open.core.betterself.factories import (
 from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
+    DeleteTestsMixin,
+    GetTestsMixin,
 )
 from open.utilities.date_and_time import get_utc_now
 
@@ -87,32 +88,9 @@ class TestSupplementLogViews(BetterSelfResourceViewTestCaseMixin, TestCase):
         self.assertTrue(expected_error_found)
 
 
-class TestSupplementLogGetUpdateDelete(BetterSelfResourceViewTestCaseMixin, TestCase):
+class TestSupplementLogGetUpdateDelete(
+    BetterSelfResourceViewTestCaseMixin, TestCase, GetTestsMixin, DeleteTestsMixin
+):
     url_name = BetterSelfResourceConstants.SUPPLEMENT_LOGS
     model_class_factory = SupplementLogFactory
     model_class = SupplementLog
-
-    def test_get_singular_resource(self):
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        response = self.client_1.get(url)
-        data = response.data
-
-        self.assertEqual(float(data["quantity"]), instance.quantity)
-
-    def test_delete_view_on_non_uuid_url(self):
-        response = self.client_1.delete(self.url)
-        self.assertEqual(response.status_code, 405, response.data)
-
-    def test_delete_view(self):
-        instance = self.model_class_factory(user=self.user_1)
-        instance_id = instance.id
-
-        url = instance.get_update_url()
-
-        response = self.client_1.delete(url)
-        self.assertEqual(response.status_code, 204, response.data)
-
-        with self.assertRaises(ObjectDoesNotExist):
-            self.model_class.objects.get(id=instance_id)

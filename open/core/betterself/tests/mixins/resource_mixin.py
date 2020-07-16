@@ -93,7 +93,12 @@ class GetTestsMixin:
         response = self.client_1.get(url)
         data = response.data
 
+        dynamic_generated_fields = ["generated_name"]
+
         for key, value in data.items():
+            if key in dynamic_generated_fields:
+                continue
+
             instance_value = getattr(instance, key)
             if isinstance(instance_value, (str, bool)):
                 # if the field stored on the db level is the right noe

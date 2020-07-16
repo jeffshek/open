@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from rest_framework.fields import UUIDField
+from rest_framework.fields import UUIDField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.models.ingredient import Ingredient
@@ -18,10 +18,22 @@ from open.core.betterself.serializers.validators import validate_model_uuid
 class IngredientCompositionReadSerializer(ModelSerializer):
     ingredient = IngredientReadSerializer()
     measurement = MeasurementReadSerializer()
+    generated_name = SerializerMethodField()
 
     class Meta:
         model = IngredientComposition
-        fields = ("uuid", "ingredient", "measurement", "quantity", "notes")
+        fields = (
+            "uuid",
+            "ingredient",
+            "measurement",
+            "quantity",
+            "notes",
+            "generated_name",
+        )
+
+    def get_generated_name(self, instance):
+        name = f"{instance.ingredient.name} {instance.quantity}{instance.measurement.short_name}"
+        return name
 
 
 class IngredientCompositionCreateUpdateSerializer(BaseCreateUpdateSerializer):

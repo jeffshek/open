@@ -13,6 +13,7 @@ from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
     DeleteTestsMixin,
+    GetTestsMixin,
 )
 from open.core.betterself.utilities.serializer_utilties import iterable_to_uuids_list
 
@@ -67,22 +68,8 @@ class TestSupplementsView(BetterSelfResourceViewTestCaseMixin, TestCase):
 
 
 class TestSupplementGetUpdateDelete(
-    BetterSelfResourceViewTestCaseMixin, DeleteTestsMixin, TestCase
+    BetterSelfResourceViewTestCaseMixin, GetTestsMixin, DeleteTestsMixin, TestCase
 ):
     url_name = BetterSelfResourceConstants.SUPPLEMENTS
     model_class_factory = SupplementFactory
     model_class = Supplement
-
-    def test_get_singular_resource(self):
-        instance = self.model_class_factory(user=self.user_1)
-        url = instance.get_update_url()
-
-        response = self.client_1.get(url)
-        self.assertEqual(response.status_code, 200, response.data)
-        data = response.data
-
-        for key, value in data.items():
-            instance_value = getattr(instance, key)
-            if isinstance(instance_value, (str, bool)):
-                # if the field stored on the db level is the right noe
-                self.assertEqual(instance_value, value)
