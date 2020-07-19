@@ -3,7 +3,7 @@ FROM python:3.6-jessie
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update
-RUN apt-get install apt-utils python3-pip git zsh redis-tools -y
+RUN apt-get install apt-utils python3-pip git zsh redis-tools nano -y
 
 RUN pip install --upgrade pip
 
