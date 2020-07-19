@@ -38,11 +38,32 @@ from open.utilities.date_and_time import (
 )
 
 
+def get_supplement_name():
+    options = list(SUPPLEMENT_FIXTURES_NAME_AND_NOTES.keys())
+    selected_supplement_name = random.choice(options)
+
+    # add a random 2 digit number to make it more random
+    two_random_digits = random.randint(10, 99)
+
+    serialized_name = f"{selected_supplement_name}{two_random_digits}"
+
+    return serialized_name
+
+
+def get_supplement_notes(instance):
+    # go all the way to the last two, since those codes are randomly generated
+    original_supplement_name = instance.name[:-2]
+
+    return SUPPLEMENT_FIXTURES_NAME_AND_NOTES.get(
+        original_supplement_name, "Details Don't Exist"
+    )
+
+
 class IngredientFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
-    name = Faker("user_name")
+    name = LazyFunction(get_supplement_name)
+    notes = LazyAttribute(lambda a: get_supplement_notes(a))
     half_life_minutes = FuzzyInteger(1, 10)
-    notes = Faker("text")
 
     class Meta:
         model = Ingredient
@@ -67,27 +88,6 @@ class IngredientCompositionFactory(DjangoModelFactory):
 
     class Meta:
         model = IngredientComposition
-
-
-def get_supplement_name():
-    options = list(SUPPLEMENT_FIXTURES_NAME_AND_NOTES.keys())
-    selected_supplement_name = random.choice(options)
-
-    # add a random 2 digit number to make it more random
-    two_random_digits = random.randint(10, 99)
-
-    serialized_name = f"{selected_supplement_name}{two_random_digits}"
-
-    return serialized_name
-
-
-def get_supplement_notes(instance):
-    # go all the way to the last two, since those codes are randomly generated
-    original_supplement_name = instance.name[:-2]
-
-    return SUPPLEMENT_FIXTURES_NAME_AND_NOTES.get(
-        original_supplement_name, "Details Don't Exist"
-    )
 
 
 class SupplementFactory(DjangoModelFactory):
