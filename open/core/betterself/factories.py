@@ -1,3 +1,5 @@
+import random
+
 from factory import (
     DjangoModelFactory,
     LazyAttribute,
@@ -10,6 +12,9 @@ from factory import (
 from factory.fuzzy import FuzzyInteger, FuzzyDate, FuzzyDateTime, FuzzyChoice
 
 from open.core.betterself.constants import API_INPUT_SOURCE
+from open.core.betterself.fixtures.supplement_fixtures import (
+    SUPPLEMENT_FIXTURES_NAME_AND_NOTES,
+)
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
@@ -64,10 +69,31 @@ class IngredientCompositionFactory(DjangoModelFactory):
         model = IngredientComposition
 
 
+def get_supplement_name():
+    options = list(SUPPLEMENT_FIXTURES_NAME_AND_NOTES.keys())
+    selected_supplement_name = random.choice(options)
+
+    # add a random 2 digit number to make it more random
+    two_random_digits = random.randint(10, 99)
+
+    serialized_name = f"{selected_supplement_name}{two_random_digits}"
+
+    return serialized_name
+
+
+def get_supplement_notes(instance):
+    # go all the way to the last two, since those codes are randomly generated
+    original_supplement_name = instance.name[:-2]
+
+    return SUPPLEMENT_FIXTURES_NAME_AND_NOTES.get(
+        original_supplement_name, "Details Don't Exist"
+    )
+
+
 class SupplementFactory(DjangoModelFactory):
-    name = Faker("user_name")
+    name = LazyFunction(get_supplement_name)
     user = SubFactory(UserFactory)
-    notes = Faker("text")
+    notes = LazyAttribute(lambda a: get_supplement_notes(a))
 
     class Meta:
         model = Supplement
