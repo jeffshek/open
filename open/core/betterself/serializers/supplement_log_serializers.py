@@ -6,6 +6,7 @@ from rest_framework.fields import (
     CharField,
     DecimalField,
     ChoiceField,
+    SerializerMethodField,
 )
 from rest_framework.serializers import ModelSerializer
 
@@ -17,14 +18,17 @@ from open.core.betterself.serializers.simple_generic_serializer import (
     create_name_uuid_serializer,
 )
 from open.core.betterself.serializers.validators import validate_model_uuid
+from open.utilities.date_and_time import get_utc_now
 
 
 class SupplementLogReadSerializer(ModelSerializer):
     supplement = create_name_uuid_serializer(Supplement)
+    display_name = SerializerMethodField()
 
     class Meta:
         model = SupplementLog
         fields = (
+            "display_name",
             "uuid",
             "notes",
             "created",
@@ -34,6 +38,23 @@ class SupplementLogReadSerializer(ModelSerializer):
             "quantity",
             "time",
         )
+
+    def get_display_name(self, instance):
+        # a janky way to always serialize a display name that sort of explains the instance
+        # name = f"{instance.supplement.name} {instance.quantity:.2f}{instance.measurement.short_name}"
+        # return name
+
+        time_ago = (get_utc_now() - instance.time).total_seconds()
+        hours_ago = time_ago // 3600
+
+        if hours_ago > 48:
+            days_ago = hours_ago / 24
+            relative_period_label = f"{days_ago:01f} days ago"
+        else:
+            relative_period_label = f"{hours_ago} hours ago"
+
+        name = f"{instance.quantity:.0f} x {instance.supplement.name} {relative_period_label}"
+        return name
 
 
 class SupplementLogCreateUpdateSerializer(BaseCreateUpdateSerializer):
