@@ -18,7 +18,7 @@ from open.core.betterself.serializers.validators import validate_model_uuid
 class IngredientCompositionReadSerializer(ModelSerializer):
     ingredient = IngredientReadSerializer()
     measurement = MeasurementReadSerializer()
-    generated_name = SerializerMethodField()
+    display_name = SerializerMethodField()
 
     class Meta:
         model = IngredientComposition
@@ -28,10 +28,10 @@ class IngredientCompositionReadSerializer(ModelSerializer):
             "measurement",
             "quantity",
             "notes",
-            "generated_name",
+            "display_name",
         )
 
-    def get_generated_name(self, instance):
+    def get_display_name(self, instance):
         name = f"{instance.ingredient.name} {instance.quantity:.2f}{instance.measurement.short_name}"
         return name
 

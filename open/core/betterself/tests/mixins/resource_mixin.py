@@ -93,7 +93,7 @@ class GetTestsMixin:
         response = self.client_1.get(url)
         data = response.data
 
-        dynamic_generated_fields = ["generated_name"]
+        dynamic_generated_fields = ["generated_name", "display_name"]
 
         for key, value in data.items():
             if key in dynamic_generated_fields:

@@ -77,7 +77,7 @@ def create_demo_fixtures_for_user(user):
             ingredient_compositions=[ingredient_composition],
         )
         SupplementLogFactory.create_batch(
-            fixture_to_create, user=user, supplement=supplement
+            daily_logs_to_create, user=user, supplement=supplement
         )
 
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
