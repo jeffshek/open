@@ -50,7 +50,7 @@ class SupplementLogReadSerializer(ModelSerializer):
         else:
             relative_period_label = f"{hours_ago:.01f} hours ago"
 
-        name = f"{instance.quantity:.0f} x {instance.supplement.name} {relative_period_label}"
+        name = f"{instance.quantity:.0f} x {instance.supplement.name} from {relative_period_label}"
         return name
 
 
