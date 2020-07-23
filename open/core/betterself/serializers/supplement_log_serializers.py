@@ -41,17 +41,14 @@ class SupplementLogReadSerializer(ModelSerializer):
 
     def get_display_name(self, instance):
         # a janky way to always serialize a display name that sort of explains the instance
-        # name = f"{instance.supplement.name} {instance.quantity:.2f}{instance.measurement.short_name}"
-        # return name
-
         time_ago = (get_utc_now() - instance.time).total_seconds()
-        hours_ago = time_ago // 3600
+        hours_ago = time_ago / 3600
 
         if hours_ago > 48:
             days_ago = hours_ago / 24
-            relative_period_label = f"{days_ago:01f} days ago"
+            relative_period_label = f"{days_ago:.01f} days ago"
         else:
-            relative_period_label = f"{hours_ago} hours ago"
+            relative_period_label = f"{hours_ago:.01f} hours ago"
 
         name = f"{instance.quantity:.0f} x {instance.supplement.name} {relative_period_label}"
         return name
