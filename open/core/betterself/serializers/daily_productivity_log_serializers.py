@@ -24,6 +24,8 @@ class DailyProductivityLogReadSerializer(ModelSerializer):
             "distracting_time_minutes",
             "very_distracting_time_minutes",
             "notes",
+            "created",
+            "modified",
         )
 
 

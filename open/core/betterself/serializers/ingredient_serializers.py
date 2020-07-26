@@ -10,7 +10,15 @@ class IngredientReadSerializer(ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ["half_life_minutes", "name", "notes", "user", "uuid"]
+        fields = [
+            "half_life_minutes",
+            "name",
+            "notes",
+            "user",
+            "uuid",
+            "created",
+            "modified",
+        ]
 
 
 class IngredientCreateUpdateSerializer(BaseCreateUpdateSerializer):

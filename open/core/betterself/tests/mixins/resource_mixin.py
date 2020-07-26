@@ -104,7 +104,7 @@ class GetTestsMixin:
                 # if the field stored on the db level is the right noe
                 self.assertEqual(instance_value, value)
 
-    def test_get_singular_resource_always_has_uuid(self):
+    def test_get_singular_resource_always_has_uuid_created_modified(self):
         instance = self.model_class_factory(user=self.user_1)
         url = instance.get_update_url()
 
@@ -112,6 +112,10 @@ class GetTestsMixin:
         data = response.data
 
         self.assertEqual(data["uuid"], str(instance.uuid), instance.uuid)
+
+        # too lazy to datetime convert to check equivalence
+        self.assertIsNotNone(data["created"])
+        self.assertIsNotNone(data["modified"])
 
     def test_update_view_with_invalid_user_permission(self):
         """

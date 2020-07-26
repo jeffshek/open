@@ -29,6 +29,8 @@ class IngredientCompositionReadSerializer(ModelSerializer):
             "quantity",
             "notes",
             "display_name",
+            "created",
+            "modified",
         )
 
     def get_display_name(self, instance):
