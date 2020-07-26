@@ -17,6 +17,7 @@ class ActivityLogReadSerializer(ModelSerializer):
     class Meta:
         model = ActivityLog
         fields = (
+            "uuid",
             "activity",
             "source",
             "duration_minutes",

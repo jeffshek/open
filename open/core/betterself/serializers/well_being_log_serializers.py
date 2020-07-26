@@ -19,6 +19,7 @@ class WellBeingLogReadSerializer(ModelSerializer):
             "notes",
             "created",
             "modified",
+            "uuid",
         )
 
 

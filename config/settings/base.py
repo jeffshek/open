@@ -319,7 +319,7 @@ REST_FRAMEWORK = {
     # anything more than five a second feels quite excessive for a human
     "DEFAULT_THROTTLE_RATES": {
         "anon": "5/second",
-        "user": "5/second",
+        "user": "25/second",
         # sure, im helping you write faster ... but 25 an hour is excessive
         "create_prompt_rate": "25/hour",
         "list_prompt_rate": "5/second",

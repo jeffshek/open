@@ -9,6 +9,7 @@ class ActivityReadSerializer(ModelSerializer):
     class Meta:
         model = Activity
         fields = (
+            "uuid",
             "name",
             "is_significant_activity",
             "is_negative_activity",

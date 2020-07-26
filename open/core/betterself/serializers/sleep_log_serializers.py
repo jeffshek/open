@@ -18,6 +18,7 @@ class SleepLogReadSerializer(ModelSerializer):
             "notes",
             "created",
             "modified",
+            "uuid",
         )
 
 

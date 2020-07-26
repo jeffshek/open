@@ -15,6 +15,7 @@ class DailyProductivityLogReadSerializer(ModelSerializer):
     class Meta:
         model = DailyProductivityLog
         fields = (
+            "uuid",
             "source",
             "date",
             "very_productive_time_minutes",
