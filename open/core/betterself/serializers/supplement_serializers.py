@@ -3,7 +3,6 @@ from rest_framework.fields import (
     HiddenField,
     CurrentUserDefault,
     CharField,
-    DateTimeField,
     ListField,
 )
 from rest_framework.serializers import ModelSerializer
@@ -45,16 +44,12 @@ class SupplementCreateUpdateSerializer(ModelSerializer):
     uuid = UUIDField(required=False, read_only=True)
     user = HiddenField(default=CurrentUserDefault())
     notes = CharField(trim_whitespace=True, default="", allow_blank=True)
-    created = DateTimeField(read_only=True, required=False)
-    modified = DateTimeField(read_only=True, required=False)
 
     class Meta:
         model = Supplement
         fields = (
             "uuid",
             "user",
-            "created",
-            "modified",
             "ingredient_composition_uuids",
             "notes",
             "name",

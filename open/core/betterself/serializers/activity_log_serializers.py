@@ -41,8 +41,6 @@ class ActivityLogCreateUpdateSerializer(
             "duration_minutes",
             "time",
             "notes",
-            "created",
-            "modified",
             "user",
         )
 

@@ -28,7 +28,7 @@ from open.core.betterself.models.supplement_stack_composition import (
     SupplementStackComposition,
 )
 from open.core.betterself.models.well_being_log import WellBeingLog
-from open.utilities.date_and_time import get_utc_now
+from open.utilities.date_and_time import get_utc_now, get_time_relative_units_ago
 
 logger = logging.getLogger(__name__)
 
@@ -83,9 +83,13 @@ def create_demo_fixtures_for_user(user):
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
 
     utc_now = get_utc_now()
+
+    # do 2 days ago, that way you can create data faster when self-testing
+    start_period = get_time_relative_units_ago(utc_now, days=2)
+
     sleep_dates = []
     for index in range(daily_logs_to_create):
-        sleep_date = utc_now - relativedelta.relativedelta(days=index)
+        sleep_date = start_period - relativedelta.relativedelta(days=index)
         sleep_dates.append(sleep_date)
 
     for sleep_date in sleep_dates:

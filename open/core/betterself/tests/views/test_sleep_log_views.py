@@ -4,6 +4,9 @@ from django.test import TestCase
 from open.core.betterself.constants import BetterSelfResourceConstants
 from open.core.betterself.factories import SleepLogFactory
 from open.core.betterself.models.sleep_log import SleepLog
+from open.core.betterself.serializers.sleep_log_serializers import (
+    SleepLogCreateUpdateSerializer,
+)
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
     GetTestsMixin,
@@ -15,6 +18,7 @@ from open.utilities.date_and_time import (
     get_time_relative_units_ago,
     parse_datetime_string,
 )
+from open.utilities.testing import create_api_request_context
 
 User = get_user_model()
 
@@ -41,6 +45,34 @@ class SleepLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
         value_name = data["end_time"]
         value_parsed = parse_datetime_string(value_name)
         self.assertEqual(end_time, value_parsed)
+
+    def test_create_view_with_blank_notes(self):
+        end_time = get_utc_now()
+        start_time = get_time_relative_units_ago(end_time, hours=8)
+
+        # important: notes has to have a space when failing with api client!
+        post_data = {"start_time": start_time, "end_time": end_time, "notes": " "}
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200, response.data)
+
+    def test_create_serializer_with_no_notes(self):
+        """
+        This is a REALLY weird problem where requests not originating from tests are failing when blank is left empty
+        """
+        end_time = get_utc_now()
+        start_time = get_time_relative_units_ago(end_time, hours=8)
+
+        # empty string with notes here will still fail if it's broken -- this is with an RequestFactory
+        # to mimic how data is sent, i think APIClient serializes something
+        post_data = {"start_time": start_time, "end_time": end_time, "notes": ""}
+
+        context = create_api_request_context(self.url, self.user_1, post_data)
+
+        serializer = SleepLogCreateUpdateSerializer(data=post_data, context=context)
+        valid = serializer.is_valid()
+
+        self.assertTrue(valid, serializer.errors)
 
     def test_create_view_with_nonsensical_start_time(self):
         end_time = get_utc_now()

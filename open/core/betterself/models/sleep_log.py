@@ -43,10 +43,10 @@ class SleepLog(BaseModelWithUserGeneratedContent):
             queryset = queryset.exclude(id=self.pk)
 
         if queryset.exists():
+            duplicated = queryset.first()
+
             raise ValidationError(
-                "Overlapping Periods found when saving Sleep Activity. Found {}".format(
-                    queryset
-                )
+                f"Overlapping Periods found when saving Sleep Activity! Found {duplicated.start_time} {duplicated.end_time}"
             )
 
         super().save(*args, **kwargs)

@@ -57,4 +57,16 @@ class SleepLogCreateUpdateSerializer(BaseCreateUpdateSerializer, ModelValidators
                     f"Fields user, start_time, and end_time are not unique!"
                 )
 
+            queryset = SleepLog.objects.filter(
+                user=user, end_time__gte=start_time, start_time__lte=end_time
+            )
+
+            if queryset.exists():
+                duplicated = queryset.first()
+                start_time_label = duplicated.start_time.date()
+
+                raise ValidationError(
+                    f"Sleep Periods cannot overlap! Found overlapping on {start_time_label}"
+                )
+
         return validated_data

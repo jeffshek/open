@@ -201,7 +201,10 @@ class WellBeingLogFactory(DjangoModelFactory):
 
 
 def sleep_start_time(sleep_end_time):
-    start_time = get_time_relative_units_ago(sleep_end_time, hours=8)
+    random_minutes = random.randint(1, 30)
+    start_time = get_time_relative_units_ago(
+        sleep_end_time, hours=8, minutes=random_minutes
+    )
     return start_time
 
 

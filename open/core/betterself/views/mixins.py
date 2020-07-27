@@ -54,11 +54,10 @@ class BaseGetUpdateDeleteView(APIView):
 
     def delete(self, request, uuid):
         instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)
-        instance.delete()
-
         label = (
             f"DELETED | {self.model_class} | ID {instance.id} deleted by {request.user}"
         )
         logger.info(label)
+        instance.delete()
 
         return Response(status=204)

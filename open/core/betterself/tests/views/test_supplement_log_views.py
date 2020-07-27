@@ -67,6 +67,20 @@ class TestSupplementLogViews(BetterSelfResourceViewTestCaseMixin, TestCase):
         response = self.client_1.post(self.url, data=post_data)
         self.assertEqual(response.status_code, 400, response.data)
 
+    def test_create_view_with_empty_notes(self):
+        supplement = SupplementFactory(user=self.user_1)
+        time = get_utc_now()
+
+        post_data = {
+            "supplement_uuid": str(supplement.uuid),
+            "time": time.isoformat(),
+            "quantity": 5,
+            "notes": " ",
+        }
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200, response.data)
+
     def test_create_view_with_conflicting_uniqueness(self):
         supplement = SupplementFactory(user=self.user_1)
         time = get_utc_now()

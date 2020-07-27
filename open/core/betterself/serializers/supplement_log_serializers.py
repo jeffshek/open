@@ -73,8 +73,6 @@ class SupplementLogCreateUpdateSerializer(BaseCreateUpdateSerializer):
         fields = (
             "user",
             "uuid",
-            "created",
-            "modified",
             "notes",
             "supplement_uuid",
             "source",

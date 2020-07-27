@@ -37,7 +37,7 @@ class BaseModel(TimeStampedModel):
 
 class BaseModelWithUserGeneratedContent(BaseModel):
     user = ForeignKey(User, null=False, blank=False, on_delete=CASCADE)
-    notes = TextField(default="")
+    notes = TextField(default="", blank=True)
 
     class Meta:
         abstract = True
