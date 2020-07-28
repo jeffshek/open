@@ -1,7 +1,16 @@
-from dateutil import parser
 from datetime import datetime
+
 import pytz
+from dateutil import parser
 from dateutil.relativedelta import relativedelta
+
+# 07/28 06:02PM
+human_format_1 = "{:%m/%d %I:%M%p}"
+
+
+def format_datetime_to_human_readable(value):
+    pretty_format = human_format_1.format(value)
+    return pretty_format
 
 
 def parse_datetime_string(input):

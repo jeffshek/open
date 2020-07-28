@@ -1,17 +1,19 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import UUIDField
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.core.betterself.serializers.simple_generic_serializer import (
     create_name_uuid_serializer,
 )
 from open.core.betterself.serializers.validators import ModelValidatorsMixin
 
 
-class ActivityLogReadSerializer(ModelSerializer):
+class ActivityLogReadSerializer(BaseModelReadSerializer):
     activity = create_name_uuid_serializer(Activity)
 
     class Meta:
@@ -25,6 +27,7 @@ class ActivityLogReadSerializer(ModelSerializer):
             "notes",
             "created",
             "modified",
+            "display_name",
         )
 
 

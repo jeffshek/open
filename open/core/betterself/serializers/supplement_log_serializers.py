@@ -6,14 +6,15 @@ from rest_framework.fields import (
     CharField,
     DecimalField,
     ChoiceField,
-    SerializerMethodField,
 )
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURCE
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.core.betterself.serializers.simple_generic_serializer import (
     create_name_uuid_serializer,
 )
@@ -21,9 +22,9 @@ from open.core.betterself.serializers.validators import validate_model_uuid
 from open.utilities.date_and_time import get_utc_now
 
 
-class SupplementLogReadSerializer(ModelSerializer):
+class SupplementLogReadSerializer(BaseModelReadSerializer):
     supplement = create_name_uuid_serializer(Supplement)
-    display_name = SerializerMethodField()
+    # display_name = SerializerMethodField()
 
     class Meta:
         model = SupplementLog
@@ -37,6 +38,7 @@ class SupplementLogReadSerializer(ModelSerializer):
             "source",
             "quantity",
             "time",
+            "display_name",
         )
 
     def get_display_name(self, instance):

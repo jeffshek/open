@@ -1,5 +1,29 @@
-from rest_framework.fields import UUIDField, HiddenField, CurrentUserDefault
+from rest_framework.fields import (
+    UUIDField,
+    HiddenField,
+    CurrentUserDefault,
+    SerializerMethodField,
+)
 from rest_framework.serializers import ModelSerializer
+
+from open.utilities.date_and_time import format_datetime_to_human_readable
+
+
+class BaseModelReadSerializer(ModelSerializer):
+    display_name = SerializerMethodField()
+
+    def get_display_name(self, instance):
+        if hasattr(instance, "name"):
+            return instance.name
+        else:
+            model = self.Meta.model
+            model_name = model._meta.verbose_name
+
+            created = instance.created
+            created_serialized = format_datetime_to_human_readable(created)
+
+            display_name = f"{model_name} {created_serialized}"
+            return display_name
 
 
 class BaseCreateUpdateSerializer(ModelSerializer):

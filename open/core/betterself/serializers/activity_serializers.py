@@ -1,11 +1,13 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.models.activity import Activity
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 
 
-class ActivityReadSerializer(ModelSerializer):
+class ActivityReadSerializer(BaseModelReadSerializer):
     class Meta:
         model = Activity
         fields = (
@@ -17,6 +19,7 @@ class ActivityReadSerializer(ModelSerializer):
             "notes",
             "created",
             "modified",
+            "display_name",
         )
 
 
