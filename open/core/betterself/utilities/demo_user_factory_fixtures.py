@@ -59,7 +59,9 @@ def create_demo_fixtures_for_user(user):
         model.objects.filter(user=user).delete()
 
     fixture_to_create = 5
-    daily_logs_to_create = 50
+
+    # easier to see any row updates
+    daily_logs_to_create = 5
     activities = ActivityFactory.create_batch(fixture_to_create, user=user)
     for activity in activities:
         ActivityLogFactory.create_batch(fixture_to_create, activity=activity, user=user)
