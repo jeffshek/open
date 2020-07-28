@@ -24,7 +24,6 @@ from open.utilities.date_and_time import get_utc_now
 
 class SupplementLogReadSerializer(BaseModelReadSerializer):
     supplement = create_name_uuid_serializer(Supplement)
-    # display_name = SerializerMethodField()
 
     class Meta:
         model = SupplementLog
