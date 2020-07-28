@@ -1,14 +1,16 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ChoiceField
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURCE
 from open.core.betterself.models.well_being_log import WellBeingLog
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.core.betterself.serializers.validators import ModelValidatorsMixin
 
 
-class WellBeingLogReadSerializer(ModelSerializer):
+class WellBeingLogReadSerializer(BaseModelReadSerializer):
     class Meta:
         model = WellBeingLog
         fields = (
@@ -20,6 +22,7 @@ class WellBeingLogReadSerializer(ModelSerializer):
             "created",
             "modified",
             "uuid",
+            "display_name",
         )
 
 

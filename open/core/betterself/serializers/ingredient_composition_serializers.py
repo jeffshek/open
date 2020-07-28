@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
 from rest_framework.fields import UUIDField, SerializerMethodField
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
@@ -11,11 +10,14 @@ from open.core.betterself.serializers.ingredient_serializers import (
 from open.core.betterself.serializers.measurement_serializers import (
     MeasurementReadSerializer,
 )
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.core.betterself.serializers.validators import validate_model_uuid
 
 
-class IngredientCompositionReadSerializer(ModelSerializer):
+class IngredientCompositionReadSerializer(BaseModelReadSerializer):
     ingredient = IngredientReadSerializer()
     measurement = MeasurementReadSerializer()
     display_name = SerializerMethodField()

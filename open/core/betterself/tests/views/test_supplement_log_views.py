@@ -54,6 +54,7 @@ class TestSupplementLogViews(BetterSelfResourceViewTestCaseMixin, TestCase):
         data = response.data
         supplement_name = data["supplement"]["name"]
         self.assertEqual(supplement.name, supplement_name)
+        self.assertIsNotNone(data["display_name"])
 
     def test_create_view_with_bad_supplement(self):
         time = get_utc_now()

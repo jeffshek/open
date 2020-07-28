@@ -116,6 +116,7 @@ class GetTestsMixin:
         # too lazy to datetime convert to check equivalence
         self.assertIsNotNone(data["created"])
         self.assertIsNotNone(data["modified"])
+        self.assertIsNotNone(data["display_name"])
 
     def test_update_view_with_invalid_user_permission(self):
         """

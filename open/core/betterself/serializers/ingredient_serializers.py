@@ -1,11 +1,12 @@
-from rest_framework.serializers import ModelSerializer
-
 from open.core.betterself.models.ingredient import Ingredient
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.users.serializers import SimpleUserReadSerializer
 
 
-class IngredientReadSerializer(ModelSerializer):
+class IngredientReadSerializer(BaseModelReadSerializer):
     user = SimpleUserReadSerializer(read_only=True)
 
     class Meta:
@@ -18,6 +19,7 @@ class IngredientReadSerializer(ModelSerializer):
             "uuid",
             "created",
             "modified",
+            "display_name",
         ]
 
 

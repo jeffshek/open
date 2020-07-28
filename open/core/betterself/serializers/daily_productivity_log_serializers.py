@@ -1,17 +1,19 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DateField, ChoiceField
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.constants import (
     BETTERSELF_LOG_INPUT_SOURCES,
     WEB_INPUT_SOURCE,
 )
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.core.betterself.serializers.validators import ModelValidatorsMixin
 
 
-class DailyProductivityLogReadSerializer(ModelSerializer):
+class DailyProductivityLogReadSerializer(BaseModelReadSerializer):
     class Meta:
         model = DailyProductivityLog
         fields = (
@@ -26,6 +28,7 @@ class DailyProductivityLogReadSerializer(ModelSerializer):
             "notes",
             "created",
             "modified",
+            "display_name",
         )
 
 

@@ -1,14 +1,16 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ChoiceField
-from rest_framework.serializers import ModelSerializer
 
 from open.core.betterself.constants import INPUT_SOURCES_TUPLES, WEB_INPUT_SOURCE
 from open.core.betterself.models.sleep_log import SleepLog
-from open.core.betterself.serializers.mixins import BaseCreateUpdateSerializer
+from open.core.betterself.serializers.mixins import (
+    BaseCreateUpdateSerializer,
+    BaseModelReadSerializer,
+)
 from open.core.betterself.serializers.validators import ModelValidatorsMixin
 
 
-class SleepLogReadSerializer(ModelSerializer):
+class SleepLogReadSerializer(BaseModelReadSerializer):
     class Meta:
         model = SleepLog
         fields = (
@@ -19,6 +21,7 @@ class SleepLogReadSerializer(ModelSerializer):
             "created",
             "modified",
             "uuid",
+            "display_name",
         )
 
 

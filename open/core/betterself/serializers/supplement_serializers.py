@@ -12,12 +12,13 @@ from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.serializers.ingredient_composition_serializers import (
     IngredientCompositionReadSerializer,
 )
+from open.core.betterself.serializers.mixins import BaseModelReadSerializer
 from open.core.betterself.serializers.validators import (
     ingredient_composition_uuid_validator,
 )
 
 
-class SupplementReadSerializer(ModelSerializer):
+class SupplementReadSerializer(BaseModelReadSerializer):
     # a bit of a heavy serializer because the nest goes deep, but keep for now
     # optimize later
     ingredient_compositions = IngredientCompositionReadSerializer(many=True)
@@ -31,6 +32,7 @@ class SupplementReadSerializer(ModelSerializer):
             "name",
             "notes",
             "ingredient_compositions",
+            "display_name",
         )
 
 
