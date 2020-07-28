@@ -43,6 +43,30 @@ class DailyProductivityLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase
         field_value = data["notes"]
         self.assertEqual(field_value, TEST_CONSTANTS.NOTES_3)
 
+    def test_create_view_with_just_pomodoros(self):
+        one_week_ago = get_utc_time_relative_units_ago(weeks=1)
+        week_ago_isoformat = one_week_ago.date().isoformat()
+
+        post_data = {
+            "pomodoro_count": 10,
+            "date": week_ago_isoformat,
+            "notes": TEST_CONSTANTS.NOTES_3,
+        }
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200, response.data)
+
+        data = response.data
+        field_value = data["pomodoro_count"]
+        self.assertEqual(field_value, 10)
+
+        data = response.data
+        field_value = data["very_productive_time_minutes"]
+        self.assertEqual(field_value, None)
+
+        field_value = data["notes"]
+        self.assertEqual(field_value, TEST_CONSTANTS.NOTES_3)
+
     def test_create_view_with_conflicting_time(self):
         one_week_ago = get_utc_time_relative_units_ago(weeks=1)
         week_ago_isoformat = one_week_ago.date().isoformat()

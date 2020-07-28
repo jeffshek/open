@@ -29,6 +29,7 @@ class DailyProductivityLogReadSerializer(BaseModelReadSerializer):
             "created",
             "modified",
             "display_name",
+            "pomodoro_count",
         )
 
 
@@ -49,6 +50,7 @@ class DailyProductivityLogCreateUpdateSerializer(
             "neutral_time_minutes",
             "distracting_time_minutes",
             "very_distracting_time_minutes",
+            "pomodoro_count",
             "notes",
             "user",
         )

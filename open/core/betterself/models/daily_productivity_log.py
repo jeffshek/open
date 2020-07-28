@@ -23,6 +23,7 @@ class DailyProductivityLog(BaseModelWithUserGeneratedContent):
     neutral_time_minutes = PositiveIntegerField(null=True, blank=True)
     distracting_time_minutes = PositiveIntegerField(null=True, blank=True)
     very_distracting_time_minutes = PositiveIntegerField(null=True, blank=True)
+    pomodoro_count = PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Daily Productivity Log"

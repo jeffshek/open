@@ -22,7 +22,7 @@ class BaseModelReadSerializer(ModelSerializer):
             created = instance.created
             created_serialized = format_datetime_to_human_readable(created)
 
-            display_name = f"{model_name} {created_serialized}"
+            display_name = f"{model_name} | Create Time: {created_serialized} UTC"
             return display_name
 
 

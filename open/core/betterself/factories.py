@@ -155,6 +155,7 @@ class DailyProductivityLogFactory(DjangoModelFactory):
     neutral_time_minutes = FuzzyInteger(10, 30)
     distracting_time_minutes = FuzzyInteger(10, 30)
     very_distracting_time_minutes = FuzzyInteger(10, 30)
+    pomodoro_count = FuzzyInteger(10, 30)
 
     user = SubFactory(UserFactory)
     date = FuzzyDate(start_date=get_utc_date_relative_units_ago(years=2))
