@@ -63,8 +63,6 @@ class DailyProductivityLogCreateUpdateSerializer(
             if self.Meta.model.objects.filter(
                 user=user, date=validated_data["date"],
             ).exists():
-                raise ValidationError(
-                    f"Fields user, ingredient, measurement, and quantity are not unique!"
-                )
+                raise ValidationError(f"Fields user and date need to be unique!")
 
         return validated_data
