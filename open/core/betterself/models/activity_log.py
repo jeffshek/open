@@ -33,7 +33,7 @@ class ActivityLog(BaseModelWithUserGeneratedContent):
     source = CharField(
         max_length=50, choices=INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE
     )
-    duration_minutes = IntegerField(default=0)
+    duration_minutes = IntegerField(blank=True, null=True)
     time = DateTimeField()
 
     class Meta:

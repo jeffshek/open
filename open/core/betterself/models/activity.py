@@ -28,6 +28,8 @@ class Activity(BaseModelWithUserGeneratedContent):
     # Can we figure out if there are certain behaviors you can avoid so this doesn't happen?
     # Are there certain foods that will likely cause a negative user_activity?
     # Personally - Eating foods with lots of preservatives causes depression/flu like symptoms that last for 1-2 days
+
+    # i regret naming _activity at the boolean fields ...
     is_negative_activity = BooleanField(default=False)
     # I find certain events are complete days, ie. Being sick with an impacted wisdom tooth was the worst.
     is_all_day_activity = BooleanField(default=False)
