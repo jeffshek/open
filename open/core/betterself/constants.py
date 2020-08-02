@@ -12,6 +12,8 @@ class BetterSelfResourceConstants:
     INGREDIENTS = "ingredients"
     INGREDIENT_COMPOSITIONS = "ingredient_compositions"
     SUPPLEMENTS = "supplements"
+    FOODS = "foods"
+    FOOD_LOGS = "food_logs"
     SUPPLEMENT_STACKS = "supplement_stacks"
     SUPPLEMENT_STACK_COMPOSITIONS = "supplement_stack_compositions"
     SUPPLEMENT_LOGS = "supplement_logs"

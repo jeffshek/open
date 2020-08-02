@@ -18,6 +18,8 @@ from open.core.betterself.fixtures.supplement_fixtures import (
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
+from open.core.betterself.models.food import Food
+from open.core.betterself.models.food_logs import FoodLog
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
 from open.core.betterself.models.measurement import Measurement
@@ -218,3 +220,25 @@ class SleepLogFactory(DjangoModelFactory):
     class Meta:
         model = SleepLog
         django_get_or_create = ["user", "start_time", "end_time"]
+
+
+class FoodFactory(DjangoModelFactory):
+    name = LazyFunction(get_supplement_name)
+    user = SubFactory(UserFactory)
+    notes = LazyAttribute(lambda a: get_supplement_notes(a))
+
+    class Meta:
+        model = Food
+        django_get_or_create = ["name", "user"]
+
+
+class FoodLogFactory(DjangoModelFactory):
+    user = SubFactory(UserFactory)
+    time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
+    food = SubFactory(FoodFactory, user=SelfAttribute("..user"))
+    quantity = FuzzyInteger(1, 10)
+    notes = Faker("text")
+
+    class Meta:
+        model = FoodLog
+        django_get_or_create = ["user", "food", "time"]

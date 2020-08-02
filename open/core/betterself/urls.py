@@ -13,6 +13,11 @@ from open.core.betterself.views.daily_productivity_log_views import (
     DailyProductivityLogCreateListView,
     DailyProductivityLogGetUpdateView,
 )
+from open.core.betterself.views.food_log_views import (
+    FoodLogGetUpdateView,
+    FoodLogCreateListView,
+)
+from open.core.betterself.views.food_views import FoodGetUpdateView, FoodCreateListView
 from open.core.betterself.views.ingredient_composition_views import (
     IngredientCompositionCreateListView,
     IngredientCompositionGetUpdateView,
@@ -134,5 +139,23 @@ urlpatterns = [
         f"{RESOURCES.SLEEP_LOGS}/<uuid:uuid>/",
         view=SleepLogGetUpdateView.as_view(),
         name=RESOURCES.SLEEP_LOGS,
+    ),
+    path(
+        f"{RESOURCES.FOODS}/", view=FoodCreateListView.as_view(), name=RESOURCES.FOODS,
+    ),
+    path(
+        f"{RESOURCES.FOODS}/<uuid:uuid>/",
+        view=FoodGetUpdateView.as_view(),
+        name=RESOURCES.FOODS,
+    ),
+    path(
+        f"{RESOURCES.FOOD_LOGS}/",
+        view=FoodLogCreateListView.as_view(),
+        name=RESOURCES.FOOD_LOGS,
+    ),
+    path(
+        f"{RESOURCES.FOOD_LOGS}/<uuid:uuid>/",
+        view=FoodLogGetUpdateView.as_view(),
+        name=RESOURCES.FOOD_LOGS,
     ),
 ]

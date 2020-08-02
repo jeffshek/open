@@ -33,6 +33,7 @@ class SupplementReadSerializer(BaseModelReadSerializer):
             "notes",
             "ingredient_compositions",
             "display_name",
+            "is_taken_with_food",
         )
 
 
@@ -55,6 +56,7 @@ class SupplementCreateUpdateSerializer(ModelSerializer):
             "ingredient_composition_uuids",
             "notes",
             "name",
+            "is_taken_with_food",
         )
 
     def validate(self, validated_data):

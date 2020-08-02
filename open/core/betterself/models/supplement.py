@@ -1,4 +1,4 @@
-from django.db.models import CharField, ManyToManyField
+from django.db.models import CharField, ManyToManyField, BooleanField
 
 from open.core.betterself.constants import BetterSelfResourceConstants
 from open.core.betterself.models.ingredient_composition import IngredientComposition
@@ -15,6 +15,7 @@ class Supplement(BaseModelWithUserGeneratedContent):
 
     name = CharField(max_length=300)
     ingredient_compositions = ManyToManyField(IngredientComposition, blank=True)
+    is_taken_with_food = BooleanField(default=None, blank=True, null=True)
 
     class Meta:
         unique_together = ("user", "name")

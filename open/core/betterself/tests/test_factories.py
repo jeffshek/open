@@ -14,6 +14,8 @@ from open.core.betterself.factories import (
     DailyProductivityLogFactory,
     SleepLogFactory,
     WellBeingLogFactory,
+    FoodFactory,
+    FoodLogFactory,
 )
 
 User = get_user_model()
@@ -41,6 +43,8 @@ class TestBetterSelfFactories(TestCase):
             SupplementStackFactory,
             SupplementStackCompositionFactory,
             WellBeingLogFactory,
+            FoodFactory,
+            FoodLogFactory,
         ]
 
         for factory in factories_to_test:
