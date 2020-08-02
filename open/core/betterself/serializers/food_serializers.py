@@ -17,17 +17,15 @@ class FoodReadSerializer(BaseModelReadSerializer):
             "created",
             "modified",
             "display_name",
+            "calories",
+            "is_liquid",
         )
 
 
 class FoodCreateUpdateSerializer(BaseCreateUpdateSerializer):
     class Meta:
         model = Food
-        fields = (
-            "name",
-            "notes",
-            "user",
-        )
+        fields = ("name", "notes", "user", "calories", "is_liquid")
 
     def validate(self, validated_data):
         user = self.context["request"].user
