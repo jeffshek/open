@@ -12,14 +12,16 @@ from open.core.betterself.factories import (
     WellBeingLogFactory,
     SleepLogFactory,
     IngredientCompositionFactory,
+    FoodFactory,
+    FoodLogFactory,
 )
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
+from open.core.betterself.models.food import Food
+from open.core.betterself.models.food_logs import FoodLog
 from open.core.betterself.models.ingredient import Ingredient
 from open.core.betterself.models.ingredient_composition import IngredientComposition
-
-# from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
@@ -53,6 +55,8 @@ def create_demo_fixtures_for_user(user):
         SupplementStack,
         SupplementStackComposition,
         WellBeingLog,
+        FoodLog,
+        Food,
     ]
 
     for model in models_to_clean:
@@ -96,5 +100,9 @@ def create_demo_fixtures_for_user(user):
 
     for sleep_date in sleep_dates:
         SleepLogFactory(end_time=sleep_date, user=user)
+
+    foods = FoodFactory.create_batch(daily_logs_to_create, user=user)
+    for food in foods:
+        FoodLogFactory.create_batch(daily_logs_to_create, food=food, user=user)
 
     logger.info(f"Successfully Created Demo Fixtures for {user.username}")
