@@ -28,6 +28,9 @@ class User(AbstractUser):
     created = DateTimeField(default=timezone.now, editable=False, blank=True)
     modified = AutoLastModifiedField(_("modified"))
 
+    class Meta:
+        ordering = ["-id"]
+
     def save(self, *args, **kwargs):
         needs_api_key = False
         if not self.pk:
