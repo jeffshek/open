@@ -26,6 +26,7 @@ class FoodLogReadSerializer(BaseModelReadSerializer):
             "created",
             "modified",
             "display_name",
+            "quantity",
         )
 
 
