@@ -33,7 +33,6 @@ from open.core.betterself.models.supplement_stack_composition import (
 from open.core.betterself.models.well_being_log import WellBeingLog
 from open.users.factories import UserFactory
 from open.utilities.date_and_time import (
-    get_utc_now,
     get_utc_date_relative_units_ago,
     get_utc_time_relative_units_ago,
     get_time_relative_units_ago,
@@ -140,7 +139,7 @@ class SupplementStackCompositionFactory(DjangoModelFactory):
 class SupplementLogFactory(DjangoModelFactory):
     source = API_INPUT_SOURCE
     quantity = 1
-    time = LazyFunction(get_utc_now)
+    time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=1))
     user = SubFactory(UserFactory)
     supplement = SubFactory(SupplementFactory)
     notes = Faker("text")
@@ -182,7 +181,7 @@ class ActivityFactory(DjangoModelFactory):
 
 class ActivityLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
-    time = LazyFunction(get_utc_now)
+    time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
     activity = SubFactory(ActivityFactory, user=SelfAttribute("..user"))
     duration_minutes = FuzzyInteger(0, 100)
     notes = Faker("text")

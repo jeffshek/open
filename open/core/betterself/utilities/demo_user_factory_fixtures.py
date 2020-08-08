@@ -62,16 +62,20 @@ def create_demo_fixtures_for_user(user):
     for model in models_to_clean:
         model.objects.filter(user=user).delete()
 
-    fixture_to_create = 5
+    fixtures_to_create = 5
 
     # easier to see any row updates
     daily_logs_to_create = 5
-    activities = ActivityFactory.create_batch(fixture_to_create, user=user)
+    nested_models_logs_to_create = 1
+
+    activities = ActivityFactory.create_batch(fixtures_to_create, user=user)
     for activity in activities:
-        ActivityLogFactory.create_batch(fixture_to_create, activity=activity, user=user)
+        ActivityLogFactory.create_batch(
+            nested_models_logs_to_create, activity=activity, user=user
+        )
 
     DailyProductivityLogFactory.create_batch(daily_logs_to_create, user=user)
-    ingredients = IngredientFactory.create_batch(fixture_to_create, user=user)
+    ingredients = IngredientFactory.create_batch(fixtures_to_create, user=user)
 
     for ingredient in ingredients:
         ingredient_composition = IngredientCompositionFactory(
@@ -83,7 +87,7 @@ def create_demo_fixtures_for_user(user):
             ingredient_compositions=[ingredient_composition],
         )
         SupplementLogFactory.create_batch(
-            daily_logs_to_create, user=user, supplement=supplement
+            nested_models_logs_to_create, user=user, supplement=supplement
         )
 
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
@@ -103,6 +107,6 @@ def create_demo_fixtures_for_user(user):
 
     foods = FoodFactory.create_batch(daily_logs_to_create, user=user)
     for food in foods:
-        FoodLogFactory.create_batch(daily_logs_to_create, food=food, user=user)
+        FoodLogFactory.create_batch(nested_models_logs_to_create, food=food, user=user)
 
     logger.info(f"Successfully Created Demo Fixtures for {user.username}")
