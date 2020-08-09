@@ -35,8 +35,6 @@ class SleepLogCreateUpdateSerializer(BaseCreateUpdateSerializer, ModelValidators
             "start_time",
             "end_time",
             "notes",
-            "created",
-            "modified",
             "user",
         )
 
