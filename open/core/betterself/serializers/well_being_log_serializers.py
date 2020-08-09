@@ -39,8 +39,8 @@ class WellBeingLogCreateUpdateSerializer(
             "time",
             "source",
             "notes",
-            "created",
-            "modified",
+            # "created",
+            # "modified",
             "user",
         )
 
