@@ -86,6 +86,12 @@ class DeleteTestsMixin:
 
 
 class GetTestsMixin:
+    def test_avoid_extra_sql_queries(self):
+        # even if we create a bunch of data, when fetching, it shouldn't result in a lot of n+1 queries
+        self.model_class_factory.create_batch(50, user=self.user_1)
+        with self.assertNumQueriesLessThan(6):
+            self.client_1.get(self.url)
+
     def test_get_singular_resource(self):
         instance = self.model_class_factory(user=self.user_1)
         url = instance.get_update_url()

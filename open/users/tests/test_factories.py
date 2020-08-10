@@ -1,4 +1,4 @@
-from django.test import TestCase
+from test_plus import TestCase
 
 from open.users.factories import UserFactory
 

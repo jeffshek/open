@@ -11,9 +11,13 @@ class BaseCreateListView(APIView):
     model_class = None
     read_serializer_class = None
     create_serializer_class = None
+    select_related_models = []
 
     def get(self, request):
-        instances = self.model_class.objects.filter(user=request.user)
+        # TODO - maybe change over a passed set of values, not sure, the default is working well ...
+        # instances = self.model_class.objects.filter(user=request.user).select_related(*self.select_related_models)
+        instances = self.model_class.objects.filter(user=request.user).select_related()
+
         serializer = self.read_serializer_class(instances, many=True)
         data = serializer.data
         return Response(data=data)
