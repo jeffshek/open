@@ -12,17 +12,15 @@ If you're familiar with Django, this will be very similar. Unfortunately due to 
  support.
 
 ##### Table of Contents  
+- [BetterSelf.io](#httpsbetterselfio) 
 - [WriteUp.AI](#httpswriteupai)  
 - [Development Setup](#development)  
 - [What's Next](#whats-next)  
 
-## What's Next
+## https://betterself.io
+* BetterSelf - A dashboard that lets you track your body's health. Includes supplements and medications, sleep, food, activities and more! This is being actively worked on at the moment, but mobile apps should be coming (soon). 
 
-In the future, I'm expecting to move a lot of machine learning projects about health into this repo. In the upcoming month, as I move things over bit by bit, this will be home to
-* [BetterSelf](https://www.betterself.io)
-* A drug discovery generator
-* A clinical trial analytics engine
-* More applied machine learning projects in health and medicine
+![Overview](https://user-images.githubusercontent.com/392678/29753424-259da854-8b3f-11e7-8869-667aa6a12007.png)
 
 ## https://writeup.ai
 ### Lots of Credit To ....
@@ -31,6 +29,15 @@ In the future, I'm expecting to move a lot of machine learning projects about he
 * [Google Cloud Platform](https://cloud.google.com/) it's been a pleasure using GCP to host this
 * This is mostly open-sourced, but there is a separate private repo that handles all the deployments and the ML services. That was too hard to open-source without making my life too hard. But it's probably the easiest one to code - it only consists of a microservice and a web app hosting models.
 * I'll be releasing a huge writeup about how this was built on my [blog](https://senrigan.io/blog/).
+
+## What's Next
+
+In the future, I'm expecting to move a lot of machine learning projects about health into this repo. In the upcoming month, as I move things over bit by bit, this will be home to
+
+* A drug discovery generator
+* A clinical trial analytics engine
+* More applied machine learning projects in health and medicine
+
 
 ## Development
 
