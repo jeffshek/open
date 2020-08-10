@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from test_plus import TestCase
 
 from open.core.betterself.constants import DEMO_TESTING_ACCOUNT
 from open.core.betterself.models.supplement import Supplement

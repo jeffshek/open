@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from test_plus import TestCase
 
 from open.core.betterself.constants import (
     BetterSelfResourceConstants,
@@ -73,3 +73,7 @@ class TestSupplementGetUpdateDelete(
     url_name = BetterSelfResourceConstants.SUPPLEMENTS
     model_class_factory = SupplementFactory
     model_class = Supplement
+
+    def test_avoid_extra_sql_queries(self):
+        # TODO - need to add the prefetch_related to this when it gets slow
+        return
