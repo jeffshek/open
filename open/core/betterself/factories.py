@@ -31,6 +31,11 @@ from open.core.betterself.models.supplement_stack_composition import (
     SupplementStackComposition,
 )
 from open.core.betterself.models.well_being_log import WellBeingLog
+from open.core.betterself.fixtures.demo_constants import (
+    FOOD_NAMES,
+    ACTIVITY_NAMES,
+    NOTES_TO_USE_WITH_EMPTY_SPACES,
+)
 from open.users.factories import UserFactory
 from open.utilities.date_and_time import (
     get_utc_date_relative_units_ago,
@@ -42,22 +47,21 @@ from open.utilities.date_and_time import (
 def get_supplement_name():
     options = list(SUPPLEMENT_FIXTURES_NAME_AND_NOTES.keys())
     selected_supplement_name = random.choice(options)
+    return selected_supplement_name
 
-    # add a random 2 digit number to make it more random
-    two_random_digits = random.randint(10, 99)
-
-    serialized_name = f"{selected_supplement_name}{two_random_digits}"
-
-    return serialized_name
+    # # add a random 2 digit number to make it more random
+    # two_random_digits = random.randint(10, 99)
+    #
+    # serialized_name = f"{selected_supplement_name}{two_random_digits}"
+    #
+    # return serialized_name
 
 
 def get_supplement_notes(instance):
     # go all the way to the last two, since those codes are randomly generated
-    original_supplement_name = instance.name[:-2]
+    # original_supplement_name = instance.name[:-2]
 
-    return SUPPLEMENT_FIXTURES_NAME_AND_NOTES.get(
-        original_supplement_name, "Details Don't Exist"
-    )
+    return SUPPLEMENT_FIXTURES_NAME_AND_NOTES.get(instance.name, "Details Don't Exist")
 
 
 class IngredientFactory(DjangoModelFactory):
@@ -85,7 +89,7 @@ class IngredientCompositionFactory(DjangoModelFactory):
     ingredient = SubFactory(IngredientFactory)
     measurement = SubFactory(MeasurementFactory)
     quantity = FuzzyInteger(1, 10)
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = IngredientComposition
@@ -115,10 +119,11 @@ class SupplementFactory(DjangoModelFactory):
 class SupplementStackFactory(DjangoModelFactory):
     name = Faker("user_name")
     user = SubFactory(UserFactory)
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = SupplementStack
+        django_get_or_create = ["user", "name"]
 
 
 class SupplementStackCompositionFactory(DjangoModelFactory):
@@ -130,7 +135,7 @@ class SupplementStackCompositionFactory(DjangoModelFactory):
     stack = SubFactory(
         SupplementStackFactory, user=LazyAttribute(lambda a: a.factory_parent.user)
     )
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = SupplementStackComposition
@@ -138,14 +143,15 @@ class SupplementStackCompositionFactory(DjangoModelFactory):
 
 class SupplementLogFactory(DjangoModelFactory):
     source = API_INPUT_SOURCE
-    quantity = 1
+    quantity = FuzzyInteger(1, 3)
     time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=1))
     user = SubFactory(UserFactory)
     supplement = SubFactory(SupplementFactory)
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = SupplementLog
+        django_get_or_create = ["user", "time", "supplement"]
 
 
 class DailyProductivityLogFactory(DjangoModelFactory):
@@ -161,7 +167,7 @@ class DailyProductivityLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     date = FuzzyDate(start_date=get_utc_date_relative_units_ago(years=2))
 
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = DailyProductivityLog
@@ -171,12 +177,13 @@ class DailyProductivityLogFactory(DjangoModelFactory):
 
 
 class ActivityFactory(DjangoModelFactory):
-    name = Faker("name")
+    name = FuzzyChoice(ACTIVITY_NAMES)
     user = SubFactory(UserFactory)
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = Activity
+        django_get_or_create = ["user", "name"]
 
 
 class ActivityLogFactory(DjangoModelFactory):
@@ -184,18 +191,19 @@ class ActivityLogFactory(DjangoModelFactory):
     time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
     activity = SubFactory(ActivityFactory, user=SelfAttribute("..user"))
     duration_minutes = FuzzyInteger(0, 100)
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = ActivityLog
+        django_get_or_create = ["user", "activity", "time"]
 
 
 class WellBeingLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
-    mental_value = FuzzyInteger(0, 10)
-    physical_value = FuzzyInteger(0, 10)
-    notes = Faker("text")
+    mental_value = FuzzyInteger(4, 10)
+    physical_value = FuzzyInteger(4, 10)
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = WellBeingLog
@@ -214,7 +222,7 @@ class SleepLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     start_time = LazyAttribute(lambda instance: sleep_start_time(instance.end_time))
     end_time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = SleepLog
@@ -222,9 +230,9 @@ class SleepLogFactory(DjangoModelFactory):
 
 
 class FoodFactory(DjangoModelFactory):
-    name = LazyFunction(get_supplement_name)
+    name = FuzzyChoice(FOOD_NAMES)
     user = SubFactory(UserFactory)
-    notes = LazyAttribute(lambda a: get_supplement_notes(a))
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = Food
@@ -236,7 +244,7 @@ class FoodLogFactory(DjangoModelFactory):
     time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
     food = SubFactory(FoodFactory, user=SelfAttribute("..user"))
     quantity = FuzzyInteger(1, 10)
-    notes = Faker("text")
+    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
         model = FoodLog
