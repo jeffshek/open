@@ -6,12 +6,10 @@ from open.core.betterself.factories import (
     ActivityFactory,
     ActivityLogFactory,
     DailyProductivityLogFactory,
-    IngredientFactory,
     SupplementFactory,
     SupplementLogFactory,
     WellBeingLogFactory,
     SleepLogFactory,
-    IngredientCompositionFactory,
     FoodFactory,
     FoodLogFactory,
 )
@@ -62,33 +60,43 @@ def create_demo_fixtures_for_user(user):
     for model in models_to_clean:
         model.objects.filter(user=user).delete()
 
-    fixtures_to_create = 5
-
     # easier to see any row updates
-    daily_logs_to_create = 5
-    nested_models_logs_to_create = 1
+    daily_logs_to_create = 30
+    nested_models_logs_to_create = 10
+    supplements_to_create = 15
+    sleep_logs_to_create = 90
 
-    activities = ActivityFactory.create_batch(fixtures_to_create, user=user)
+    activities_to_create = 40
+    activities = ActivityFactory.create_batch(activities_to_create, user=user)
+
     for activity in activities:
         ActivityLogFactory.create_batch(
             nested_models_logs_to_create, activity=activity, user=user
         )
 
-    DailyProductivityLogFactory.create_batch(daily_logs_to_create, user=user)
-    ingredients = IngredientFactory.create_batch(fixtures_to_create, user=user)
+    productivity_logs_to_create = 90
+    DailyProductivityLogFactory.create_batch(productivity_logs_to_create, user=user)
 
-    for ingredient in ingredients:
-        ingredient_composition = IngredientCompositionFactory(
-            ingredient=ingredient, user=user
-        )
-        supplement = SupplementFactory.create(
-            user=user,
-            name=ingredient.name,
-            ingredient_compositions=[ingredient_composition],
-        )
+    supplements = SupplementFactory.create_batch(supplements_to_create, user=user)
+    for supplement in supplements:
         SupplementLogFactory.create_batch(
             nested_models_logs_to_create, user=user, supplement=supplement
         )
+
+    # ingredients = IngredientFactory.create_batch(fixtures_to_create, user=user)
+    #
+    # for ingredient in ingredients:
+    #     ingredient_composition = IngredientCompositionFactory(
+    #         ingredient=ingredient, user=user
+    #     )
+    #     supplement = SupplementFactory.create(
+    #         user=user,
+    #         name=ingredient.name,
+    #         ingredient_compositions=[ingredient_composition],
+    #     )
+    #     SupplementLogFactory.create_batch(
+    #         nested_models_logs_to_create, user=user, supplement=supplement
+    #     )
 
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
 
@@ -98,7 +106,7 @@ def create_demo_fixtures_for_user(user):
     start_period = get_time_relative_units_ago(utc_now, days=2)
 
     sleep_dates = []
-    for index in range(daily_logs_to_create):
+    for index in range(sleep_logs_to_create):
         sleep_date = start_period - relativedelta.relativedelta(days=index)
         sleep_dates.append(sleep_date)
 
