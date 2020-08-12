@@ -1,4 +1,4 @@
-from django.db.models import CharField, DateField, PositiveIntegerField
+from django.db.models import CharField, DateField, PositiveIntegerField, TextField
 
 from open.core.betterself.constants import (
     INPUT_SOURCES_TUPLES,
@@ -24,6 +24,9 @@ class DailyProductivityLog(BaseModelWithUserGeneratedContent):
     distracting_time_minutes = PositiveIntegerField(null=True, blank=True)
     very_distracting_time_minutes = PositiveIntegerField(null=True, blank=True)
     pomodoro_count = PositiveIntegerField(null=True, blank=True)
+
+    # i like to separate writing mistakes to a separate field for easier parsing
+    mistakes = TextField(default="", blank=True)
 
     class Meta:
         verbose_name = "Daily Productivity Log"

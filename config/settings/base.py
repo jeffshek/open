@@ -373,7 +373,8 @@ CORS_ORIGIN_WHITELIST = [
     "https://open.senrigan.io",
     "https://app.betterself.io",
     "https://betterself.io",
-    # TODO - Remove, this is a temporary hack since my computer has been having CPU issues ...
     "http://localhost:5000",
     "http://localhost:3000",
 ]
+
+BETTERSELF_PERSONAL_API_KEY = env("BETTERSELF_PERSONAL_API_KEY", default="12345")

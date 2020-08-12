@@ -29,11 +29,15 @@ class SleepLog(BaseModelWithUserGeneratedContent):
         return "{obj.user} {obj.start_time} {obj.end_time}".format(obj=self)
 
     def save(self, *args, **kwargs):
+        # now thinking about this a little bit more ... not sure if this really matters. if the user puts wrong
+        # information in why should one try to fix it?
         if self.end_time <= self.start_time:
             raise ValidationError("End Time must be greater than Start Time")
 
         # make sure that there are no overlaps for activities
         # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+        # thinking about this a little - sort of wonder, shouldn't i just allow this to let people try out multiple devices
+        # like a fitbit watch and an apple sleep?
         queryset = SleepLog.objects.filter(
             user=self.user, end_time__gte=self.start_time, start_time__lte=self.end_time
         )

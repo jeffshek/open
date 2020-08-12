@@ -52,6 +52,7 @@ class DailyProductivityLogCreateUpdateSerializer(
             "very_distracting_time_minutes",
             "pomodoro_count",
             "notes",
+            "mistakes",
             "user",
         )
 
