@@ -3,6 +3,7 @@ from rest_framework.fields import (
     HiddenField,
     CurrentUserDefault,
     SerializerMethodField,
+    CharField,
 )
 from rest_framework.serializers import ModelSerializer
 
@@ -29,6 +30,11 @@ class BaseModelReadSerializer(ModelSerializer):
 class BaseCreateUpdateSerializer(ModelSerializer):
     uuid = UUIDField(required=False, read_only=True)
     user = HiddenField(default=CurrentUserDefault())
+    # if you don't have this when notes is sent with "null/none", database integrity has an issue
+    # since serializers will try to input that into the db
+    notes = CharField(
+        default="", trim_whitespace=True, required=False, allow_blank=True,
+    )
 
     def create(self, validated_data):
         create_model = self.Meta.model

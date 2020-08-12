@@ -60,11 +60,7 @@ class SupplementLogCreateUpdateSerializer(BaseCreateUpdateSerializer):
     user = HiddenField(default=CurrentUserDefault())
     uuid = UUIDField(required=False, read_only=True)
     notes = CharField(
-        default="",
-        max_length=3000,
-        trim_whitespace=True,
-        required=False,
-        allow_blank=True,
+        default="", trim_whitespace=True, required=False, allow_blank=True,
     )
     quantity = DecimalField(decimal_places=4, max_digits=10, default=1)
     source = ChoiceField(INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE)

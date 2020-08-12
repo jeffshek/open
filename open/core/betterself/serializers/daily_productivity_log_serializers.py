@@ -1,5 +1,5 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import DateField, ChoiceField
+from rest_framework.fields import DateField, ChoiceField, CharField
 
 from open.core.betterself.constants import (
     BETTERSELF_LOG_INPUT_SOURCES,
@@ -40,6 +40,7 @@ class DailyProductivityLogCreateUpdateSerializer(
     # allow an regular isoformat of milliseconds also be passed
     date = DateField(input_formats=["iso-8601"])
     source = ChoiceField(choices=BETTERSELF_LOG_INPUT_SOURCES, default=WEB_INPUT_SOURCE)
+    mistakes = CharField(trim_whitespace=True, default="", allow_blank=True)
 
     class Meta:
         model = DailyProductivityLog
