@@ -120,6 +120,12 @@ class SleepLogTestGetUpdateView(
     model_class_factory = SleepLogFactory
     model_class = SleepLog
 
+    def test_avoid_extra_sql_queries(self):
+        # even if we create a bunch of data, when fetching, it shouldn't result in a lot of n+1 queries
+        self.model_class_factory.create_batch(10, user=self.user_1)
+        with self.assertNumQueriesLessThan(6):
+            self.client_1.get(self.url)
+
     def test_update_view_for_new_activity(self):
         # create an instance already saved
         instance = SleepLogFactory(user=self.user_1)
