@@ -1,7 +1,10 @@
+import logging
+
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.http import Http404
 from rest_auth.registration.views import SocialLoginView
 from rest_auth.serializers import LoginSerializer, JWTSerializer
 from rest_auth.views import LoginView
@@ -17,6 +20,8 @@ from open.users.serializers import (
 )
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 class EmptyView(APIView):
@@ -76,3 +81,26 @@ class GitHubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
     # callback_url = CALLBACK_URL_YOU_SET_ON_GITHUB
     client_class = OAuth2Client
+
+
+class UserDeleteView(APIView):
+    model_class = User
+
+    def delete(self, request, uuid):
+        # just follow the same pattern as other deletes, even though you could easily do this from request.user
+        # instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)
+
+        instance = request.user
+        valid_request = instance.uuid == uuid
+        # assert instance.uuid == uuid, f"{instance.uuid} not equal to {uuid}"
+
+        if not valid_request:
+            raise Http404
+
+        label = (
+            f"DELETED | {self.model_class} | ID {instance.id} deleted by {request.user}"
+        )
+        logger.warning(label)
+        instance.delete()
+
+        return Response(status=204)

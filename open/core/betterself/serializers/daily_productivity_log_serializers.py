@@ -26,6 +26,7 @@ class DailyProductivityLogReadSerializer(BaseModelReadSerializer):
             "distracting_time_minutes",
             "very_distracting_time_minutes",
             "notes",
+            "mistakes",
             "created",
             "modified",
             "display_name",
@@ -52,6 +53,7 @@ class DailyProductivityLogCreateUpdateSerializer(
             "very_distracting_time_minutes",
             "pomodoro_count",
             "notes",
+            "mistakes",
             "user",
         )
 

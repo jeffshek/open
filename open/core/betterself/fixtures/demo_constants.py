@@ -25,6 +25,15 @@ ACTIVITY_NAMES = [
     "Video Chat",
     "Laughing",
     "BIG POOP",
+    "Sprint",
+    "Lazily Stare at Workout Equipment",
+    "Read",
+    "Fall Asleep Reading Mathematics Textbook",
+    "Watch YouTube",
+    "Watch Motivational Videos",
+    "Listen to Podcast",
+    "Binge on Food",
+    "Binge on Alcohol",
 ]
 
 FOOD_NAMES = [
