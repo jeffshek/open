@@ -17,6 +17,7 @@ from open.users.serializers import (
     UserCreateSerializer,
     UserTokenSerializer,
     UserReadSerializer,
+    UserDeleteSerializer,
 )
 
 User = get_user_model()
@@ -87,13 +88,13 @@ class UserDeleteView(APIView):
     model_class = User
 
     def delete(self, request, uuid):
-        # just follow the same pattern as other deletes, even though you could easily do this from request.user
-        # instance = get_object_or_404(self.model_class, user=request.user, uuid=uuid)
+        context = {"request": request}
+        serializer = UserDeleteSerializer(data=request.data, context=context)
+        serializer.is_valid(raise_exception=True)
 
+        # many paranoia checks, i don't want someone to be deleted by accident / malice
         instance = request.user
         valid_request = instance.uuid == uuid
-        # assert instance.uuid == uuid, f"{instance.uuid} not equal to {uuid}"
-
         if not valid_request:
             raise Http404
 
