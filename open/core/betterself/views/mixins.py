@@ -6,12 +6,21 @@ from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
 
+"""
+conceptually very similar to https://www.django-rest-framework.org/api-guide/generic-views/
+
+just implemented in a way that i prefer fine-grained control over.
+
+but even to this day ... i sort of wonder if I should have just made my logic fit generic views versus rolling my own here.
+"""
+
 
 class BaseCreateListView(APIView):
     model_class = None
     read_serializer_class = None
     create_serializer_class = None
     select_related_models = []
+    filter_backends = []
 
     def get(self, request):
         # TODO - maybe change over a passed set of values, not sure, the default is working well ...
@@ -31,6 +40,12 @@ class BaseCreateListView(APIView):
 
         serialized_instance = self.read_serializer_class(instance).data
         return Response(serialized_instance)
+
+    def filter_queryset(self, queryset):
+        for backend in list(self.filter_backends):
+            queryset = backend().filter_queryset(self.request, queryset, self)
+
+        return queryset
 
 
 class BaseGetUpdateDeleteView(APIView):

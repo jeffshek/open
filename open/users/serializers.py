@@ -1,8 +1,11 @@
 from rest_auth.serializers import TokenSerializer
 from rest_framework.authtoken.models import Token
-from rest_framework.fields import CharField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import CharField, CurrentUserDefault, HiddenField, UUIDField
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.validators import UniqueValidator
+from django.contrib.auth.hashers import check_password
+
 
 from open.users.models import User
 
@@ -64,3 +67,24 @@ class UserCreateSerializer(ModelSerializer):
         user.save()
 
         return user
+
+
+class UserDeleteSerializer(Serializer):
+    # most of this is actually redundant, i don't need to have a validation step, but i do this
+    # out of paranoia reasons that someone may delete their account by mistake
+    password = CharField()
+    user = HiddenField(default=CurrentUserDefault())
+    uuid = UUIDField()
+
+    def validate(self, data):
+        user = data["user"]
+        validated_password = check_password(data["password"], user.password)
+
+        if not validated_password:
+            raise ValidationError("Invalid Password Entered")
+
+        validated_uuid = str(user.uuid) == str(data["uuid"])
+        if not validated_uuid:
+            raise ValidationError("Invalid UUID", str(user.uuid))
+
+        return data
