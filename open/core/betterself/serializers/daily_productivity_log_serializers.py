@@ -11,6 +11,10 @@ from open.core.betterself.serializers.mixins import (
     BaseModelReadSerializer,
 )
 from open.core.betterself.serializers.validators import ModelValidatorsMixin
+from open.utilities.date_and_time import (
+    format_datetime_to_human_readable,
+    yyyy_mm_dd_format_1,
+)
 
 
 class DailyProductivityLogReadSerializer(BaseModelReadSerializer):
@@ -32,6 +36,18 @@ class DailyProductivityLogReadSerializer(BaseModelReadSerializer):
             "display_name",
             "pomodoro_count",
         )
+
+    def get_display_name(self, instance):
+        model = self.Meta.model
+        model_name = model._meta.verbose_name
+
+        time_label = instance.date
+        serialized_time = format_datetime_to_human_readable(
+            time_label, yyyy_mm_dd_format_1
+        )
+
+        display_name = f"{model_name} | Date: {serialized_time}"
+        return display_name
 
 
 class DailyProductivityLogCreateUpdateSerializer(

@@ -19,6 +19,8 @@ services:
       - .:/app
     env_file:
       - ./.envs/.local/.django
+    environment:
+      WEB_APP: host.docker.internal
     ports:
       - "0.0.0.0:5000:5000"
     command: /local_django_start.sh
