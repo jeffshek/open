@@ -101,7 +101,7 @@ class UserDeleteView(APIView):
         label = (
             f"DELETED | {self.model_class} | ID {instance.id} deleted by {request.user}"
         )
-        logger.warning(label)
+        logger.error(label)
         instance.delete()
 
         return Response(status=204)

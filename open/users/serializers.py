@@ -87,4 +87,10 @@ class UserDeleteSerializer(Serializer):
         if not validated_uuid:
             raise ValidationError("Invalid UUID", str(user.uuid))
 
+        validate_user = user.username != "demo-testing@senrigan.io"
+        if not validate_user:
+            raise ValidationError(
+                f"This is a protected user and cannot be deleted. {user.username}"
+            )
+
         return data
