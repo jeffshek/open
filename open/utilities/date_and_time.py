@@ -1,15 +1,30 @@
-from datetime import datetime
+from datetime import datetime, date
 
 import pytz
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 # 07/28 06:02PM
-human_format_1 = "{:%m/%d %I:%M%p}"
+human_format_datetime_1 = "%m/%d %I:%M%p"
+human_format_datetime_formatter = "{:%m/%d %I:%M%p}"
+
+# "2020-11-11"
+yyyy_mm_dd_format_1 = "%Y-%m-%d"
+# there's prob a more elegant way of doing this, just a little bit busy to think it out ...
+yyyy_mm_dd_formatter = "{:%Y-%m-%d}"
+
+# 2020/11/11"
+yyyy_mm_dd_format_2 = "%Y/%m/%d"
 
 
-def format_datetime_to_human_readable(value):
-    pretty_format = human_format_1.format(value)
+def get_today_formatted_backslash():
+    return date.today().strftime(yyyy_mm_dd_format_2)
+
+
+def format_datetime_to_human_readable(value, date_format=human_format_datetime_1):
+    # pretty_format = human_format_datetime_1.format(value)
+    # pretty_format= date_format.format(value)
+    pretty_format = value.strftime(date_format)
     return pretty_format
 
 
