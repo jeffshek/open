@@ -56,6 +56,10 @@ def get_time_relative_units_ago(time, **kwargs):
 
 
 def get_time_relative_units_forward(time, **kwargs):
+    """
+    if a datetime is passed, returns datetime
+    if a date is passed, returns a date
+    """
     result = time + relativedelta(**kwargs)
     return result
 
