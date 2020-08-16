@@ -1,10 +1,43 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from rest_framework.test import APIClient
+from test_plus import TestCase
 
 from open.users.factories import UserFactory
 from open.users.models import User
 from open.utilities.date_and_time import get_utc_now
+
+
+class BaseTestCase(TestCase):
+    """ sets up basic necessities for a client to get data """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    @classmethod
+    def setUpTestData(cls):
+        user_1 = UserFactory()
+        user_2 = UserFactory()
+
+        cls.user_1_id = user_1.id
+        cls.user_2_id = user_2.id
+
+        super().setUpTestData()
+
+    def setUp(self):
+        self.user_1 = User.objects.get(id=self.user_1_id)
+        self.user_2 = User.objects.get(id=self.user_2_id)
+
+        # a user that owns the instance
+        self.client_1 = APIClient()
+        self.client_1.force_login(self.user_1)
+
+        # a user that shouldn't have access to the instance
+        self.client_2 = APIClient()
+        self.client_2.force_login(self.user_2)
+
+        super().setUp()
 
 
 class BetterSelfResourceViewTestCaseMixin(object):

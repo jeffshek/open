@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from open.core.betterself.constants import BetterSelfResourceConstants as RESOURCES
 from open.core.betterself.views.activity_log_views import (
@@ -27,6 +27,7 @@ from open.core.betterself.views.ingredient_views import (
     IngredientGetUpdateView,
 )
 from open.core.betterself.views.measurement import MeasurementListView
+from open.core.betterself.views.overview_views import OverviewView
 from open.core.betterself.views.sleep_log_views import (
     SleepLogCreateListView,
     SleepLogGetUpdateView,
@@ -157,5 +158,10 @@ urlpatterns = [
         f"{RESOURCES.FOOD_LOGS}/<uuid:uuid>/",
         view=FoodLogGetUpdateView.as_view(),
         name=RESOURCES.FOOD_LOGS,
+    ),
+    re_path(
+        f"{RESOURCES.OVERVIEWS}/(?P<period>daily|weekly|monthly)/",
+        view=OverviewView.as_view(),
+        name=RESOURCES.OVERVIEWS,
     ),
 ]
