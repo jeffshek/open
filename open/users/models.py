@@ -9,6 +9,10 @@ from rest_framework.authtoken.models import Token
 
 from open.constants import SIGNED_UP_FROM_DETAILS_CHOICE
 
+import pytz
+
+TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
+
 
 class User(AbstractUser):
     # First Name and Last Name do not cover name patterns around the globe.
@@ -28,8 +32,15 @@ class User(AbstractUser):
     created = DateTimeField(default=timezone.now, editable=False, blank=True)
     modified = AutoLastModifiedField(_("modified"))
 
+    # have it stored as a string here, then use a property to grab the timezones
+    timezone_string = CharField(max_length=32, choices=TIMEZONES, default="US/Eastern")
+
     class Meta:
         ordering = ["-id"]
+
+    @property
+    def timezone(self):
+        return pytz.timezone(self.timezone_string)
 
     def save(self, *args, **kwargs):
         needs_api_key = False

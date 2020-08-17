@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 import pytz
 from dateutil import parser
@@ -15,6 +15,12 @@ yyyy_mm_dd_formatter = "{:%Y-%m-%d}"
 
 # 2020/11/11"
 yyyy_mm_dd_format_2 = "%Y/%m/%d"
+
+
+def convert_timedelta_to_minutes(value: timedelta):
+    seconds = value.total_seconds()
+    minutes = seconds // 60
+    return minutes
 
 
 def get_today_formatted_backslash():
