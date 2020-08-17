@@ -1,19 +1,71 @@
 from datetime import datetime
 
 import pandas as pd
+from django.db.models import Sum
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from open.core.betterself.models.sleep_log import SleepLog
+from open.core.betterself.models.supplement import Supplement
+from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.serializers.sleep_log_serializers import (
     SleepLogReadSerializer,
+)
+from open.core.betterself.serializers.supplement_log_serializers import (
+    SupplementLogReadSerializer,
+)
+from open.core.betterself.serializers.supplement_serializers import (
+    SimpleSupplementReadSerializer,
 )
 from open.utilities.date_and_time import get_time_relative_units_forward, mean_time
 
 
 def get_supplements_overview(user, start_period, end_period):
-    return
+    response = {
+        "start_period": start_period.date().isoformat(),
+        "end_period": end_period.date().isoformat(),
+        "logs": [],
+        "summary": [],
+        "total_quantity": 0,
+    }
+
+    supplement_logs = SupplementLog.objects.filter(
+        user=user, time__lte=end_period, time__gte=start_period
+    )
+    if not supplement_logs.exists():
+        return response
+
+    serializer = SupplementLogReadSerializer(supplement_logs, many=True)
+    serialized_data = serializer.data
+    response["logs"] = serialized_data
+
+    if supplement_logs:
+        # aggregrate all the supplement logs, sort them by the name, and then count how many were used
+        taken_data = (
+            supplement_logs.values("supplement__name")
+            .annotate(total_quantity=Sum("quantity"))
+            .order_by()
+        )
+
+        for value in taken_data:
+            taken_result = {}
+
+            supplement = Supplement.objects.get(
+                name=value["supplement__name"], user=user
+            )
+            supplement_serialized = SimpleSupplementReadSerializer(supplement).data
+            taken_result["supplement"] = supplement_serialized
+
+            # add the individual total quantity to the aggregrate
+            response["total_quantity"] += value["total_quantity"]
+
+            # decimal has to be showed as string for json
+            taken_result["quantity"] = str(value["total_quantity"])
+
+            response["summary"].append(taken_result)
+
+    return response
 
 
 def get_sleep_overview_response(user, start_period, end_period):
@@ -87,13 +139,17 @@ class OverviewView(APIView):
         sleep_data = get_sleep_overview_response(
             user, start_period=start_period, end_period=end_period
         )
+        supplements_data = get_supplements_overview(
+            user=user, start_period=start_period, end_period=end_period
+        )
 
         response = {
             "period": period,
             # change it back to date, so it doesn't look super confusing ...
             "start_period": start_period.date().isoformat(),
             "end_period": end_period.date().isoformat(),
-            "sleep_data": sleep_data,
+            "sleep": sleep_data,
+            "supplements": supplements_data,
         }
 
         return Response(response)
