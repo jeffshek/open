@@ -28,13 +28,8 @@ def convert_time_to_seconds(time):
 
 def mean_time(times):
     """ copied from https://rosettacode.org/wiki/Averages/Mean_time_of_day#Python """
-
     """ takes a list of datetime.time (aka, no dates) """
 
-    # t = (time.split(':') for time in times)
-    # seconds = ((float(s) + int(m) * 60 + int(h) * 3600)
-    #     for h, m, s in t)
-    # seconds = ()
     seconds = [convert_time_to_seconds(item) for item in times]
 
     day = 24 * 60 * 60

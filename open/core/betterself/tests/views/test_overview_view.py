@@ -24,20 +24,15 @@ class OverviewTestView(BaseTestCase):
         user_1 = UserFactory()
         user_2 = UserFactory()
 
-        # utc_now = get_utc_now()
-
         # do 2 days ago, that way you can create data faster when self-testing
         start_period = datetime.datetime(2020, 9, 22, tzinfo=user_1.timezone)
 
-        # sleep_dates = []
         for index in range(3):
             sleep_date = start_period - relativedelta.relativedelta(days=index)
             SleepLogFactory(end_time=sleep_date, user=user_1)
 
         cls.user_1_id = user_1.id
         cls.user_2_id = user_2.id
-
-        # super().setUpTestData()
 
     def test_url(self):
         kwargs = {"period": "monthly", "date": "2020-08-22"}
@@ -84,10 +79,6 @@ class OverviewTestView(BaseTestCase):
 
         self.assertEqual(data_start_period, start_period)
         self.assertNotEqual(data_end_period, start_period)
-
-        import pprint
-
-        pprint.pprint(data)
 
     def test_view_response_with_no_data(self):
         start_period = "2020-08-22"
