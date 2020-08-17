@@ -60,6 +60,22 @@ FOOD_NAMES = [
     "Lays Chips",
     "Taco",
     "Guacamole",
+    "Big Cheese",
+    "Tasty Food",
+    "Not Tasty Food",
+    "Awful Salad",
+    "Beef Salad",
+    "Chicken Salad",
+    "Chicken Water Salad",
+    "Chicken of the Sea",
+    "Air",
+    "Generic Food Name",
+    "Chinese Food",
+    "Asian Food",
+    "Thai Food",
+    "Seamless",
+    "GrubHub",
+    "Delivery",
 ]
 
 NOTES_TO_USE = [

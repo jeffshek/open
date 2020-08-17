@@ -42,20 +42,15 @@ class SleepLog(BaseModelWithUserGeneratedContent):
         # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
         # thinking about this a little - sort of wonder, shouldn't i just allow this to let people try out multiple devices
         # like a fitbit watch and an apple sleep?
-        queryset = SleepLog.objects.filter(
-            user=self.user, end_time__gte=self.start_time, start_time__lte=self.end_time
-        )
-
-        # sometimes save just happens for an update, exclude so wont always fail
-        if self.pk:
-            queryset = queryset.exclude(id=self.pk)
-
-        if queryset.exists():
-            duplicated = queryset.first()
-
-            raise ValidationError(
-                f"Overlapping Periods found when saving Sleep Activity! Found {duplicated.start_time} {duplicated.end_time}"
-            )
+        # queryset = SleepLog.objects.filter(
+        #     user=self.user, end_time__gte=self.start_time, start_time__lte=self.end_time
+        # )
+        # if queryset.exists():
+        #     duplicated = queryset.first()
+        #
+        #     raise ValidationError(
+        #         f"Overlapping Periods found when saving Sleep Activity! Found {duplicated.start_time} {duplicated.end_time}"
+        #     )
 
         super().save(*args, **kwargs)
 

@@ -1,4 +1,7 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
+
+from cmath import phase, rect
+from math import degrees, radians
 
 import pytz
 from dateutil import parser
@@ -85,3 +88,33 @@ def get_utc_date_relative_units_ago(**kwargs):
 
     result = get_utc_date() - relativedelta(**kwargs)
     return result
+
+
+def mean_angle(deg):
+    return degrees(phase(sum(rect(1, radians(d)) for d in deg) / len(deg)))
+
+
+def convert_time_to_seconds(value: time):
+    minute = value.minute
+    hour = value.hour
+
+    seconds = minute * 60 + hour * 3600
+    return seconds
+
+
+def mean_time(times):
+    """ copied from https://rosettacode.org/wiki/Averages/Mean_time_of_day#Python """
+    """ takes a list of datetime.time (aka, no dates) """
+
+    seconds = [convert_time_to_seconds(item) for item in times]
+
+    day = 24 * 60 * 60
+    to_angles = [s * 360.0 / day for s in seconds]
+    mean_as_angle = mean_angle(to_angles)
+    mean_seconds = mean_as_angle * day / 360.0
+    if mean_seconds < 0:
+        mean_seconds += day
+    h, m = divmod(mean_seconds, 3600)
+    m, s = divmod(m, 60)
+
+    return time(int(h), int(m), int(s))

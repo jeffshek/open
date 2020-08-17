@@ -1,9 +1,7 @@
-from datetime import datetime, time
+from datetime import datetime
 
 import pandas as pd
-from cmath import rect, phase
 from django.http import Http404
-from math import radians, degrees
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,37 +9,11 @@ from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.serializers.sleep_log_serializers import (
     SleepLogReadSerializer,
 )
-from open.utilities.date_and_time import get_time_relative_units_forward
+from open.utilities.date_and_time import get_time_relative_units_forward, mean_time
 
 
-def mean_angle(deg):
-    return degrees(phase(sum(rect(1, radians(d)) for d in deg) / len(deg)))
-
-
-def convert_time_to_seconds(time):
-    minute = time.minute
-    hour = time.hour
-
-    seconds = minute * 60 + hour * 3600
-    return seconds
-
-
-def mean_time(times):
-    """ copied from https://rosettacode.org/wiki/Averages/Mean_time_of_day#Python """
-    """ takes a list of datetime.time (aka, no dates) """
-
-    seconds = [convert_time_to_seconds(item) for item in times]
-
-    day = 24 * 60 * 60
-    to_angles = [s * 360.0 / day for s in seconds]
-    mean_as_angle = mean_angle(to_angles)
-    mean_seconds = mean_as_angle * day / 360.0
-    if mean_seconds < 0:
-        mean_seconds += day
-    h, m = divmod(mean_seconds, 3600)
-    m, s = divmod(m, 60)
-
-    return time(int(h), int(m), int(s))
+def get_supplements_overview(user, start_period, end_period):
+    return
 
 
 def get_sleep_overview_response(user, start_period, end_period):
@@ -53,7 +25,6 @@ def get_sleep_overview_response(user, start_period, end_period):
         "mean_end_time": None,
     }
 
-    # sleep_logs = SleepLog.objects.filter(user=user, start_time__gte=start_period, end_time__lte=end_period)
     sleep_logs = SleepLog.objects.filter(
         user=user, start_time__lte=end_period, end_time__gte=start_period
     )
