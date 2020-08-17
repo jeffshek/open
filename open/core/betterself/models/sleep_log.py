@@ -5,6 +5,10 @@ from open.core.betterself.constants import (
     INPUT_SOURCES_TUPLES,
     BetterSelfResourceConstants,
 )
+from open.utilities.date_and_time import (
+    format_datetime_to_human_readable,
+    convert_timedelta_to_minutes,
+)
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
@@ -26,7 +30,7 @@ class SleepLog(BaseModelWithUserGeneratedContent):
         ordering = ["user", "-end_time"]
 
     def __str__(self):
-        return "{obj.user} {obj.start_time} {obj.end_time}".format(obj=self)
+        return f"{self.user_id} {format_datetime_to_human_readable(self.start_time)} {format_datetime_to_human_readable(self.end_time)}"
 
     def save(self, *args, **kwargs):
         # now thinking about this a little bit more ... not sure if this really matters. if the user puts wrong
@@ -58,3 +62,8 @@ class SleepLog(BaseModelWithUserGeneratedContent):
     @property
     def duration(self):
         return self.end_time - self.start_time
+
+    @property
+    def duration_minutes(self):
+        minutes = convert_timedelta_to_minutes(self.duration)
+        return minutes
