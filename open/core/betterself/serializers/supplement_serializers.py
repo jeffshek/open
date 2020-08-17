@@ -18,6 +18,15 @@ from open.core.betterself.serializers.validators import (
 )
 
 
+# SimpleSupplementReadSerializer = create_name_uuid_serializer(Supplement)
+
+
+class SimpleSupplementReadSerializer(ModelSerializer):
+    class Meta:
+        fields = ("uuid", "created", "modified", "name")
+        model = Supplement
+
+
 class SupplementReadSerializer(BaseModelReadSerializer):
     # a bit of a heavy serializer because the nest goes deep, but keep for now
     # optimize later

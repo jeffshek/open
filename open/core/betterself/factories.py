@@ -221,7 +221,7 @@ def sleep_start_time(sleep_end_time):
 class SleepLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     start_time = LazyAttribute(lambda instance: sleep_start_time(instance.end_time))
-    end_time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=2))
+    end_time = FuzzyDateTime(start_dt=get_utc_time_relative_units_ago(years=4))
     notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
 
     class Meta:
