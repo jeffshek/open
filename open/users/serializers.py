@@ -1,7 +1,14 @@
+import pytz
 from rest_auth.serializers import TokenSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, CurrentUserDefault, HiddenField, UUIDField
+from rest_framework.fields import (
+    CharField,
+    CurrentUserDefault,
+    HiddenField,
+    UUIDField,
+    ChoiceField,
+)
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import check_password
@@ -50,19 +57,30 @@ class UserCreateSerializer(ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all())], required=False
     )
     password = CharField(write_only=True, min_length=8)
+    signed_up_from = CharField(
+        write_only=True, min_length=8, required=False, default="", trim_whitespace=True
+    )
+    timezone_string = ChoiceField(
+        choices=pytz.all_timezones, required=False, default="US/Eastern"
+    )
 
     class Meta:
         model = User
-        fields = ["username", "email"]
+        fields = ["username", "email", "password", "signed_up_from", "timezone_string"]
 
     # TODO test - does this work with just username / no email, etc.
 
     def create(self, validated_data):
+        username = validated_data.pop("username")
         password = validated_data.pop("password")
 
-        user = User.objects.create(
-            username=validated_data["username"], **validated_data
-        )
+        is_betterself_user = False
+        if validated_data["signed_up_from"] == "betterself":
+            is_betterself_user = True
+
+        validated_data["is_betterself_user"] = is_betterself_user
+
+        user = User.objects.create(username=username, **validated_data)
         user.set_password(password)
         user.save()
 

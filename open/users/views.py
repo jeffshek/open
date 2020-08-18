@@ -68,7 +68,7 @@ class RegisterNoCSRFAPIView(APIView):
 
         token, _ = Token.objects.get_or_create(user=user)
         response_serializer = UserTokenSerializer(token)
-        return Response(response_serializer.data)
+        return Response(status=201, data=response_serializer.data)
 
 
 class UserDetailsView(APIView):
