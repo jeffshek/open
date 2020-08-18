@@ -15,15 +15,15 @@ from open.core.betterself.serializers.mixins import (
     BaseCreateUpdateSerializer,
     BaseModelReadSerializer,
 )
-from open.core.betterself.serializers.simple_generic_serializer import (
-    create_name_uuid_serializer,
+from open.core.betterself.serializers.supplement_serializers import (
+    SimpleSupplementReadSerializer,
 )
 from open.core.betterself.serializers.validators import validate_model_uuid
 from open.utilities.date_and_time import get_utc_now
 
 
 class SupplementLogReadSerializer(BaseModelReadSerializer):
-    supplement = create_name_uuid_serializer(Supplement)
+    supplement = SimpleSupplementReadSerializer()
 
     class Meta:
         model = SupplementLog
@@ -31,8 +31,8 @@ class SupplementLogReadSerializer(BaseModelReadSerializer):
             "display_name",
             "uuid",
             "notes",
-            "created",
-            "modified",
+            # "created",
+            # "modified",
             "supplement",
             "source",
             "quantity",
