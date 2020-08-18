@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 import pandas as pd
@@ -25,45 +26,49 @@ def get_supplements_overview(user, start_period, end_period):
     response = {
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
-        "logs": [],
+        # group across each day and what supplements were taken
+        "daily_logs": defaultdict(list),
+        # group by supplements and how many were taken
         "summary": [],
         "total_quantity": 0,
     }
 
     supplement_logs = SupplementLog.objects.filter(
         user=user, time__lte=end_period, time__gte=start_period
-    )
+    ).order_by("time")
     if not supplement_logs.exists():
         return response
 
-    serializer = SupplementLogReadSerializer(supplement_logs, many=True)
-    serialized_data = serializer.data
-    response["logs"] = serialized_data
+    for log in supplement_logs:
+        # otherwise everything is stored on the UTC date for the user, which doesn't make as much sense
+        user_timezone = user.timezone
+        normalized_time = user_timezone.normalize(log.time)
+        log_date = normalized_time.date().isoformat()
 
-    if supplement_logs:
-        # aggregrate all the supplement logs, sort them by the name, and then count how many were used
-        taken_data = (
-            supplement_logs.values("supplement__name")
-            .annotate(total_quantity=Sum("quantity"))
-            .order_by()
-        )
+        serialized_log = SupplementLogReadSerializer(log).data
+        response["daily_logs"][log_date].append(serialized_log)
 
-        for value in taken_data:
-            taken_result = {}
+    # aggregrate all the supplement logs, sort them by the name, and then count how many were used
+    taken_data = (
+        supplement_logs.values("supplement__name")
+        .annotate(total_quantity=Sum("quantity"))
+        .order_by()
+    )
 
-            supplement = Supplement.objects.get(
-                name=value["supplement__name"], user=user
-            )
-            supplement_serialized = SimpleSupplementReadSerializer(supplement).data
-            taken_result["supplement"] = supplement_serialized
+    for value in taken_data:
+        taken_result = {}
 
-            # add the individual total quantity to the aggregrate
-            response["total_quantity"] += value["total_quantity"]
+        supplement = Supplement.objects.get(name=value["supplement__name"], user=user)
+        supplement_serialized = SimpleSupplementReadSerializer(supplement).data
+        taken_result["supplement"] = supplement_serialized
 
-            # decimal has to be showed as string for json
-            taken_result["quantity"] = str(value["total_quantity"])
+        # add the individual total quantity to the aggregrate
+        response["total_quantity"] += value["total_quantity"]
 
-            response["summary"].append(taken_result)
+        # decimal has to be showed as string for json
+        taken_result["quantity"] = str(value["total_quantity"])
+
+        response["summary"].append(taken_result)
 
     return response
 

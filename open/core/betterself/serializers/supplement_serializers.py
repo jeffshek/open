@@ -18,12 +18,9 @@ from open.core.betterself.serializers.validators import (
 )
 
 
-# SimpleSupplementReadSerializer = create_name_uuid_serializer(Supplement)
-
-
 class SimpleSupplementReadSerializer(ModelSerializer):
     class Meta:
-        fields = ("uuid", "created", "modified", "name")
+        fields = ("uuid", "name")
         model = Supplement
 
 
