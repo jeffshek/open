@@ -99,9 +99,12 @@ class OverviewTestView(BaseTestCase):
         data = self.client_1.get(url).data
         supplements_data = data["supplements"]
 
-        import pprint
+        # garbage assertion, but i'll write better tests when i can visualize how the frontend
+        # should display the data
+        self.assertIsNotNone(supplements_data)
 
-        pprint.pprint(supplements_data)
+        # import pprint
+        # pprint.pprint(supplements_data)
 
     def test_view_response_with_no_data(self):
         start_period = "2020-08-22"
