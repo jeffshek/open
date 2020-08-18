@@ -162,8 +162,8 @@ urlpatterns = [
     re_path(
         # weirdly difficult for me to get the proper amount of characters to make work, not sure what i'm missing here
         # todo - comeback and try again later, not sure if something to do with re_path
-        f"{RESOURCES.OVERVIEWS}/(?P<period>daily|weekly|monthly)/(?P<date>(.)+)/",
+        f"{RESOURCES.OVERVIEW}/(?P<period>daily|weekly|monthly)/(?P<date>(.)+)/",
         view=OverviewView.as_view(),
-        name=RESOURCES.OVERVIEWS,
+        name=RESOURCES.OVERVIEW,
     ),
 ]

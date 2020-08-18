@@ -22,9 +22,7 @@ class BetterSelfResourceConstants:
     ACTIVITIES = "activities"
     ACTIVITY_LOGS = "activity_logs"
     WELL_BEING_LOGS = "well_being_logs"
-
-    # overview plural sounds stupid, shrugs
-    OVERVIEWS = "overviews"
+    OVERVIEW = "overview"
 
 
 WEB_INPUT_SOURCE = "web"

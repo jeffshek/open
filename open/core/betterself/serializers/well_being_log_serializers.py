@@ -19,8 +19,8 @@ class WellBeingLogReadSerializer(BaseModelReadSerializer):
             "time",
             "source",
             "notes",
-            "created",
-            "modified",
+            # "created",
+            # "modified",
             "uuid",
             "display_name",
         )

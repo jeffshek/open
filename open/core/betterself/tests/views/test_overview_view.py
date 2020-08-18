@@ -47,26 +47,26 @@ class OverviewTestView(BaseTestCase):
 
     def test_url(self):
         kwargs = {"period": "monthly", "date": "2020-08-22"}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
         self.assertIsNotNone(url)
 
     def test_view(self):
         kwargs = {"period": "monthly", "date": "2020-08-22"}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
         self.assertEqual(response.status_code, 200, response.data)
 
     def test_view_invalid_date(self):
         kwargs = {"period": "monthly", "date": "2020-999-22"}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
         self.assertEqual(response.status_code, 404, response.data)
 
     def test_view_weekly(self):
         kwargs = {"period": "weekly", "date": "2020-10-22"}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
         self.assertEqual(response.status_code, 200, response.data)
@@ -74,7 +74,7 @@ class OverviewTestView(BaseTestCase):
     def test_view_response(self):
         start_period = "2020-08-22"
         kwargs = {"period": "monthly", "date": start_period}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
 
@@ -94,7 +94,7 @@ class OverviewTestView(BaseTestCase):
     def test_view_response_for_supplements(self):
         start_period = "2020-08-22"
         kwargs = {"period": "monthly", "date": start_period}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
         supplements_data = data["supplements"]
@@ -109,7 +109,7 @@ class OverviewTestView(BaseTestCase):
     def test_view_response_with_no_data(self):
         start_period = "2020-08-22"
         kwargs = {"period": "monthly", "date": start_period}
-        url = reverse(BetterSelfResourceConstants.OVERVIEWS, kwargs=kwargs)
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_2.get(url).data
 

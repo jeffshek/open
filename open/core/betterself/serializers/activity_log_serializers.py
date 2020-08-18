@@ -25,8 +25,8 @@ class ActivityLogReadSerializer(BaseModelReadSerializer):
             "duration_minutes",
             "time",
             "notes",
-            "created",
-            "modified",
+            # "created",
+            # "modified",
             "display_name",
         )
 
