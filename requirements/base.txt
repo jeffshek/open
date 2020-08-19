@@ -17,6 +17,7 @@ cryptography==2.7
 daphne==2.5.0
 django==2.2.13  # https://www.djangoproject.com/
 django-allauth==0.42.0  # https://github.com/pennersr/django-allauth
+django-anymail[mailgun]==7.0.0  # https://github.com/anymail/django-anymail
 django-cors-headers==3.1.0
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
@@ -25,6 +26,7 @@ django-fsm==2.7.0
 django-model-utils==4.0.0  # https://github.com/jazzband/django-model-utils
 django-redis==4.12.1  # https://github.com/niwinz/django-redis
 django-rest-auth==0.9.5
+django-storages[google]==1.9.1  # https://github.com/jschneier/django-storages
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.1
