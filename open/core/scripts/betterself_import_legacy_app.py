@@ -267,7 +267,6 @@ def import_legacy_supplements_log(engine):
         "uuid",
         "source",
         "quantity",
-        "time",
         "duration_minutes",
         "notes",
     ]
@@ -275,11 +274,12 @@ def import_legacy_supplements_log(engine):
     for index, details in df.iterrows():
         user = get_matching_user(details["user_id"])
         supplement = get_matching_supplement(details["supplement_id"])
+        time = details["time"]
 
         defaults = details[attributes_to_import].to_dict()
 
         instance, _ = SupplementLog.objects.update_or_create(
-            user=user, supplement=supplement, defaults=defaults
+            user=user, supplement=supplement, time=time, defaults=defaults
         )
 
         print(f"Added Supplement Log {instance}")
@@ -374,18 +374,18 @@ def import_legacy_mood_logs(engine):
         "modified",
         "uuid",
         "source",
-        "time",
         "notes",
     ]
 
     for index, details in df.iterrows():
         user = get_matching_user(details["user_id"])
         mental_value = details["value"]
+        time = details["time"]
 
         defaults = details[attributes_to_import].to_dict()
 
         instance, _ = WellBeingLog.objects.update_or_create(
-            user=user, mental_value=mental_value, defaults=defaults
+            user=user, time=time, mental_value=mental_value, defaults=defaults
         )
 
 
