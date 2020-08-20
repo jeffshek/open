@@ -167,13 +167,13 @@ class SupplementAdmin(admin.ModelAdmin):
 class SupplementLogAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "modified",
-        "created",
-        "uuid",
+        # "modified",
+        # "created",
+        # "uuid",
+        "supplement",
         "user",
         "notes",
-        "supplement",
-        "source",
+        # "source",
         "quantity",
         "time",
     )
