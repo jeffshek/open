@@ -9,10 +9,9 @@ dpy runscript betterself_import_legacy_app
 """
 from collections import defaultdict
 
-from ipdb import launch_ipdb_on_exception
-from sqlalchemy import create_engine
-from django.conf import settings
 import pandas as pd
+from django.conf import settings
+from sqlalchemy import create_engine
 
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.activity_log import ActivityLog
@@ -443,10 +442,10 @@ def run_():
     engine = create_engine(engine_string)
     local_store["engine"] = engine
 
-    import_legacy_users(engine)
-    import_legacy_productivity(engine)
-    import_legacy_sleep_log(engine)
-    import_legacy_supplements(engine)
+    # import_legacy_users(engine)
+    # import_legacy_productivity(engine)
+    # import_legacy_sleep_log(engine)
+    # import_legacy_supplements(engine)
     import_legacy_supplements_log(engine)
     import_legacy_activities(engine)
     import_legacy_activities_logs(engine)
@@ -455,5 +454,4 @@ def run_():
 
 
 def run():
-    with launch_ipdb_on_exception():
-        run_()
+    run_()
