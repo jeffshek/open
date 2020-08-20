@@ -260,6 +260,7 @@ def import_legacy_supplements_log(engine):
     df = pd.read_sql_table("events_supplementlog", engine, index_col="id")
     df = change_dataframe_nans_to_none(df)
     local_store["supplement_log_df"] = df
+    print("Finished Importing Table from Heroku")
 
     attributes_to_import = [
         "modified",
@@ -281,6 +282,8 @@ def import_legacy_supplements_log(engine):
             user=user, supplement=supplement, defaults=defaults
         )
 
+        print(f"Added Supplement Log {instance}")
+
 
 def import_legacy_activities(engine):
     print("Importing Activities")
@@ -288,6 +291,8 @@ def import_legacy_activities(engine):
     df = pd.read_sql_table("events_useractivity", engine, index_col="id")
     df = change_dataframe_nans_to_none(df)
     local_store["activities_df"] = df
+
+    print("Finished Importing Table from Heroku")
 
     activities_log_df = pd.read_sql_table(
         "events_useractivitylog", engine, index_col="id"
@@ -326,6 +331,8 @@ def import_legacy_activities_logs(engine):
     df = pd.read_sql_table("events_useractivity", engine, index_col="id")
     df = change_dataframe_nans_to_none(df)
     local_store["activities_df"] = df
+
+    print("Finished Importing Table from Heroku")
 
     activities_log_df = pd.read_sql_table(
         "events_useractivitylog", engine, index_col="id"
