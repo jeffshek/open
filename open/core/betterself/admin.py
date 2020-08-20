@@ -150,10 +150,10 @@ class SleepLogAdmin(admin.ModelAdmin):
 @admin.register(Supplement)
 class SupplementAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
-        "modified",
-        "created",
-        "uuid",
+        # "id",
+        # "modified",
+        # "created",
+        # "uuid",
         "user",
         "notes",
         "name",
@@ -166,16 +166,16 @@ class SupplementAdmin(admin.ModelAdmin):
 @admin.register(SupplementLog)
 class SupplementLogAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
+        # "id",
         # "modified",
         # "created",
         # "uuid",
+        "time",
         "supplement",
         "user",
         "notes",
         # "source",
         "quantity",
-        "time",
     )
     list_filter = ("supplement",)
 
@@ -183,15 +183,15 @@ class SupplementLogAdmin(admin.ModelAdmin):
 @admin.register(SupplementStack)
 class SupplementStackAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
-        "modified",
-        "created",
-        "uuid",
+        # "id",
+        # "modified",
+        # "created",
+        # "uuid",
         "user",
         "notes",
         "name",
     )
-    list_filter = ("modified", "created", "user")
+    # list_filter = ("modified", "created", "user")
     search_fields = ("name",)
 
 
