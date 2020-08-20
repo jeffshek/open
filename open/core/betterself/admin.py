@@ -177,7 +177,7 @@ class SupplementLogAdmin(admin.ModelAdmin):
         "quantity",
         "time",
     )
-    list_filter = ("modified", "created", "user", "supplement", "time")
+    list_filter = ("supplement",)
 
 
 @admin.register(SupplementStack)

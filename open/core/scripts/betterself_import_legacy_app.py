@@ -10,6 +10,7 @@ dpy runscript betterself_import_legacy_app
 from collections import defaultdict
 
 import pandas as pd
+from cachetools import cached
 from django.conf import settings
 from sqlalchemy import create_engine
 
@@ -66,6 +67,7 @@ def get_matching_row(df, column: str, matching_value):
     return matched_df.iloc[0]
 
 
+@cached(cache={})
 def get_matching_user(legacy_id):
     engine = local_store["engine"]
 
@@ -80,6 +82,7 @@ def get_matching_user(legacy_id):
     return user
 
 
+@cached(cache={})
 def get_matching_activity(activity_id):
     engine = local_store["engine"]
 
@@ -98,6 +101,7 @@ def get_matching_activity(activity_id):
     return activity
 
 
+@cached(cache={})
 def get_matching_supplement(legacy_id):
     engine = local_store["engine"]
 
@@ -114,6 +118,7 @@ def get_matching_supplement(legacy_id):
     return instance
 
 
+@cached(cache={})
 def get_matching_supplement_stack(legacy_id):
     engine = local_store["engine"]
 
@@ -196,6 +201,7 @@ def import_legacy_productivity(engine):
         user = get_matching_user(details["user_id"])
 
         defaults = details[attributes_to_import].to_dict()
+        defaults["source"] = "legacy_import"
 
         date = defaults.pop("date")
         productivity_log, _ = DailyProductivityLog.objects.update_or_create(
@@ -221,6 +227,7 @@ def import_legacy_sleep_log(engine):
         user = get_matching_user(details["user_id"])
 
         defaults = details[attributes_to_import].to_dict()
+        defaults["source"] = "legacy_import"
 
         start_time = defaults.pop("start_time")
         end_time = defaults.pop("end_time")
@@ -262,27 +269,45 @@ def import_legacy_supplements_log(engine):
     local_store["supplement_log_df"] = df
     print("Finished Importing Table from Heroku")
 
+    last_dt = df["time"].max()
+
+    # convoluted crap to deal with import was too slow, now handle via batch updates instead
+    distinct_users = df["user_id"].unique()
+
+    for user_id in distinct_users:
+        user = get_matching_user(user_id)
+        # wipe out the previous imports to do it one much larger operation, otherwise it
+        # was taking too long on production
+        SupplementLog.objects.filter(user=user, time__lte=last_dt).delete()
+
     attributes_to_import = [
         "modified",
         "uuid",
-        "source",
         "quantity",
         "duration_minutes",
         "notes",
     ]
 
+    supplement_logs_to_create = []
     for index, details in df.iterrows():
         user = get_matching_user(details["user_id"])
         supplement = get_matching_supplement(details["supplement_id"])
         time = details["time"]
 
         defaults = details[attributes_to_import].to_dict()
+        defaults["source"] = "legacy_import"
 
-        instance, _ = SupplementLog.objects.update_or_create(
-            user=user, supplement=supplement, time=time, defaults=defaults
+        instance = SupplementLog(
+            user=user, supplement=supplement, time=time, **defaults
         )
+        supplement_logs_to_create.append(instance)
 
-        print(f"Added Supplement Log {instance}")
+        if index % 500 == 0:
+            print(f"Adding {instance} to Supplement Logs to Create")
+
+    print(f"Bulk Creating Supplements")
+    SupplementLog.objects.bulk_create(supplement_logs_to_create, 500)
+    print(f"Finished Creating Supplements")
 
 
 def import_legacy_activities(engine):
@@ -317,6 +342,7 @@ def import_legacy_activities(engine):
         user = get_matching_user(details["user_id"])
 
         defaults = details[attributes_to_import].to_dict()
+        defaults["source"] = "legacy_import"
 
         name = defaults.pop("name")
 
@@ -357,6 +383,7 @@ def import_legacy_activities_logs(engine):
         activity = get_matching_activity(activity_id)
 
         defaults = details[attributes_to_import].to_dict()
+        defaults["source"] = "legacy_import"
 
         ActivityLog.objects.update_or_create(
             time=time, user=user, activity=activity, defaults=defaults
@@ -383,6 +410,7 @@ def import_legacy_mood_logs(engine):
         time = details["time"]
 
         defaults = details[attributes_to_import].to_dict()
+        defaults["source"] = "legacy_import"
 
         instance, _ = WellBeingLog.objects.update_or_create(
             user=user, time=time, mental_value=mental_value, defaults=defaults
@@ -449,10 +477,10 @@ def run_():
     engine = create_engine(engine_string)
     local_store["engine"] = engine
 
-    # import_legacy_users(engine)
-    # import_legacy_productivity(engine)
-    # import_legacy_sleep_log(engine)
-    # import_legacy_supplements(engine)
+    import_legacy_users(engine)
+    import_legacy_productivity(engine)
+    import_legacy_sleep_log(engine)
+    import_legacy_supplements(engine)
     import_legacy_supplements_log(engine)
     import_legacy_activities(engine)
     import_legacy_activities_logs(engine)

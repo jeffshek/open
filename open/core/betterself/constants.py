@@ -37,6 +37,7 @@ BETTERSELF_LOG_INPUT_SOURCES = [
     WEB_INPUT_SOURCE,
     "user_excel",
     TEXT_MSG_SOURCE,
+    "legacy_import",
 ]
 
 INPUT_SOURCES_TUPLES = create_django_choice_tuple_from_list(
