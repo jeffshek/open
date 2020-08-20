@@ -18,7 +18,7 @@ class SupplementStackComposition(BaseModelWithUserGeneratedContent):
         verbose_name = "Supplement Stack Composition"
 
     def __str__(self):
-        return "{}-{}".format(self.stack, self.supplement)
+        return "{}-{}".format(self.stack_id, self.supplement_id)
 
     @property
     def description(self):

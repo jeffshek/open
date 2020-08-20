@@ -1,6 +1,9 @@
 """
-From: Styled / copied from https://gist.github.com/kunanit/eb0723eef653788395bb41c661c1fa86
+
 Reason : This was used to import a legacy app from heroku onto GCP (this was a connection to postgresql database)
+
+I wrote this really quickly, so it probably could be refactored, but it's a one-time use file, so it's not as clean.
+Sorta didn't realize how much data I had until I started writing this lol. 2017 version of you was very hard-working, just not very smart.
 
 dpy runscript betterself_import_legacy_app
 """
@@ -17,9 +20,17 @@ from open.core.betterself.models.daily_productivity_log import DailyProductivity
 from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
+from open.core.betterself.models.supplement_stack import SupplementStack
+from open.core.betterself.models.supplement_stack_composition import (
+    SupplementStackComposition,
+)
+from open.core.betterself.models.well_being_log import WellBeingLog
 from open.users.models import User
 from open.utilities.dataframes import change_dataframe_nans_to_none
 
+"""
+postgresql-sqlalchemy from https://gist.github.com/kunanit/eb0723eef653788395bb41c661c1fa86
+"""
 DATABASES = {
     "production": {
         "NAME": settings.BETTERSELF_LEGACY_DB_NAME,
@@ -104,6 +115,24 @@ def get_matching_supplement(legacy_id):
     return instance
 
 
+def get_matching_supplement_stack(legacy_id):
+    engine = local_store["engine"]
+
+    if local_store["supplements_usersupplementstack"] is None:
+        supplements_usersupplementstack = pd.read_sql_table(
+            "supplements_supplement", engine, index_col="id"
+        )
+        local_store["supplements_usersupplementstack"] = supplements_usersupplementstack
+    else:
+        supplements_usersupplementstack = local_store["supplements_usersupplementstack"]
+
+    instance_uuid = get_matching_row(supplements_usersupplementstack, "id", legacy_id)[
+        "uuid"
+    ]
+    instance = SupplementStack.objects.get(uuid=instance_uuid)
+    return instance
+
+
 def import_legacy_users(engine):
     print("Importing Legacy Users")
     users_df = pd.read_sql_table("users_user", engine, index_col="id")
@@ -167,9 +196,7 @@ def import_legacy_productivity(engine):
     for index, details in productivity_df.iterrows():
         user = get_matching_user(details["user_id"])
 
-        defaults = {}
-        for attribute in attributes_to_import:
-            defaults[attribute] = details[attribute]
+        defaults = details[attributes_to_import].to_dict()
 
         date = defaults.pop("date")
         productivity_log, _ = DailyProductivityLog.objects.update_or_create(
@@ -194,9 +221,7 @@ def import_legacy_sleep_log(engine):
     for index, details in df.iterrows():
         user = get_matching_user(details["user_id"])
 
-        defaults = {}
-        for attribute in attributes_to_import:
-            defaults[attribute] = details[attribute]
+        defaults = details[attributes_to_import].to_dict()
 
         start_time = defaults.pop("start_time")
         end_time = defaults.pop("end_time")
@@ -222,9 +247,7 @@ def import_legacy_supplements(engine):
     for index, details in df.iterrows():
         user = get_matching_user(details["user_id"])
 
-        defaults = {}
-        for attribute in attributes_to_import:
-            defaults[attribute] = details[attribute]
+        defaults = details[attributes_to_import].to_dict()
 
         name = defaults.pop("name")
         instance, _ = Supplement.objects.update_or_create(
@@ -253,9 +276,7 @@ def import_legacy_supplements_log(engine):
         user = get_matching_user(details["user_id"])
         supplement = get_matching_supplement(details["supplement_id"])
 
-        defaults = {}
-        for attribute in attributes_to_import:
-            defaults[attribute] = details[attribute]
+        defaults = details[attributes_to_import].to_dict()
 
         instance, _ = SupplementLog.objects.update_or_create(
             user=user, supplement=supplement, defaults=defaults
@@ -291,9 +312,7 @@ def import_legacy_activities(engine):
     for index, details in activities_to_import.iterrows():
         user = get_matching_user(details["user_id"])
 
-        defaults = {}
-        for attribute in attributes_to_import:
-            defaults[attribute] = details[attribute]
+        defaults = details[attributes_to_import].to_dict()
 
         name = defaults.pop("name")
 
@@ -302,7 +321,7 @@ def import_legacy_activities(engine):
         )
 
 
-def import_legacy_activties_logs(engine):
+def import_legacy_activities_logs(engine):
     print("Importing Activities Logs")
 
     df = pd.read_sql_table("events_useractivity", engine, index_col="id")
@@ -331,12 +350,92 @@ def import_legacy_activties_logs(engine):
         activity_id = details["user_activity_id"]
         activity = get_matching_activity(activity_id)
 
-        defaults = {}
-        for attribute in attributes_to_import:
-            defaults[attribute] = details[attribute]
+        defaults = details[attributes_to_import].to_dict()
 
         ActivityLog.objects.update_or_create(
             time=time, user=user, activity=activity, defaults=defaults
+        )
+
+
+def import_legacy_mood_logs(engine):
+    print("Importing Mood Logs")
+
+    df = pd.read_sql_table("events_usermoodlog", engine, index_col="id")
+    df = change_dataframe_nans_to_none(df)
+    local_store["mood_log"] = df
+
+    attributes_to_import = [
+        "modified",
+        "uuid",
+        "source",
+        "time",
+        "notes",
+    ]
+
+    for index, details in df.iterrows():
+        user = get_matching_user(details["user_id"])
+        mental_value = details["value"]
+
+        defaults = details[attributes_to_import].to_dict()
+
+        instance, _ = WellBeingLog.objects.update_or_create(
+            user=user, mental_value=mental_value, defaults=defaults
+        )
+
+
+def import_supplement_stack_and_compositions(engine):
+    print("Importing Supplement Stacks")
+
+    supplements_usersupplementstack = pd.read_sql_table(
+        "supplements_usersupplementstack", engine, index_col="id"
+    )
+    supplements_usersupplementstack = change_dataframe_nans_to_none(
+        supplements_usersupplementstack
+    )
+    local_store["supplements_usersupplementstack"] = supplements_usersupplementstack
+
+    attributes_to_import = [
+        "modified",
+        "uuid",
+    ]
+
+    for index, details in supplements_usersupplementstack.iterrows():
+        user = get_matching_user(details["user_id"])
+        name = details["name"]
+
+        defaults = details[attributes_to_import].to_dict()
+
+        SupplementStack.objects.update_or_create(
+            user=user, name=name, defaults=defaults
+        )
+
+    # okay, now that all the stacks have been imported ... let's add the actual compositions
+    supplements_usersupplementstackcomposition = pd.read_sql_table(
+        "supplements_usersupplementstackcomposition", engine, index_col="id"
+    )
+    supplements_usersupplementstackcomposition = change_dataframe_nans_to_none(
+        supplements_usersupplementstackcomposition
+    )
+    local_store[
+        "supplements_usersupplementstackcomposition"
+    ] = supplements_usersupplementstackcomposition
+
+    attributes_to_import = [
+        "modified",
+        "uuid",
+        "quantity",
+    ]
+
+    for index, details in supplements_usersupplementstackcomposition.iterrows():
+        user = get_matching_user(details["user_id"])
+        supplement = get_matching_supplement(details["supplement_id"])
+        supplement_stack = get_matching_supplement_stack(details["stack_id"])
+
+        # omfg, this is so clean. love pandas
+        defaults = details[attributes_to_import].to_dict()
+
+        SupplementStackComposition.objects.update_or_create(
+            user=user, supplement=supplement, stack=supplement_stack, defaults=defaults
         )
 
 
@@ -344,13 +443,15 @@ def run_():
     engine = create_engine(engine_string)
     local_store["engine"] = engine
 
-    # import_legacy_users(engine)
-    # import_legacy_productivity(engine)
-    # import_legacy_sleep_log(engine)
-    # import_legacy_supplements(engine)
-    # import_legacy_supplements_log(engine)
-    # import_legacy_activities(engine)
-    import_legacy_activties_logs(engine)
+    import_legacy_users(engine)
+    import_legacy_productivity(engine)
+    import_legacy_sleep_log(engine)
+    import_legacy_supplements(engine)
+    import_legacy_supplements_log(engine)
+    import_legacy_activities(engine)
+    import_legacy_activities_logs(engine)
+    import_legacy_mood_logs(engine)
+    import_supplement_stack_and_compositions(engine)
 
 
 def run():
