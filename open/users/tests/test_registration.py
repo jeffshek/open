@@ -19,8 +19,7 @@ class TestUserRegistrationWithAPI(TestCase):
         url = reverse("rest_register")
         data = {
             "username": MOCK_USERNAME,
-            "password1": "machine-learning",
-            "password2": "machine-learning",
+            "password": "machine-learning",
             "email": MOCK_EMAIL,
         }
 
@@ -28,7 +27,7 @@ class TestUserRegistrationWithAPI(TestCase):
         response = client.post(url, data=data)
 
         # if successful, 201
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 201, response.data)
 
         user_exists = User.objects.filter(username=MOCK_USERNAME)
         self.assertTrue(user_exists)

@@ -38,6 +38,7 @@ class SupplementLogReadSerializer(BaseModelReadSerializer):
             "quantity",
             "time",
             "display_name",
+            "duration_minutes",
         )
 
     def get_display_name(self, instance):
@@ -75,6 +76,7 @@ class SupplementLogCreateUpdateSerializer(BaseCreateUpdateSerializer):
             "source",
             "quantity",
             "time",
+            "duration_minutes",
         )
 
     def validate_supplement_uuid(self, value):

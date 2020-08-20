@@ -1,10 +1,8 @@
 -r ./base.txt
 Collectfast==1.0.0  # https://github.com/antonagestam/collectfast
-django-anymail[mailgun]==7.0.0  # https://github.com/anymail/django-anymail
 
 # Django
 # ------------------------------------------------------------------------------
-django-storages[google]==1.9.1  # https://github.com/jschneier/django-storages
 
 gunicorn==20.0.4  # https://github.com/benoitc/gunicorn
 psycopg2==2.8.3 --no-binary psycopg2  # https://github.com/psycopg/psycopg2

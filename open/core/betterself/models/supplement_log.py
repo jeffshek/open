@@ -4,6 +4,7 @@ from django.db.models import (
     CASCADE,
     CharField,
     DateTimeField,
+    PositiveIntegerField,
 )
 
 from open.core.betterself.constants import (
@@ -26,6 +27,7 @@ class SupplementLog(BaseModelWithUserGeneratedContent):
     # what time did the user take the five hour energy? use the time model
     # so eventually (maybe never) can do half-life analysis
     time = DateTimeField()
+    duration_minutes = PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ("user", "time", "supplement")
