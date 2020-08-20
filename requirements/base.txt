@@ -19,7 +19,7 @@ django==2.2.13  # https://www.djangoproject.com/
 django-allauth==0.42.0  # https://github.com/pennersr/django-allauth
 django-anymail[mailgun]==7.0.0  # https://github.com/anymail/django-anymail
 django-cors-headers==3.1.0
-django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
+django-crispy-forms==1.9.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-filter==2.3.0
 django-fsm==2.7.0
