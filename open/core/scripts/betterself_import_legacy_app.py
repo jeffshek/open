@@ -342,7 +342,6 @@ def import_legacy_activities(engine):
         user = get_matching_user(details["user_id"])
 
         defaults = details[attributes_to_import].to_dict()
-        defaults["source"] = "legacy_import"
 
         name = defaults.pop("name")
 
@@ -476,12 +475,12 @@ def import_supplement_stack_and_compositions(engine):
 def run_():
     engine = create_engine(engine_string)
     local_store["engine"] = engine
-
-    import_legacy_users(engine)
-    import_legacy_productivity(engine)
-    import_legacy_sleep_log(engine)
-    import_legacy_supplements(engine)
-    import_legacy_supplements_log(engine)
+    #
+    # import_legacy_users(engine)
+    # import_legacy_productivity(engine)
+    # import_legacy_sleep_log(engine)
+    # import_legacy_supplements(engine)
+    # import_legacy_supplements_log(engine)
     import_legacy_activities(engine)
     import_legacy_activities_logs(engine)
     import_legacy_mood_logs(engine)
