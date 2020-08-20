@@ -11,6 +11,8 @@ from sqlalchemy import create_engine
 from django.conf import settings
 import pandas as pd
 
+from open.core.betterself.models.activity import Activity
+from open.core.betterself.models.activity_log import ActivityLog
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
 from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.supplement import Supplement
@@ -66,6 +68,24 @@ def get_matching_user(legacy_id):
     user_uuid = get_matching_row(users_df, "id", legacy_id)["uuid"]
     user = User.objects.get(uuid=user_uuid)
     return user
+
+
+def get_matching_activity(activity_id):
+    engine = local_store["engine"]
+
+    if local_store["events_useractivity"] is None:
+        events_useractivity = pd.read_sql_table(
+            "events_useractivity", engine, index_col="id"
+        )
+        local_store["events_useractivity"] = events_useractivity
+    else:
+        events_useractivity = local_store["events_useractivity"]
+
+    # get the matching activity and then grab the uuid (what you've stored it locally as)
+    activity_uuid = get_matching_row(events_useractivity, "id", activity_id)["uuid"]
+    activity = Activity.objects.get(uuid=activity_uuid)
+
+    return activity
 
 
 def get_matching_supplement(legacy_id):
@@ -242,15 +262,95 @@ def import_legacy_supplements_log(engine):
         )
 
 
+def import_legacy_activities(engine):
+    print("Importing Activities")
+
+    df = pd.read_sql_table("events_useractivity", engine, index_col="id")
+    df = change_dataframe_nans_to_none(df)
+    local_store["activities_df"] = df
+
+    activities_log_df = pd.read_sql_table(
+        "events_useractivitylog", engine, index_col="id"
+    )
+    activities_log_df = change_dataframe_nans_to_none(activities_log_df)
+    local_store["activities_log_df"] = df
+
+    activities_used = activities_log_df["user_activity_id"].unique()
+
+    # most activities you auto-created by default don't need to be used. don't import those
+    activities_to_import = df.loc[activities_used]
+
+    attributes_to_import = [
+        "modified",
+        "uuid",
+        "name",
+        "is_negative_activity",
+        "is_all_day_activity",
+    ]
+
+    for index, details in activities_to_import.iterrows():
+        user = get_matching_user(details["user_id"])
+
+        defaults = {}
+        for attribute in attributes_to_import:
+            defaults[attribute] = details[attribute]
+
+        name = defaults.pop("name")
+
+        instance, _ = Activity.objects.update_or_create(
+            user=user, name=name, defaults=defaults
+        )
+
+
+def import_legacy_activties_logs(engine):
+    print("Importing Activities Logs")
+
+    df = pd.read_sql_table("events_useractivity", engine, index_col="id")
+    df = change_dataframe_nans_to_none(df)
+    local_store["activities_df"] = df
+
+    activities_log_df = pd.read_sql_table(
+        "events_useractivitylog", engine, index_col="id"
+    )
+    activities_log_df = change_dataframe_nans_to_none(activities_log_df)
+    local_store["activities_log_df"] = df
+
+    attributes_to_import = [
+        "modified",
+        "uuid",
+        "source",
+        "duration_minutes",
+    ]
+
+    for index, details in activities_log_df.iterrows():
+        time = details["time"]
+
+        user_id = details["user_id"]
+        user = get_matching_user(user_id)
+
+        activity_id = details["user_activity_id"]
+        activity = get_matching_activity(activity_id)
+
+        defaults = {}
+        for attribute in attributes_to_import:
+            defaults[attribute] = details[attribute]
+
+        ActivityLog.objects.update_or_create(
+            time=time, user=user, activity=activity, defaults=defaults
+        )
+
+
 def run_():
     engine = create_engine(engine_string)
     local_store["engine"] = engine
 
-    import_legacy_users(engine)
-    import_legacy_productivity(engine)
-    import_legacy_sleep_log(engine)
-    import_legacy_supplements(engine)
-    import_legacy_supplements_log(engine)
+    # import_legacy_users(engine)
+    # import_legacy_productivity(engine)
+    # import_legacy_sleep_log(engine)
+    # import_legacy_supplements(engine)
+    # import_legacy_supplements_log(engine)
+    # import_legacy_activities(engine)
+    import_legacy_activties_logs(engine)
 
 
 def run():
