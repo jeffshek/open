@@ -41,6 +41,7 @@ class BaseModelWithUserGeneratedContent(BaseModel):
 
     class Meta:
         abstract = True
+        ordering = ["-id"]
 
     def get_update_url(self):
         instance_uuid = str(self.uuid)
