@@ -15,7 +15,7 @@ SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     default="UI0EyIjSNG7JlKtcRMwWPF6OkX9Q03PqKgz9vJpNGlotG5uQLElk61kLy46QnjUB",
 )
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "testserver"]
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -92,3 +92,16 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:3000",
 ]
+
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+ANYMAIL = {
+    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
+    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN"),
+    "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
+}
+
+DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", default="Jeff <jeff@senrigan.io>")
+SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="")
+
+BETTERSELF_APP_URL = "http://localhost:3000"

@@ -176,3 +176,5 @@ sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
 )
+
+BETTERSELF_APP_URL = "https://app.betterself.io"

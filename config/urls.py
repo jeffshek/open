@@ -1,11 +1,15 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views import defaults as default_views
 from django.views.generic import RedirectView
 
-from open.users.views import GitHubLogin, LoginNoCSRFAPIView, RegisterNoCSRFAPIView
+from open.users.views import (
+    GitHubLogin,
+    LoginNoCSRFAPIView,
+    RegisterNoCSRFAPIView,
+)
 
 # need a special view to make sure favicon always works
 favicon_view = RedirectView.as_view(
@@ -27,12 +31,18 @@ urlpatterns = [
         name="unnamed",
     ),
     path("rest-auth/login/", LoginNoCSRFAPIView.as_view(), name="rest_login"),
-    # maybe hold off on this until you can think through registration and how this should work
-    # with writeup.ai too ...
+    # TODO - reconsider how registration should work with writeup.ai
     path(
         "rest-auth/registration/",
         RegisterNoCSRFAPIView.as_view(),
         name="rest_registration",
+    ),
+    re_path(
+        r"^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
+        RedirectView.as_view(
+            url=f"{settings.BETTERSELF_APP_URL}/password_reset/%(uidb64)s/%(token)s/"
+        ),
+        name="password_reset_confirm",
     ),
     path("rest-auth/", include("rest_auth.urls")),
     path("rest-auth/registration/", include("rest_auth.registration.urls")),
