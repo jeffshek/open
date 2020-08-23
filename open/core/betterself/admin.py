@@ -177,7 +177,7 @@ class SupplementLogAdmin(admin.ModelAdmin):
         # "source",
         "quantity",
     )
-    list_filter = ("supplement",)
+    # list_filter = ("supplement",)
 
 
 @admin.register(SupplementStack)

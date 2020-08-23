@@ -31,7 +31,8 @@ class SupplementLog(BaseModelWithUserGeneratedContent):
 
     class Meta:
         unique_together = ("user", "time", "supplement")
-        ordering = ["user", "-time"]
+        # ordering = ["user", "-time"]
+        ordering = ["-time"]
         verbose_name = "Supplement Log"
         verbose_name_plural = "Supplement Logs"
 

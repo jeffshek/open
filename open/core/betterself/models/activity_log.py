@@ -38,7 +38,8 @@ class ActivityLog(BaseModelWithUserGeneratedContent):
 
     class Meta:
         unique_together = (("time", "user", "activity"),)
-        ordering = ["user", "-time"]
+        # ordering = ["user", "-time"]
+        ordering = ["-time"]
         verbose_name = "Activity Log"
         verbose_name_plural = "Activity Logs"
 
