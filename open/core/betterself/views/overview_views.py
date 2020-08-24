@@ -126,9 +126,11 @@ class OverviewView(APIView):
         if period == "daily":
             end_period = start_period
         elif period == "weekly":
-            end_period = get_time_relative_units_forward(start_period, weeks=7)
+            end_period = get_time_relative_units_forward(start_period, weeks=1)
         elif period == "monthly":
             end_period = get_time_relative_units_forward(start_period, months=1)
+        else:
+            raise ValueError(f"Invalid Period {period}")
 
         # set the end to a datetime at 11:59 PM
         end_period = datetime(

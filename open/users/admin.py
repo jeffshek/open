@@ -41,3 +41,4 @@ class UserAdmin(auth_admin.UserAdmin):
     search_fields = ["name", "email"]
     inlines = [TokenInline]
     actions = [create_demo_fixtures]
+    ordering = ["-id"]

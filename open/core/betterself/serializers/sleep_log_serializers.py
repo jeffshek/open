@@ -24,6 +24,7 @@ class SleepLogReadSerializer(BaseModelReadSerializer):
             "uuid",
             "display_name",
             "duration_minutes",
+            "duration_hours",
         )
 
     def get_display_name(self, instance):
