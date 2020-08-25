@@ -75,7 +75,14 @@ def create_demo_fixtures_for_user(user):
         )
 
     productivity_logs_to_create = 90
-    DailyProductivityLogFactory.create_batch(productivity_logs_to_create, user=user)
+    utc_now = get_utc_now()
+    dates_to_create = []
+    for index in range(productivity_logs_to_create):
+        relative_date = utc_now - relativedelta.relativedelta(days=index)
+        dates_to_create.append(relative_date)
+
+    for date in dates_to_create:
+        DailyProductivityLogFactory(date=date, user=user)
 
     supplements = SupplementFactory.create_batch(supplements_to_create, user=user)
     for supplement in supplements:
