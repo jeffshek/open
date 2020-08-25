@@ -9,6 +9,7 @@ class UserFactory(DjangoModelFactory):
     username = Faker("user_name")
     email = Faker("email")
     name = Faker("name")
+    timezone_string = "US/Eastern"
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
