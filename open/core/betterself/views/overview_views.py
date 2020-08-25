@@ -1,3 +1,4 @@
+import json
 from collections import defaultdict
 from datetime import datetime
 
@@ -7,6 +8,8 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from open.core.betterself.constants import PRODUCTIVITY_METRICS
+from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
 from open.core.betterself.models.sleep_log import SleepLog
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
@@ -19,14 +22,31 @@ from open.core.betterself.serializers.supplement_log_serializers import (
 from open.core.betterself.serializers.supplement_serializers import (
     SimpleSupplementReadSerializer,
 )
-from open.utilities.date_and_time import get_time_relative_units_forward, mean_time
+from open.utilities.date_and_time import (
+    get_time_relative_units_forward,
+    mean_time,
+    get_time_relative_units_ago,
+    yyyy_mm_dd_format_1,
+)
+
+PRODUCTIVITY_LOG_VALUE_FIELDS = [
+    "uuid",
+    "date",
+    "very_productive_time_minutes",
+    "productive_time_minutes",
+    "neutral_time_minutes",
+    "distracting_time_minutes",
+    "very_distracting_time_minutes",
+    "pomodoro_count",
+]
 
 
-def get_supplements_overview(user, start_period, end_period):
+def get_overview_supplements_data(user, start_period, end_period):
     response = {
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
         # group across each day and what supplements were taken
+        # hence, this will be called "daily" logs
         "daily_logs": defaultdict(list),
         # group by supplements and how many were taken
         "summary": [],
@@ -48,7 +68,7 @@ def get_supplements_overview(user, start_period, end_period):
         serialized_log = SupplementLogReadSerializer(log).data
         response["daily_logs"][log_date].append(serialized_log)
 
-    # aggregrate all the supplement logs, sort them by the name, and then count how many were used
+    # aggregate all the supplement logs, sort them by the name, and then count how many were used
     taken_data = (
         supplement_logs.values("supplement__name")
         .annotate(total_quantity=Sum("quantity"))
@@ -73,7 +93,67 @@ def get_supplements_overview(user, start_period, end_period):
     return response
 
 
-def get_sleep_overview_response(user, start_period, end_period):
+def get_overview_productivity_data(
+    user, start_period: datetime, end_period: datetime, lookback_periods: int = 14
+):
+    LOG_MODEL = DailyProductivityLog
+
+    response = {
+        "start_period": start_period.date().isoformat(),
+        "end_period": end_period.date().isoformat(),
+        "logs": [],
+    }
+
+    # get more data, that way we can calculate a running historical average
+    start_period_with_lookback = get_time_relative_units_ago(
+        start_period, days=lookback_periods
+    )
+
+    logs = LOG_MODEL.objects.filter(
+        user=user, date__lte=end_period, date__gte=start_period_with_lookback
+    ).order_by("date")
+    if not logs.exists():
+        return response
+
+    df = pd.DataFrame.from_records(
+        logs.values(*PRODUCTIVITY_LOG_VALUE_FIELDS), index="date"
+    )
+    df.index = pd.DatetimeIndex(df.index)
+
+    formatted_dates = [item.strftime(yyyy_mm_dd_format_1) for item in df.index.date]
+    df["date"] = formatted_dates
+
+    # use this to truncate the resampled series
+    original_index = df.index
+
+    df["uuid"] = df["uuid"].astype(str)
+    df = df.resample("D").first()
+
+    # for metric in DailyProductivityLog.PRODUCTIVITY_METRICS:
+    for metric in PRODUCTIVITY_METRICS:
+        # create a new column on the df with the rolling_mean
+        metric_mean_label = f"{metric}_mean"
+        mean_series = df[metric].rolling(window=lookback_periods, min_periods=1).mean()
+        df[metric_mean_label] = mean_series
+
+    # now after we've calculated a bunch of rolling averages, truncate the missing days?
+    # not sure if i should do this ... i could just show none on the chart ...
+    df = df.loc[original_index]
+
+    serialized_output = df.to_json(
+        orient="records", date_format="iso", double_precision=2
+    )
+
+    # i do this to get that beautiful serialization that pandas provides with date formatting and rounding
+    # pandas is amazing, xoxo forever
+    serialized_output = json.loads(serialized_output)
+
+    response["logs"] = serialized_output
+
+    return response
+
+
+def get_overview_sleep_data(user, start_period, end_period):
     response = {
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
@@ -143,10 +223,14 @@ class OverviewView(APIView):
             tzinfo=user.timezone,
         )
 
-        sleep_data = get_sleep_overview_response(
+        sleep_data = get_overview_sleep_data(
             user, start_period=start_period, end_period=end_period
         )
-        supplements_data = get_supplements_overview(
+        supplements_data = get_overview_supplements_data(
+            user=user, start_period=start_period, end_period=end_period
+        )
+
+        productivity_data = get_overview_productivity_data(
             user=user, start_period=start_period, end_period=end_period
         )
 
@@ -157,6 +241,7 @@ class OverviewView(APIView):
             "end_period": end_period.date().isoformat(),
             "sleep": sleep_data,
             "supplements": supplements_data,
+            "productivity": productivity_data,
         }
 
         return Response(response)

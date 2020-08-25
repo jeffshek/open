@@ -86,3 +86,13 @@ class TEST_CONSTANTS:
 
     # a semantically correct uuid, but doesn't belong to anything
     INVALID_UUID = "d0acd6e3-41c4-45ac-a821-376aa273c40a"
+
+
+PRODUCTIVITY_METRICS = [
+    "very_productive_time_minutes",
+    "productive_time_minutes",
+    "neutral_time_minutes",
+    "distracting_time_minutes",
+    "very_distracting_time_minutes",
+    "pomodoro_count",
+]

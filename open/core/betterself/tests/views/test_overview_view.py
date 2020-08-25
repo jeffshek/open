@@ -1,5 +1,3 @@
-import datetime
-
 from dateutil import relativedelta
 from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
@@ -9,16 +7,18 @@ from open.core.betterself.factories import (
     SleepLogFactory,
     SupplementFactory,
     SupplementLogFactory,
+    DailyProductivityLogFactory,
 )
 from open.core.betterself.tests.mixins.resource_mixin import BaseTestCase
 from open.users.factories import UserFactory
+from open.utilities.date_and_time import get_utc_now, yyyy_mm_dd_format_1
 
 User = get_user_model()
 
 """
 python manage.py test --pattern="*test_overview_view.py" --keepdb
 
-dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response --keepdb
+dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_productivity --keepdb
 """
 
 
@@ -28,13 +28,20 @@ class OverviewTestView(BaseTestCase):
         user_1 = UserFactory()
         user_2 = UserFactory()
 
-        # do 2 days ago, that way you can create data faster when self-testing
-        start_period = datetime.datetime(2020, 9, 22, tzinfo=user_1.timezone)
+        # push a month back for the start_period
+        # edit not sure why, so i took it off
+
+        cls.end_period = get_utc_now()
+        cls.end_period_date_string = cls.end_period.date().strftime(yyyy_mm_dd_format_1)
 
         supplements = SupplementFactory.create_batch(2, user=user_1)
 
-        for index in range(3):
-            date_to_use = start_period - relativedelta.relativedelta(days=index)
+        for index in range(30):
+            # simulate some missing data
+            if index % 5 == 0:
+                continue
+
+            date_to_use = cls.end_period - relativedelta.relativedelta(days=index)
             SleepLogFactory(end_time=date_to_use, user=user_1)
 
             for supplement in supplements:
@@ -44,6 +51,17 @@ class OverviewTestView(BaseTestCase):
 
         cls.user_1_id = user_1.id
         cls.user_2_id = user_2.id
+
+        for index in range(30):
+            # simulate some missing data
+            if index % 5 == 0:
+                continue
+
+            date_to_use = cls.end_period - relativedelta.relativedelta(days=index)
+            DailyProductivityLogFactory(user=user_1, date=date_to_use)
+
+            # add some random data to user_2 also to make sure no leaking
+            DailyProductivityLogFactory(user=user_2, date=date_to_use)
 
     def test_url(self):
         kwargs = {"period": "monthly", "date": "2020-08-22"}
@@ -92,7 +110,7 @@ class OverviewTestView(BaseTestCase):
         self.assertNotEqual(data_end_period, start_period)
 
     def test_view_response_for_supplements(self):
-        start_period = "2020-08-22"
+        start_period = self.end_period_date_string
         kwargs = {"period": "monthly", "date": start_period}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
@@ -103,11 +121,21 @@ class OverviewTestView(BaseTestCase):
         # should display the data
         self.assertIsNotNone(supplements_data)
 
-        # import pprint
-        # pprint.pprint(supplements_data)
+    def test_view_response_for_productivity(self):
+        start_period = self.end_period_date_string
+        kwargs = {"period": "weekly", "date": start_period}
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
+
+        data = self.client_1.get(url).data
+        data = data["productivity"]
+
+        # rofl, what a bad test.
+        logs = data["logs"]
+        self.assertTrue(logs)
 
     def test_view_response_with_no_data(self):
-        start_period = "2020-08-22"
+        start_period = "1998-08-22"
+
         kwargs = {"period": "monthly", "date": start_period}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 

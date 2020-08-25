@@ -14,6 +14,7 @@ class DailyProductivityLog(BaseModelWithUserGeneratedContent):
     """
 
     RESOURCE_NAME = BetterSelfResourceConstants.DAILY_PRODUCTIVITY_LOGS
+    # a list of all the fields that can be selected as key productivity drivers
 
     source = CharField(max_length=50, choices=INPUT_SOURCES_TUPLES)
     date = DateField()
@@ -35,4 +36,7 @@ class DailyProductivityLog(BaseModelWithUserGeneratedContent):
         ordering = ["-date"]
 
     def __str__(self):
+        return "{} Productivity Log".format(self.date)
+
+    def __repr__(self):
         return "{} Productivity Log".format(self.date)
