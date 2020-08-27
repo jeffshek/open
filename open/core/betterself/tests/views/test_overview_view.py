@@ -124,8 +124,9 @@ class OverviewTestView(BaseTestCase):
 
     def test_view_response_for_productivity_no_data(self):
         start_period = get_time_relative_units_ago(self.end_period, days=7)
+        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
 
-        kwargs = {"period": "weekly", "date": start_period}
+        kwargs = {"period": "weekly", "date": start_period_string}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
