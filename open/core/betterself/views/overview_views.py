@@ -137,8 +137,14 @@ def get_overview_productivity_data(
         df[metric_mean_label] = mean_series
 
     # now after we've calculated a bunch of rolling averages, truncate the missing days?
-    # not sure if i should do this ... i could just show none on the chart ...
+    # alternatively, maybe i don't do this and show the nan on missing charts, not sure yet
     df = df.loc[original_index]
+
+    # just always make sure it's sorted by the ascending datetime
+    df = df.sort_index()
+
+    # truncate all the previous records you needed for rolling averages, use date() to remove tz info
+    df = df.loc[start_period.date() :]  # noqa
 
     serialized_output = df.to_json(
         orient="records", date_format="iso", double_precision=2

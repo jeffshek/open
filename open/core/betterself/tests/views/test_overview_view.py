@@ -11,7 +11,11 @@ from open.core.betterself.factories import (
 )
 from open.core.betterself.tests.mixins.resource_mixin import BaseTestCase
 from open.users.factories import UserFactory
-from open.utilities.date_and_time import get_utc_now, yyyy_mm_dd_format_1
+from open.utilities.date_and_time import (
+    get_utc_now,
+    yyyy_mm_dd_format_1,
+    get_time_relative_units_ago,
+)
 
 User = get_user_model()
 
@@ -28,15 +32,12 @@ class OverviewTestView(BaseTestCase):
         user_1 = UserFactory()
         user_2 = UserFactory()
 
-        # push a month back for the start_period
-        # edit not sure why, so i took it off
-
         cls.end_period = get_utc_now()
         cls.end_period_date_string = cls.end_period.date().strftime(yyyy_mm_dd_format_1)
 
         supplements = SupplementFactory.create_batch(2, user=user_1)
 
-        for index in range(30):
+        for index in range(60):
             # simulate some missing data
             if index % 5 == 0:
                 continue
@@ -52,7 +53,7 @@ class OverviewTestView(BaseTestCase):
         cls.user_1_id = user_1.id
         cls.user_2_id = user_2.id
 
-        for index in range(30):
+        for index in range(60):
             # simulate some missing data
             if index % 5 == 0:
                 continue
@@ -121,17 +122,40 @@ class OverviewTestView(BaseTestCase):
         # should display the data
         self.assertIsNotNone(supplements_data)
 
-    def test_view_response_for_productivity(self):
-        start_period = self.end_period_date_string
+    def test_view_response_for_productivity_no_data(self):
+        start_period = get_time_relative_units_ago(self.end_period, days=7)
+
         kwargs = {"period": "weekly", "date": start_period}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
+        self.assertTrue("productivity" in data)
+
+    def test_view_response_for_productivity(self):
+        start_period = get_time_relative_units_ago(self.end_period, days=7)
+        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
+
+        # make sure that the start_period is in this test fixtures
+        DailyProductivityLogFactory(user=self.user_1, date=start_period)
+
+        kwargs = {"period": "weekly", "date": start_period_string}
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
+
+        response = self.client_1.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        data = self.client_1.get(url).data
         data = data["productivity"]
 
-        # rofl, what a bad test.
         logs = data["logs"]
         self.assertTrue(logs)
+
+        # a week should only have 7, don't include any it shouldn't contain
+        logs_gte_7 = len(logs) <= 7
+        self.assertTrue(logs_gte_7, len(logs))
+
+        dates_in_logs = [item["date"] for item in logs]
+        self.assertTrue(start_period_string in dates_in_logs)
 
     def test_view_response_with_no_data(self):
         start_period = "1998-08-22"
