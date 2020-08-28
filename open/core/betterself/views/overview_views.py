@@ -38,6 +38,8 @@ PRODUCTIVITY_LOG_VALUE_FIELDS = [
     "distracting_time_minutes",
     "very_distracting_time_minutes",
     "pomodoro_count",
+    "notes",
+    "mistakes",
 ]
 
 
