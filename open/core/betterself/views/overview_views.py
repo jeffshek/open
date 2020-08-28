@@ -172,7 +172,7 @@ def get_overview_sleep_data(user, start_period, end_period):
 
     sleep_logs = SleepLog.objects.filter(
         user=user, start_time__lte=end_period, end_time__gte=start_period
-    )
+    ).order_by("start_time")
     if not sleep_logs.exists():
         return response
 
