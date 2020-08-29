@@ -55,9 +55,13 @@ def get_overview_supplements_data(user, start_period, end_period):
         "total_quantity": 0,
     }
 
-    supplement_logs = SupplementLog.objects.filter(
-        user=user, time__lte=end_period, time__gte=start_period
-    ).order_by("time")
+    supplement_logs = (
+        SupplementLog.objects.filter(
+            user=user, time__lte=end_period, time__gte=start_period
+        )
+        .select_related("supplement")
+        .order_by("time")
+    )
     if not supplement_logs.exists():
         return response
 
@@ -217,6 +221,8 @@ class OverviewView(APIView):
             end_period = get_time_relative_units_forward(start_period, weeks=1)
         elif period == "monthly":
             end_period = get_time_relative_units_forward(start_period, months=1)
+        elif period == "yearly":
+            end_period = get_time_relative_units_forward(start_period, years=1)
         else:
             raise ValueError(f"Invalid Period {period}")
 

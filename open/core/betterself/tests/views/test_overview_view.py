@@ -37,7 +37,7 @@ class OverviewTestView(BaseTestCase):
 
         supplements = SupplementFactory.create_batch(2, user=user_1)
 
-        for index in range(60):
+        for index in range(100):
             # simulate some missing data
             if index % 5 == 0:
                 continue
@@ -53,7 +53,7 @@ class OverviewTestView(BaseTestCase):
         cls.user_1_id = user_1.id
         cls.user_2_id = user_2.id
 
-        for index in range(60):
+        for index in range(100):
             # simulate some missing data
             if index % 5 == 0:
                 continue
@@ -178,3 +178,15 @@ class OverviewTestView(BaseTestCase):
 
         self.assertEqual(data_start_period, start_period)
         self.assertNotEqual(data_end_period, start_period)
+
+    def test_sql_query_count(self):
+        # dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_sql_query_count --keepdb
+
+        start_period = get_time_relative_units_ago(self.end_period, years=1)
+        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
+
+        kwargs = {"period": "yearly", "date": start_period_string}
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
+
+        with self.assertNumQueriesLessThan(15):
+            self.client_1.get(url)
