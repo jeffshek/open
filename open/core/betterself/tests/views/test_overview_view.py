@@ -190,3 +190,28 @@ class OverviewTestView(BaseTestCase):
 
         with self.assertNumQueriesLessThan(15):
             self.client_1.get(url)
+
+    def test_view_response_for_sleep_data(self):
+        """
+        dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_sleep_data --keepdb
+        """
+        start_period = get_time_relative_units_ago(self.end_period, days=7)
+        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
+
+        kwargs = {"period": "weekly", "date": start_period_string}
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
+
+        response = self.client_1.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        data = self.client_1.get(url).data
+        data = data["sleep"]
+
+        total_sleep_hours = data["total_duration_hours"]
+        total_duration_minutes = data["total_duration_minutes"]
+
+        # fixtures are random, but unlikely to sleep more than 10 hours a day
+        self.assertTrue(30 < total_sleep_hours < 80)
+
+        expected_sleep_minutes = total_sleep_hours * 60
+        self.assertAlmostEquals(total_duration_minutes, expected_sleep_minutes, 0)

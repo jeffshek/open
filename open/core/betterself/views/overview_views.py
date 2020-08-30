@@ -50,6 +50,7 @@ def get_overview_supplements_data(user, start_period, end_period):
         # group across each day and what supplements were taken
         # hence, this will be called "daily" logs
         "daily_logs": defaultdict(list),
+        "logs": [],
         # group by supplements and how many were taken
         "summary": [],
         "total_quantity": 0,
@@ -72,6 +73,9 @@ def get_overview_supplements_data(user, start_period, end_period):
         log_date = normalized_time.date().isoformat()
 
         serialized_log = SupplementLogReadSerializer(log).data
+
+        response["logs"].append(serialized_log)
+        # haven't quite figured out what my ideal data structure is yet
         response["daily_logs"][log_date].append(serialized_log)
 
     # aggregate all the supplement logs, sort them by the name, and then count how many were used
@@ -172,6 +176,8 @@ def get_overview_sleep_data(user, start_period, end_period):
         "logs": [],
         "mean_start_time": None,
         "mean_end_time": None,
+        "total_duration_minutes": None,
+        "total_duration_hours": None,
     }
 
     sleep_logs = SleepLog.objects.filter(
@@ -193,6 +199,15 @@ def get_overview_sleep_data(user, start_period, end_period):
 
     serializer = SleepLogReadSerializer(sleep_logs, many=True)
     sleep_logs_serialized = serializer.data
+
+    time_slept_minutes = sum(
+        [item["duration_minutes"] for item in sleep_logs_serialized]
+    )
+    time_slept_hours = time_slept_minutes / 60
+
+    response["total_duration_minutes"] = time_slept_minutes
+    response["total_duration_hours"] = time_slept_hours
+
     response["logs"] = sleep_logs_serialized
 
     return response
