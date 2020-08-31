@@ -19,12 +19,17 @@ def run():
     token_key = f"Token {settings.BETTERSELF_PERSONAL_API_KEY}"
     headers = {"Authorization": token_key}
 
+    df.index = df["Date"]
+    df = df.sort_index()
+
+    start_import_period = datetime_date(2020, 7, 9)
+    end_import_period = datetime_date(2020, 7, 28)
+
     for index, row in df.iterrows():
         date = row["Date"].date().isoformat()
 
-        # interim when it failed on a na/string
-        last_progress = datetime_date(2020, 5, 21)
-        if row["Date"].date() > last_progress:
+        should_import = start_import_period <= index.date() <= end_import_period
+        if not should_import:
             continue
 
         notes = row["Description Of Day"]
