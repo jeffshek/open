@@ -27,12 +27,15 @@ def convert_timedelta_to_minutes(value: timedelta):
 
 
 def get_today_formatted_backslash():
+    # 2020/11/11"
     return date.today().strftime(yyyy_mm_dd_format_2)
 
 
+def get_today_formatted_api_format():
+    return date.today().strftime(yyyy_mm_dd_format_1)
+
+
 def format_datetime_to_human_readable(value, date_format=human_format_datetime_1):
-    # pretty_format = human_format_datetime_1.format(value)
-    # pretty_format= date_format.format(value)
     pretty_format = value.strftime(date_format)
     return pretty_format
 

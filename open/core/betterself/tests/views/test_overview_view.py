@@ -39,7 +39,7 @@ class OverviewTestView(BaseTestCase):
 
         for index in range(100):
             # simulate some missing data
-            if index % 5 == 0:
+            if index % 5 == 0 and index != 0:
                 continue
 
             date_to_use = cls.end_period - relativedelta.relativedelta(days=index)
@@ -55,7 +55,7 @@ class OverviewTestView(BaseTestCase):
 
         for index in range(100):
             # simulate some missing data
-            if index % 5 == 0:
+            if index % 5 == 0 and index != 0:
                 continue
 
             date_to_use = cls.end_period - relativedelta.relativedelta(days=index)
