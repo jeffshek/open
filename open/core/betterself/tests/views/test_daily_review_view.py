@@ -22,11 +22,11 @@ from open.utilities.date_and_time import (
 User = get_user_model()
 
 """
-python manage.py test --pattern="*test_daily_view.py" --keepdb
+python manage.py test --pattern="*test_daily_review_view.py" --keepdb
 """
 
 
-class DailyViewTestCase(BaseTestCase):
+class DailyReviewViewTestCase(BaseTestCase):
     @classmethod
     def setUpTestData(cls):
         user_1 = UserFactory()
