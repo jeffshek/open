@@ -23,6 +23,7 @@ class BetterSelfResourceConstants:
     ACTIVITY_LOGS = "activity_logs"
     WELL_BEING_LOGS = "well_being_logs"
     OVERVIEW = "overview"
+    DAILY_REVIEW = "daily_review"
 
 
 WEB_INPUT_SOURCE = "web"

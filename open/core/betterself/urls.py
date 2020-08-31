@@ -13,6 +13,7 @@ from open.core.betterself.views.daily_productivity_log_views import (
     DailyProductivityLogCreateListView,
     DailyProductivityLogGetUpdateView,
 )
+from open.core.betterself.views.daily_view import DailyReviewView
 from open.core.betterself.views.food_log_views import (
     FoodLogGetUpdateView,
     FoodLogCreateListView,
@@ -165,5 +166,10 @@ urlpatterns = [
         f"{RESOURCES.OVERVIEW}/(?P<period>daily|weekly|monthly|yearly)/(?P<date>(.)+)/",
         view=OverviewView.as_view(),
         name=RESOURCES.OVERVIEW,
+    ),
+    re_path(
+        f"{RESOURCES.DAILY_REVIEW}/(?P<date>(.)+)/",
+        view=DailyReviewView.as_view(),
+        name=RESOURCES.DAILY_REVIEW,
     ),
 ]
