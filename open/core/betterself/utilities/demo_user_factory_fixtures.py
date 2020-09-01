@@ -28,7 +28,7 @@ from open.core.betterself.models.supplement_stack_composition import (
     SupplementStackComposition,
 )
 from open.core.betterself.models.well_being_log import WellBeingLog
-from open.utilities.date_and_time import get_utc_now, get_time_relative_units_ago
+from open.utilities.date_and_time import get_utc_now, get_time_relative_units_forward
 
 logger = logging.getLogger(__name__)
 
@@ -75,10 +75,20 @@ def create_demo_fixtures_for_user(user):
         )
 
     productivity_logs_to_create = 90
+
+    # do a week ahead of time, that way you don't really have to deal with constantly rerunning
+    # this script for now on deployments
     utc_now = get_utc_now()
+    relative_end_date_of_fixtures_creation = utc_now + get_time_relative_units_forward(
+        days=7
+    )
+
     dates_to_create = []
     for index in range(productivity_logs_to_create):
-        relative_date = utc_now - relativedelta.relativedelta(days=index)
+        relative_date = (
+            relative_end_date_of_fixtures_creation
+            - relativedelta.relativedelta(days=index)
+        )
         dates_to_create.append(relative_date)
 
     for date in dates_to_create:
@@ -107,14 +117,12 @@ def create_demo_fixtures_for_user(user):
 
     WellBeingLogFactory.create_batch(daily_logs_to_create, user=user)
 
-    utc_now = get_utc_now()
-
-    # do 2 days ago, that way you can create data faster when self-testing
-    start_period = get_time_relative_units_ago(utc_now, days=2)
-
     sleep_dates = []
     for index in range(sleep_logs_to_create):
-        sleep_date = start_period - relativedelta.relativedelta(days=index)
+        sleep_date = (
+            relative_end_date_of_fixtures_creation
+            - relativedelta.relativedelta(days=index)
+        )
         sleep_dates.append(sleep_date)
 
     for sleep_date in sleep_dates:
