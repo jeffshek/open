@@ -35,6 +35,8 @@ from open.utilities.date_and_time import (
     mean_time,
 )
 
+import dateutil.parser
+
 PRODUCTIVITY_LOG_VALUE_FIELDS = [
     "uuid",
     "date",
@@ -47,6 +49,13 @@ PRODUCTIVITY_LOG_VALUE_FIELDS = [
     "notes",
     "mistakes",
 ]
+
+SUPPLEMENT_LOG_TYPE = "Supplement"
+PRODUCTIVITY_LOG_TYPE = "Productivity"
+SLEEP_LOG_TYPE = "Sleep"
+WELL_BEING_LOG_TYPE = "Well Being"
+ACTIVITY_LOG_TYPE = "Activity"
+FOOD_LOG_TYPE = "Food"
 
 
 def get_overview_supplements_data(user, start_period, end_period):
@@ -61,6 +70,7 @@ def get_overview_supplements_data(user, start_period, end_period):
         # TODO - not sure how much i need this now that it's handled by ag-grid
         "summary": [],
         "total_quantity": 0,
+        "log_type": SUPPLEMENT_LOG_TYPE,
     }
 
     supplement_logs = (
@@ -119,6 +129,7 @@ def get_overview_productivity_data(
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
         "logs": [],
+        "log_type": PRODUCTIVITY_LOG_TYPE,
     }
 
     # get more data, that way we can calculate a running historical average
@@ -188,6 +199,7 @@ def get_overview_sleep_data(user, start_period, end_period):
         "end_time_mean": None,
         "total_duration_minutes": None,
         "total_duration_hours": None,
+        "log_type": SLEEP_LOG_TYPE,
     }
 
     sleep_logs = SleepLog.objects.filter(
@@ -232,6 +244,7 @@ def get_overview_well_being_data(user, start_period, end_period):
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
         "logs": [],
+        "log_type": WELL_BEING_LOG_TYPE,
     }
 
     logs = WellBeingLog.objects.filter(
@@ -249,6 +262,7 @@ def get_overview_activity_data(user, start_period, end_period):
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
         "logs": [],
+        "log_type": ACTIVITY_LOG_TYPE,
     }
 
     logs = (
@@ -270,6 +284,7 @@ def get_overview_food_data(user, start_period, end_period):
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
         "logs": [],
+        "log_type": FOOD_LOG_TYPE,
     }
 
     logs = (
@@ -281,4 +296,76 @@ def get_overview_food_data(user, start_period, end_period):
         return response
 
     response["logs"] = FoodLogReadSerializer(logs, many=True).data
+    return response
+
+
+def build_timeline_item(time, log_type, summary):
+    result = {"time": time, "log_type": log_type, "summary": summary}
+    return result
+
+
+def get_timeline_data(
+    sleep_data,
+    supplements_data,
+    productivity_data,
+    well_being_data,
+    activities_data,
+    foods_data,
+):
+    response = []
+
+    if sleep_data["logs"]:
+        for sleep_log in sleep_data["logs"]:
+            sleep_log_type = sleep_data["log_type"]
+
+            sleep_start_item = {
+                "time": sleep_log["start_time"],
+                "log_type": sleep_log_type,
+                "summary": "Went To Sleep",
+            }
+            sleep_end_time = {
+                "time": sleep_log["end_time"],
+                "log_type": sleep_log_type,
+                "summary": "Woke Up!",
+            }
+
+            response.extend([sleep_start_item, sleep_end_time])
+
+    logs_with_time_attributes = [
+        supplements_data,
+        well_being_data,
+        activities_data,
+        foods_data,
+    ]
+    for data in logs_with_time_attributes:
+        logs = data["logs"]
+        if not logs:
+            continue
+
+        log_type = data["log_type"]
+
+        for log in logs:
+            summary = ""
+            if log_type == SUPPLEMENT_LOG_TYPE:
+                summary = f"Took {log['quantity']} of {log['supplement']['name']}"
+            elif log_type == WELL_BEING_LOG_TYPE:
+                if log["mental_value"]:
+                    summary += f"Mental Score: {log['mental_value']}\n"
+                if log["physical_value"]:
+                    summary += f"Physical Score: {log['physical_value']}\n"
+                if log["notes"]:
+                    summary += f"Notes: {log['notes']}"
+            elif log_type == ACTIVITY_LOG_TYPE:
+                summary = f"Did {log['activity']['name']}."
+            elif log_type == FOOD_LOG_TYPE:
+                summary = f"Ate {log['food']['name']}."
+
+            timeline_item = {
+                "time": log["time"],
+                "log_type": log_type,
+                "summary": summary,
+            }
+            response.append(timeline_item)
+
+    response.sort(key=lambda x: dateutil.parser.parse(x["time"]))
     return response
