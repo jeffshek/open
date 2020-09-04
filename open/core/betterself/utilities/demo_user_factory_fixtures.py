@@ -79,8 +79,8 @@ def create_demo_fixtures_for_user(user):
     # do a week ahead of time, that way you don't really have to deal with constantly rerunning
     # this script for now on deployments
     utc_now = get_utc_now()
-    relative_end_date_of_fixtures_creation = utc_now + get_time_relative_units_forward(
-        days=7
+    relative_end_date_of_fixtures_creation = get_time_relative_units_forward(
+        utc_now, days=7
     )
 
     dates_to_create = []

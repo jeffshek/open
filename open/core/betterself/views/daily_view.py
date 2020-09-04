@@ -13,6 +13,7 @@ from open.core.betterself.utilities.history_overview_utilities import (
     get_overview_well_being_data,
     get_overview_activity_data,
     get_overview_food_data,
+    get_timeline_data,
 )
 
 
@@ -52,6 +53,14 @@ class DailyReviewView(APIView):
         foods_data = get_overview_food_data(
             user=user, start_period=start_period, end_period=end_period
         )
+        timeline_data = get_timeline_data(
+            sleep_data=sleep_data,
+            supplements_data=supplements_data,
+            productivity_data=productivity_data,
+            well_being_data=well_being_data,
+            activities_data=activities_data,
+            foods_data=foods_data,
+        )
 
         response = {
             # change it back to a date, so it doesn't look super confusing on api response ...
@@ -61,7 +70,8 @@ class DailyReviewView(APIView):
             "productivity": productivity_data,
             "sleep": sleep_data,
             "supplements": supplements_data,
-            "well_being_data": well_being_data,
+            "well_being": well_being_data,
+            "timeline": timeline_data,
         }
 
         return Response(response)
