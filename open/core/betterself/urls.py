@@ -37,6 +37,14 @@ from open.core.betterself.views.supplement_log_views import (
     SupplementLogCreateListView,
     SupplementLogGetUpdateView,
 )
+from open.core.betterself.views.supplement_stack_composition_views import (
+    SupplementStackCompositionCreateListView,
+    SupplementStackCompositionGetUpdateView,
+)
+from open.core.betterself.views.supplement_stack_views import (
+    SupplementStackCreateListView,
+    SupplementStackGetUpdateView,
+)
 from open.core.betterself.views.supplement_views import (
     SupplementCreateListView,
     SupplementGetUpdateView,
@@ -143,7 +151,9 @@ urlpatterns = [
         name=RESOURCES.SLEEP_LOGS,
     ),
     path(
-        f"{RESOURCES.FOODS}/", view=FoodCreateListView.as_view(), name=RESOURCES.FOODS,
+        f"{RESOURCES.FOODS}/",
+        view=FoodCreateListView.as_view(),
+        name=RESOURCES.FOODS,
     ),
     path(
         f"{RESOURCES.FOODS}/<uuid:uuid>/",
@@ -159,6 +169,26 @@ urlpatterns = [
         f"{RESOURCES.FOOD_LOGS}/<uuid:uuid>/",
         view=FoodLogGetUpdateView.as_view(),
         name=RESOURCES.FOOD_LOGS,
+    ),
+    path(
+        f"{RESOURCES.SUPPLEMENT_STACKS}/",
+        view=SupplementStackCreateListView.as_view(),
+        name=RESOURCES.SUPPLEMENT_STACKS,
+    ),
+    path(
+        f"{RESOURCES.SUPPLEMENT_STACKS}/<uuid:uuid>/",
+        view=SupplementStackGetUpdateView.as_view(),
+        name=RESOURCES.SUPPLEMENT_STACKS,
+    ),
+    path(
+        f"{RESOURCES.SUPPLEMENT_STACK_COMPOSITIONS}/",
+        view=SupplementStackCompositionCreateListView.as_view(),
+        name=RESOURCES.SUPPLEMENT_STACK_COMPOSITIONS,
+    ),
+    path(
+        f"{RESOURCES.SUPPLEMENT_STACK_COMPOSITIONS}/<uuid:uuid>/",
+        view=SupplementStackCompositionGetUpdateView.as_view(),
+        name=RESOURCES.SUPPLEMENT_STACK_COMPOSITIONS,
     ),
     re_path(
         # weirdly difficult for me to get the proper amount of characters to make work, not sure what i'm missing here

@@ -17,7 +17,7 @@ python manage.py test --pattern="*test_well_being_log_views.py" --keepdb
 """
 
 
-class WellBeingLogTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
+class WellBeingLogCreateTestView(BetterSelfResourceViewTestCaseMixin, TestCase):
     url_name = BetterSelfResourceConstants.WELL_BEING_LOGS
     model_class_factory = WellBeingLogFactory
     model_class = WellBeingLog

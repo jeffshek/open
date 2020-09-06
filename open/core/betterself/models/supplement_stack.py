@@ -1,8 +1,11 @@
+from open.core.betterself.constants import BetterSelfResourceConstants
 from open.utilities.fields import DEFAULT_MODELS_CHAR_FIELD
 from open.utilities.models import BaseModelWithUserGeneratedContent
 
 
 class SupplementStack(BaseModelWithUserGeneratedContent):
+    RESOURCE_NAME = BetterSelfResourceConstants.SUPPLEMENT_STACKS
+
     name = DEFAULT_MODELS_CHAR_FIELD
 
     class Meta:
