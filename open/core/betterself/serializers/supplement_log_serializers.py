@@ -2,9 +2,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     UUIDField,
-    HiddenField,
-    CurrentUserDefault,
-    CharField,
     DecimalField,
     ChoiceField,
 )
@@ -60,14 +57,14 @@ class SupplementLogReadSerializer(BaseModelReadSerializer):
 
 class SupplementLogCreateUpdateSerializer(BaseCreateUpdateSerializer):
     supplement_uuid = UUIDField(source="supplement.uuid")
-    user = HiddenField(default=CurrentUserDefault())
-    uuid = UUIDField(required=False, read_only=True)
-    notes = CharField(
-        default="",
-        trim_whitespace=True,
-        required=False,
-        allow_blank=True,
-    )
+    # user = HiddenField(default=CurrentUserDefault())
+    # uuid = UUIDField(required=False, read_only=True)
+    # notes = CharField(
+    #     default="",
+    #     trim_whitespace=True,
+    #     required=False,
+    #     allow_blank=True,
+    # )
     quantity = DecimalField(decimal_places=4, max_digits=10, default=1)
     source = ChoiceField(INPUT_SOURCES_TUPLES, default=WEB_INPUT_SOURCE)
 

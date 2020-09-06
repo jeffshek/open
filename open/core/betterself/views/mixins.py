@@ -23,9 +23,16 @@ class BaseCreateListView(APIView):
     filter_backends = []
 
     def get(self, request):
-        # TODO - maybe change over a passed set of values, not sure, the default is working well ...
-        # instances = self.model_class.objects.filter(user=request.user).select_related(*self.select_related_models)
-        instances = self.model_class.objects.filter(user=request.user).select_related()
+        # if passed in for select_related_models, use whatever is passed in
+        # this will work, however, i removed it from most of the models since it wasn't necessary
+        if self.select_related_models:
+            instances = self.model_class.objects.filter(
+                user=request.user
+            ).select_related(*self.select_related_models)
+        else:
+            instances = self.model_class.objects.filter(
+                user=request.user
+            ).select_related()
 
         serializer = self.read_serializer_class(instances, many=True)
         data = serializer.data

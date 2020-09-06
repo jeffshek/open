@@ -32,7 +32,7 @@ dpy test open.core.betterself.tests.views.test_supplement_log_views.TestSuppleme
 """
 
 
-class TestSupplementLogViews(BetterSelfResourceViewTestCaseMixin, TestCase):
+class TestSupplementLogCreateViews(BetterSelfResourceViewTestCaseMixin, TestCase):
     url_name = BetterSelfResourceConstants.SUPPLEMENT_LOGS
     model_class_factory = SupplementLogFactory
     model_class = SupplementLog

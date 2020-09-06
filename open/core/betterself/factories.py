@@ -139,6 +139,7 @@ class SupplementStackCompositionFactory(DjangoModelFactory):
 
     class Meta:
         model = SupplementStackComposition
+        django_get_or_create = ["user", "supplement", "stack"]
 
 
 class SupplementLogFactory(DjangoModelFactory):
