@@ -86,6 +86,10 @@ class SupplementLogCreateUpdateSerializer(BaseCreateUpdateSerializer):
         try:
             validate_model_uuid(Supplement, uuid=value, user=user)
         except ValidationError:
+            # if it's an edit, don't allow someone to edit a log to a stack
+            if self.instance:
+                raise
+
             # we allow for supplement_stack_uuid to also be passed in here, a bit of a hack
             validate_model_uuid(SupplementStack, uuid=value, user=user)
 

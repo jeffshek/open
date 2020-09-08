@@ -158,7 +158,6 @@ class TestSupplementLogCreateViews(BetterSelfResourceViewTestCaseMixin, TestCase
         # to create a set of supplements taken at the same time
 
         supplements = SupplementFactory.create_batch(3, user=self.user_1)
-
         stack = SupplementStackFactory(user=self.user_1)
 
         compositions = []
@@ -193,3 +192,14 @@ class TestSupplementLogGetUpdateDelete(
     url_name = BetterSelfResourceConstants.SUPPLEMENT_LOGS
     model_class_factory = SupplementLogFactory
     model_class = SupplementLog
+
+    def test_edit_supplement_log_with_supplement_stack(self):
+        log = SupplementLogFactory.create(user=self.user_1)
+        stack = SupplementStackFactory(user=self.user_1)
+
+        update_url = log.get_update_url()
+
+        data = {"supplement_uuid": str(stack.uuid)}
+
+        response = self.client_1.post(update_url, data=data)
+        self.assertEqual(response.status_code, 400)

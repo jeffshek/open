@@ -20,6 +20,7 @@ class BaseCreateListView(APIView):
     read_serializer_class = None
     create_serializer_class = None
     select_related_models = []
+    prefetch_related_models = []
     filter_backends = []
 
     def get(self, request):
@@ -33,6 +34,9 @@ class BaseCreateListView(APIView):
             instances = self.model_class.objects.filter(
                 user=request.user
             ).select_related()
+
+        if self.prefetch_related_models:
+            instances = instances.prefetch_related(*self.prefetch_related_models)
 
         serializer = self.read_serializer_class(instances, many=True)
         data = serializer.data
