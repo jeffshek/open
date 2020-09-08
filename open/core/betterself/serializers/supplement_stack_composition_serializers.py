@@ -80,5 +80,21 @@ class SupplementStackCompositionCreateUpdateSerializer(BaseCreateUpdateSerialize
                 raise ValidationError(
                     "Fields supplement stack and supplement are not unique"
                 )
+        else:
+            # if this is changing a supplement in a stack, make sure no conflicts with other compositions
+            if validated_data.get("supplement"):
+                # if updating, make sure that there are no other compositions with the same stack materials
+                if (
+                    self.Meta.model.objects.filter(
+                        user=user,
+                        stack=self.instance.stack,
+                        supplement=validated_data["supplement"],
+                    )
+                    .exclude(uuid=self.instance.uuid)
+                    .exists()
+                ):
+                    raise ValidationError(
+                        "Fields supplement stack and supplement name are not unique. Only a unique supplement allowed per stack."
+                    )
 
         return validated_data

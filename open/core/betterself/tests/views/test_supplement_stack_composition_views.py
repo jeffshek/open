@@ -70,6 +70,95 @@ class SupplementStackCompositionCreateTestView(
         expected_error_found = "non_field_errors" in response.data
         self.assertTrue(expected_error_found)
 
+    def test_create_view_with_separate_supplements_create_separate_compositions(self):
+        """
+        dpy test open.core.betterself.tests.views.test_supplement_stack_composition_views.SupplementStackCompositionCreateTestView.test_create_view_with_separate_supplements_create_separate_compositions --keepdb
+        """
+        supplement_1 = SupplementFactory(user=self.user_1)
+        stack = SupplementStackFactory(user=self.user_1)
+
+        supplement_1_uuid = str(supplement_1.uuid)
+        stack_uuid = str(stack.uuid)
+        quantity = 5
+
+        post_data = {
+            "supplement_uuid": supplement_1_uuid,
+            "stack_uuid": stack_uuid,
+            "quantity": quantity,
+        }
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200)
+
+        stack.refresh_from_db()
+        self.assertEqual(stack.compositions.count(), 1)
+
+        # now create it with supplement 2
+        supplement_2 = SupplementFactory(user=self.user_1)
+        self.assertNotEqual(supplement_1, supplement_2)
+
+        supplement_2_uuid = str(supplement_2.uuid)
+        post_data = {
+            "supplement_uuid": supplement_2_uuid,
+            "stack_uuid": stack_uuid,
+            "quantity": quantity,
+        }
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200)
+
+        stack.refresh_from_db()
+        self.assertEqual(stack.compositions.count(), 2)
+
+    def test_create_view_with_duplication_data_change_quantity(self):
+        """
+        dpy test open.core.betterself.tests.views.test_supplement_stack_composition_views.SupplementStackCompositionCreateTestView.test_create_view_with_duplication_data_change_quantity --keepdb
+        """
+
+        supplement_1 = SupplementFactory(user=self.user_1)
+        stack = SupplementStackFactory(user=self.user_1)
+
+        supplement_1_uuid = str(supplement_1.uuid)
+        stack_uuid = str(stack.uuid)
+        quantity = 5
+
+        post_data = {
+            "supplement_uuid": supplement_1_uuid,
+            "stack_uuid": stack_uuid,
+            "quantity": quantity,
+        }
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200)
+
+        # now create a composition with supplement 2
+        supplement_2 = SupplementFactory(user=self.user_1)
+        self.assertNotEqual(supplement_1, supplement_2)
+
+        supplement_2_uuid = str(supplement_2.uuid)
+        post_data = {
+            "supplement_uuid": supplement_2_uuid,
+            "stack_uuid": stack_uuid,
+            "quantity": quantity,
+        }
+
+        response = self.client_1.post(self.url, data=post_data)
+        self.assertEqual(response.status_code, 200)
+
+        stack.refresh_from_db()
+
+        self.assertEqual(stack.compositions.count(), 2)
+
+        # now edit supplement 2 to be supplement 1
+        last_composition = SupplementStackComposition.objects.get(
+            user=self.user_1, supplement=supplement_2, stack__uuid=stack_uuid
+        )
+        update_url = last_composition.get_update_url()
+
+        update_params = {"supplement_uuid": supplement_1_uuid}
+        response = self.client_1.post(update_url, data=update_params)
+        self.assertEqual(response.status_code, 400)
+
 
 class SupplementStackCompositionTestGetUpdateView(
     BetterSelfResourceViewTestCaseMixin, GetTestsMixin, DeleteTestsMixin, TestCase

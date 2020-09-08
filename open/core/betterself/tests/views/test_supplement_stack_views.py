@@ -2,7 +2,10 @@ from django.contrib.auth import get_user_model
 from test_plus import TestCase
 
 from open.core.betterself.constants import BetterSelfResourceConstants
-from open.core.betterself.factories import SupplementStackFactory
+from open.core.betterself.factories import (
+    SupplementStackFactory,
+    SupplementStackCompositionFactory,
+)
 from open.core.betterself.models.supplement_stack import SupplementStack
 from open.core.betterself.tests.mixins.resource_mixin import (
     BetterSelfResourceViewTestCaseMixin,
@@ -40,6 +43,19 @@ class SupplementStackTestGetUpdateView(
     model_class_factory = SupplementStackFactory
     model_class = SupplementStack
 
+    def test_get_view_with_supplement_compositions(self):
+        stack = SupplementStackFactory(user=self.user_1)
+        compositions_to_create = 3
+        SupplementStackCompositionFactory.create_batch(
+            compositions_to_create, stack=stack, user=self.user_1
+        )
+
+        url = stack.get_update_url()
+        response = self.client_1.get(url)
+
+        self.assertIsNotNone(response.data["compositions"])
+        self.assertEqual(compositions_to_create, len(response.data["compositions"]))
+
     def test_update_stack_name(self):
         stack = SupplementStackFactory(user=self.user_1)
         cool_name = "cool name"
@@ -62,3 +78,7 @@ class SupplementStackTestGetUpdateView(
         # use a different client to make sure no data
         response = self.client_2.post(url, data=params)
         self.assertEqual(404, response.status_code)
+
+    def test_avoid_extra_sql_queries(self):
+        # TODO - Actually fix the duplicate queries if it ends up being slow ...
+        return
