@@ -1,5 +1,6 @@
 version: '3'
 
+# this file is the exact same (or should be) as production.yml except it includes celerybeat
 services:
   django: &django
     build:
@@ -41,3 +42,10 @@ services:
       - .:/app
     command: /start-celeryworker.sh
 
+  celerybeat:
+    image: gcr.io/proven-record-242223/open:latest
+    env_file:
+      - ./credentials/open/production/django.txt
+    volumes:
+      - .:/app
+    command: /start-celerybeat.sh
