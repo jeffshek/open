@@ -11,6 +11,8 @@ services:
     command: /start.sh
     volumes:
       - .:/app
+    depends_on:
+      - cloud-sql-proxy
 
   traefik:
     build:
@@ -40,4 +42,6 @@ services:
     volumes:
       - .:/app
     command: /start-celeryworker.sh
+    depends_on:
+      - cloud-sql-proxy
 
