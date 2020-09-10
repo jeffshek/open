@@ -37,3 +37,8 @@ def check_services_running():
         assert response.status_code == 200
         # make sure it returns text_4
         assert len(data["text_4"]) > 30
+
+
+@app.task(serializer="json")
+def test_heartbeat_errors():
+    raise ValueError("Heartbeat Test Error")
