@@ -10,6 +10,8 @@ services:
     env_file:
       - ./credentials/open/production/django.txt
     command: /start.sh
+    depends_on:
+      - cloud-sql-proxy
     volumes:
       - .:/app
 
@@ -41,6 +43,8 @@ services:
     volumes:
       - .:/app
     command: /start-celeryworker.sh
+    depends_on:
+      - cloud-sql-proxy
 
   celerybeat:
     image: gcr.io/proven-record-242223/open:latest
@@ -49,3 +53,5 @@ services:
     volumes:
       - .:/app
     command: /start-celerybeat.sh
+    depends_on:
+      - cloud-sql-proxy
