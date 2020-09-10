@@ -14,10 +14,9 @@ app.conf.beat_schedule = {
         # run every 30 minutes to make sure all the ml-services are running
         "schedule": 30 * MINUTES_INTERVAL,
     },
-    "test-heartbeat-errors": {
-        "task": "open.core.tasks.test_heartbeat_errors",
-        # run every 30 minutes to make sure all the ml-services are running
-        "schedule": 10 * MINUTES_INTERVAL,
+    "reset-betterself-demo-fixtures": {
+        "task": "open.core.tasks.reset_betterself_demo_fixtures",
+        "schedule": 30 * MINUTES_INTERVAL,
     },
 }
 
