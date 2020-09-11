@@ -21,8 +21,7 @@ User = get_user_model()
 
 """
 python manage.py test --pattern="*test_overview_view.py" --keepdb
-
-dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_productivity --keepdb
+dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView --keepdb
 """
 
 
@@ -35,7 +34,7 @@ class OverviewTestView(BaseTestCase):
         cls.end_period = get_utc_now()
         cls.end_period_date_string = cls.end_period.date().strftime(yyyy_mm_dd_format_1)
 
-        supplements = SupplementFactory.create_batch(2, user=user_1)
+        supplements = SupplementFactory.create_batch(10, user=user_1)
 
         for index in range(100):
             # simulate some missing data
@@ -91,6 +90,9 @@ class OverviewTestView(BaseTestCase):
         self.assertEqual(response.status_code, 200, response.data)
 
     def test_view_response(self):
+        """
+        dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_productivity --keepdb
+        """
         start_period = "2020-08-22"
         kwargs = {"period": "monthly", "date": start_period}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
@@ -121,6 +123,7 @@ class OverviewTestView(BaseTestCase):
         # garbage assertion, but i'll write better tests when i can visualize how the frontend
         # should display the data
         self.assertIsNotNone(supplements_data)
+        self.assertIsNotNone(supplements_data["summary"])
 
     def test_view_response_for_productivity_no_data(self):
         start_period = get_time_relative_units_ago(self.end_period, days=7)
@@ -215,3 +218,16 @@ class OverviewTestView(BaseTestCase):
 
         expected_sleep_minutes = total_sleep_hours * 60
         self.assertAlmostEquals(total_duration_minutes, expected_sleep_minutes, 0)
+
+    def test_view_response_for_sql_queries(self):
+        """
+        dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_sql_queries --keepdb
+        """
+        start_period = get_time_relative_units_ago(self.end_period, days=30)
+        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
+
+        kwargs = {"period": "weekly", "date": start_period_string}
+        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
+
+        with self.assertNumQueriesLessThan(15):
+            self.client_1.get(url)

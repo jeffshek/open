@@ -2,6 +2,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 
+import dateutil.parser
 import pandas as pd
 from django.db.models import Sum
 
@@ -10,7 +11,6 @@ from open.core.betterself.models.activity_log import ActivityLog
 from open.core.betterself.models.daily_productivity_log import DailyProductivityLog
 from open.core.betterself.models.food_logs import FoodLog
 from open.core.betterself.models.sleep_log import SleepLog
-from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.models.well_being_log import WellBeingLog
 from open.core.betterself.serializers.activity_log_serializers import (
@@ -34,8 +34,6 @@ from open.utilities.date_and_time import (
     yyyy_mm_dd_format_1,
     mean_time,
 )
-
-import dateutil.parser
 
 PRODUCTIVITY_LOG_VALUE_FIELDS = [
     "uuid",
@@ -83,11 +81,20 @@ def get_overview_supplements_data(user, start_period, end_period):
     if not supplement_logs.exists():
         return response
 
+    supplement_name_cache = {}
+
     for log in supplement_logs:
         # otherwise everything is stored on the UTC date for the user, which doesn't make as much sense
         user_timezone = user.timezone
         normalized_time = user_timezone.normalize(log.time)
         log_date = normalized_time.date().isoformat()
+        supplement = log.supplement
+
+        # serialize this data once to avoid duplicate SQL queries
+        if supplement.uuid not in supplement_name_cache:
+            supplement_name_cache[supplement.name] = SimpleSupplementReadSerializer(
+                supplement
+            ).data
 
         serialized_log = SupplementLogReadSerializer(log).data
 
@@ -105,8 +112,7 @@ def get_overview_supplements_data(user, start_period, end_period):
     for value in taken_data:
         taken_result = {}
 
-        supplement = Supplement.objects.get(name=value["supplement__name"], user=user)
-        supplement_serialized = SimpleSupplementReadSerializer(supplement).data
+        supplement_serialized = supplement_name_cache[value["supplement__name"]]
         taken_result["supplement"] = supplement_serialized
 
         # add the individual total quantity to the aggregrate
