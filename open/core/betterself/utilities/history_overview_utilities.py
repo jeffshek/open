@@ -65,7 +65,7 @@ def get_overview_supplements_data(user, start_period, end_period):
         "daily_logs": defaultdict(list),
         "logs": [],
         # group by supplements and how many were taken
-        # TODO - not sure how much i need this now that it's handled by ag-grid
+        # currently using summary for supplements history overview
         "summary": [],
         "total_quantity": 0,
         "log_type": SUPPLEMENT_LOG_TYPE,
@@ -198,9 +198,6 @@ def get_overview_sleep_data(user, start_period, end_period):
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
         "logs": [],
-        # remove mean_ after switching on frontend
-        "mean_start_time": None,
-        "mean_end_time": None,
         "start_time_mean": None,
         "end_time_mean": None,
         "total_duration_minutes": None,
@@ -219,15 +216,11 @@ def get_overview_sleep_data(user, start_period, end_period):
     df["start_time"] = pd.to_datetime(df["start_time"], format="%H:%M").dt.time
     df["end_time"] = pd.to_datetime(df["end_time"], format="%H:%M").dt.time
 
-    mean_start_time = mean_time(df["start_time"].values)
-    mean_end_time = mean_time(df["end_time"].values)
+    start_time_mean = mean_time(df["start_time"].values)
+    end_time_mean = mean_time(df["end_time"].values)
 
-    # TODO remove this after swapping out on frontend
-    response["mean_start_time"] = mean_start_time
-    response["mean_end_time"] = mean_end_time
-
-    response["start_time_mean"] = mean_start_time
-    response["end_time_mean"] = mean_end_time
+    response["start_time_mean"] = start_time_mean
+    response["end_time_mean"] = end_time_mean
 
     serializer = SleepLogReadSerializer(sleep_logs, many=True)
     sleep_logs_serialized = serializer.data
