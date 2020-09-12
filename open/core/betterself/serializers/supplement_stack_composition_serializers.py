@@ -46,12 +46,12 @@ class SupplementStackCompositionCreateUpdateSerializer(BaseCreateUpdateSerialize
 
     def validate_supplement_uuid(self, value):
         user = self.context["request"].user
-        validate_model_uuid(Supplement, uuid=value, user=user)
+        validate_model_uuid(uuid=value, model=Supplement, user=user)
         return value
 
     def validate_stack_uuid(self, value):
         user = self.context["request"].user
-        validate_model_uuid(SupplementStack, uuid=value, user=user)
+        validate_model_uuid(uuid=value, model=SupplementStack, user=user)
         return value
 
     def validate(self, validated_data):

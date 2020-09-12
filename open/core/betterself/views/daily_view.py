@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from open.core.betterself.utilities.user_date_utilities import (
-    serialize_date_to_user_localized_date,
+    serialize_date_to_user_localized_datetime,
 )
 from open.core.betterself.utilities.history_overview_utilities import (
     get_overview_supplements_data,
@@ -20,7 +20,7 @@ from open.core.betterself.utilities.history_overview_utilities import (
 class DailyReviewView(APIView):
     def get(self, request, date):
         user = request.user
-        start_period = serialize_date_to_user_localized_date(date, user)
+        start_period = serialize_date_to_user_localized_datetime(date, user)
 
         # use the start_period, but now get the end of the day
         end_period = datetime(

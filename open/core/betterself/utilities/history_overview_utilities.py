@@ -56,7 +56,7 @@ ACTIVITY_LOG_TYPE = "Activity"
 FOOD_LOG_TYPE = "Food"
 
 
-def get_overview_supplements_data(user, start_period, end_period):
+def get_overview_supplements_data(user, start_period, end_period, supplements=None):
     response = {
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),

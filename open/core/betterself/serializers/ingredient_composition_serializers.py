@@ -57,11 +57,11 @@ class IngredientCompositionCreateUpdateSerializer(BaseCreateUpdateSerializer):
 
     def validate_ingredient_uuid(self, value):
         user = self.context["request"].user
-        validate_model_uuid(Ingredient, uuid=value, user=user)
+        validate_model_uuid(uuid=value, model=Ingredient, user=user)
         return value
 
     def validate_measurement_uuid(self, value):
-        validate_model_uuid(Measurement, uuid=value)
+        validate_model_uuid(uuid=value, model=Measurement)
         return value
 
     def validate(self, validated_data):
@@ -89,7 +89,7 @@ class IngredientCompositionCreateUpdateSerializer(BaseCreateUpdateSerializer):
                 quantity=validated_data["quantity"],
             ).exists():
                 raise ValidationError(
-                    f"Fields user, ingredient, measurement, and quantity are not unique!"
+                    "Fields user, ingredient, measurement, and quantity are not unique!"
                 )
 
         return validated_data

@@ -46,15 +46,18 @@ class SupplementStackTestGetUpdateView(
     def test_get_view_with_supplement_compositions(self):
         stack = SupplementStackFactory(user=self.user_1)
         compositions_to_create = 3
-        SupplementStackCompositionFactory.create_batch(
+        created_comps = SupplementStackCompositionFactory.create_batch(
             compositions_to_create, stack=stack, user=self.user_1
         )
+
+        # sometimes the randomness makes it not quite equal to how many we wanted to create
+        created_comps_length = len(created_comps)
 
         url = stack.get_update_url()
         response = self.client_1.get(url)
 
         self.assertIsNotNone(response.data["compositions"])
-        self.assertEqual(compositions_to_create, len(response.data["compositions"]))
+        self.assertEqual(created_comps_length, len(response.data["compositions"]))
 
     def test_update_stack_name(self):
         stack = SupplementStackFactory(user=self.user_1)

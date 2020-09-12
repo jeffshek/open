@@ -3,14 +3,25 @@ from rest_framework.exceptions import ValidationError
 
 from open.core.betterself.models.activity import Activity
 from open.core.betterself.models.ingredient_composition import IngredientComposition
+from open.core.betterself.models.supplement import Supplement
+from functools import partial
 
 
 def ingredient_composition_uuid_validator(uuid):
-    validate_model_uuid(IngredientComposition, uuid)
+    validate_model_uuid(uuid, IngredientComposition)
     return uuid
 
 
-def validate_model_uuid(model, uuid, user=None):
+def supplement_uuid_validator(uuid):
+    validate_model_uuid(uuid, Supplement)
+    return uuid
+
+
+def generic_model_uuid_validator(model):
+    return partial(validate_model_uuid, model=model)
+
+
+def validate_model_uuid(uuid, model, user=None):
     try:
         if user:
             model.objects.get(uuid=uuid, user=user)
@@ -29,5 +40,5 @@ class ModelValidatorsMixin:
         if self.context["request"]:
             user = self.context["request"].user
 
-        validate_model_uuid(Activity, uuid=value, user=user)
+        validate_model_uuid(uuid=value, model=Activity, user=user)
         return value
