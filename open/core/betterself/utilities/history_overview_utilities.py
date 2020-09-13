@@ -56,7 +56,9 @@ ACTIVITY_LOG_TYPE = "Activity"
 FOOD_LOG_TYPE = "Food"
 
 
-def get_overview_supplements_data(user, start_period, end_period, supplements=None):
+def get_overview_supplements_data(
+    user, start_period, end_period, filter_supplements=None
+):
     response = {
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
@@ -80,6 +82,9 @@ def get_overview_supplements_data(user, start_period, end_period, supplements=No
     )
     if not supplement_logs.exists():
         return response
+
+    if filter_supplements:
+        supplement_logs = supplement_logs.filter(supplement__in=filter_supplements)
 
     supplement_name_cache = {}
 
@@ -278,10 +283,11 @@ def get_overview_activity_data(user, start_period, end_period):
     return response
 
 
-def get_overview_food_data(user, start_period, end_period):
+def get_overview_food_data(user, start_period, end_period, filter_foods=None):
     response = {
         "start_period": start_period.date().isoformat(),
         "end_period": end_period.date().isoformat(),
+        "daily_logs": defaultdict(list),
         "logs": [],
         "log_type": FOOD_LOG_TYPE,
     }
@@ -294,7 +300,18 @@ def get_overview_food_data(user, start_period, end_period):
     if not logs.exists():
         return response
 
-    response["logs"] = FoodLogReadSerializer(logs, many=True).data
+    if filter_foods:
+        logs = logs.filter(food__in=filter_foods)
+
+    for log in logs:
+        user_timezone = user.timezone
+        normalized_time = user_timezone.normalize(log.time)
+        log_date = normalized_time.date().isoformat()
+
+        serialized_log = FoodLogReadSerializer(log).data
+        response["logs"].append(serialized_log)
+        response["daily_logs"][log_date].append(serialized_log)
+
     return response
 
 

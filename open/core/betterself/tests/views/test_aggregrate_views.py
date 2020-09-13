@@ -8,7 +8,11 @@ from open.core.betterself.factories import (
     SupplementFactory,
     SupplementLogFactory,
     DailyProductivityLogFactory,
+    FoodFactory,
+    FoodLogFactory,
 )
+from open.core.betterself.models.food_logs import FoodLog
+from open.core.betterself.models.supplement_log import SupplementLog
 from open.core.betterself.tests.mixins.resource_mixin import BaseTestCase
 from open.core.betterself.utilities.user_date_utilities import (
     serialize_date_to_user_localized_datetime,
@@ -78,7 +82,6 @@ class TestAggregateView(BaseTestCase):
 
     def test_url_with_supplements_requested(self):
         url = reverse(BetterSelfResourceConstants.AGGREGATE)
-
         start_date = "2020-01-02"
 
         supplements = SupplementFactory.create_batch(2, user=self.user_1)
@@ -103,3 +106,74 @@ class TestAggregateView(BaseTestCase):
         self.assertEqual(response.status_code, 200, response.data)
 
         self.assertIsNotNone(response.data["supplements"])
+
+    def test_url_with_supplements_requested_filter(self):
+        url = reverse(BetterSelfResourceConstants.AGGREGATE)
+        start_date = "2020-01-02"
+
+        supplements = SupplementFactory.create_batch(2, user=self.user_1)
+        start_time = serialize_date_to_user_localized_datetime(
+            start_date, user=self.user_1
+        )
+
+        for supplement in supplements:
+            SupplementLogFactory(
+                user=self.user_1, supplement=supplement, time=start_time
+            )
+
+        # only do one uuid
+        supplement_uuids = [str(supplement.uuid) for supplement in supplements[:1]]
+
+        kwargs = {
+            "start_date": "2020-01-01",
+            "end_date": "2020-01-02",
+            "supplement_uuids": supplement_uuids,
+        }
+
+        response = self.client_1.post(url, data=kwargs, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+
+        expected_log_count = SupplementLog.objects.filter(
+            user=self.user_1, supplement__uuid__in=supplement_uuids
+        ).count()
+
+        returned_log_count = len(response.data["supplements"]["logs"])
+        self.assertEqual(expected_log_count, returned_log_count)
+
+    def test_url_with_foods_requested_filter(self):
+        url = reverse(BetterSelfResourceConstants.AGGREGATE)
+        start_date = "2020-01-02"
+        key_type = "foods"
+        key_uuid_label = "food_uuids"
+        instanceFactory = FoodFactory
+        instanceLogFactory = FoodLogFactory
+        instanceLogModel = FoodLog
+
+        instances = instanceFactory.create_batch(2, user=self.user_1)
+        start_time = serialize_date_to_user_localized_datetime(
+            start_date, user=self.user_1
+        )
+
+        for instance in instances:
+            instanceLogFactory(user=self.user_1, food=instance, time=start_time)
+
+        # only do one uuid
+        instance_uuids = [str(instance.uuid) for instance in instances[:1]]
+
+        self.assertEqual(len(instance_uuids), 1)
+
+        kwargs = {
+            "start_date": "2020-01-01",
+            "end_date": "2020-01-02",
+            key_uuid_label: instance_uuids,
+        }
+
+        response = self.client_1.post(url, data=kwargs, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+
+        expected_log_count = instanceLogModel.objects.filter(
+            user=self.user_1, food__uuid__in=instance_uuids
+        ).count()
+
+        returned_log_count = len(response.data[key_type]["logs"])
+        self.assertEqual(expected_log_count, returned_log_count)

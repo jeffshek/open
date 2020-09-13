@@ -1,12 +1,14 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from open.core.betterself.models.food import Food
 from open.core.betterself.models.supplement import Supplement
 from open.core.betterself.serializers.aggregrate_serializers import (
     AggregrateViewParamsSerializer,
 )
 from open.core.betterself.utilities.history_overview_utilities import (
     get_overview_supplements_data,
+    get_overview_food_data,
 )
 from open.core.betterself.utilities.user_date_utilities import (
     serialize_date_to_user_localized_datetime,
@@ -49,12 +51,19 @@ class AggregateView(APIView):
                 user=user,
                 start_period=start_period,
                 end_period=end_period,
-                supplements=supplements,
+                filter_supplements=supplements,
             )
             response["supplements"] = supplements_data
 
-        # productivity_data = get_overview_productivity_data(
-        #     user=user, start_period=start_period, end_period=end_period
-        # )
+        food_uuids = data.get("food_uuids")
+        if food_uuids:
+            filter_foods = Food.objects.filter(uuid__in=food_uuids)
+            foods_data = get_overview_food_data(
+                user=user,
+                start_period=start_period,
+                end_period=end_period,
+                filter_foods=filter_foods,
+            )
+            response["foods"] = foods_data
 
         return Response(response)
