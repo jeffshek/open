@@ -9,7 +9,7 @@ from open.core.betterself.utilities.history_overview_utilities import (
     get_overview_sleep_data,
 )
 from open.core.betterself.utilities.user_date_utilities import (
-    serialize_date_to_user_localized_date,
+    serialize_date_to_user_localized_datetime,
 )
 from open.utilities.date_and_time import get_time_relative_units_forward
 
@@ -17,7 +17,7 @@ from open.utilities.date_and_time import get_time_relative_units_forward
 class OverviewView(APIView):
     def get(self, request, period, date):
         user = request.user
-        start_period = serialize_date_to_user_localized_date(date, user)
+        start_period = serialize_date_to_user_localized_datetime(date, user)
 
         if period == "daily":
             end_period = start_period

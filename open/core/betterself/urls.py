@@ -9,6 +9,7 @@ from open.core.betterself.views.activity_views import (
     ActivityGetUpdateView,
     ActivityCreateListView,
 )
+from open.core.betterself.views.aggregrate_views import AggregateView
 from open.core.betterself.views.daily_productivity_log_views import (
     DailyProductivityLogCreateListView,
     DailyProductivityLogGetUpdateView,
@@ -201,5 +202,10 @@ urlpatterns = [
         f"{RESOURCES.DAILY_REVIEW}/(?P<date>(.)+)/",
         view=DailyReviewView.as_view(),
         name=RESOURCES.DAILY_REVIEW,
+    ),
+    path(
+        f"{RESOURCES.AGGREGATE}/",
+        view=AggregateView.as_view(),
+        name=RESOURCES.AGGREGATE,
     ),
 ]
