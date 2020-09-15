@@ -111,6 +111,9 @@ class TestAggregateView(BaseTestCase):
         url = reverse(BetterSelfResourceConstants.AGGREGATE)
         start_date = "2020-01-02"
 
+        # delete any previous data to not screw up results
+        SupplementLog.objects.filter(user=self.user_1).delete()
+
         supplements = SupplementFactory.create_batch(2, user=self.user_1)
         start_time = serialize_date_to_user_localized_datetime(
             start_date, user=self.user_1

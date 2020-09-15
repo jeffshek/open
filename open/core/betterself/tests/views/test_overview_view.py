@@ -34,6 +34,11 @@ class OverviewTestView(BaseTestCase):
         cls.end_period = get_utc_now()
         cls.end_period_date_string = cls.end_period.date().strftime(yyyy_mm_dd_format_1)
 
+        cls.start_period = get_time_relative_units_ago(cls.end_period, days=7)
+        cls.start_period_date_string = cls.start_period.date().strftime(
+            yyyy_mm_dd_format_1
+        )
+
         supplements = SupplementFactory.create_batch(10, user=user_1)
 
         for index in range(100):
@@ -64,42 +69,36 @@ class OverviewTestView(BaseTestCase):
             DailyProductivityLogFactory(user=user_2, date=date_to_use)
 
     def test_url(self):
-        kwargs = {"period": "monthly", "date": "2020-08-22"}
+        kwargs = {"start_date": "2020-08-22", "end_date": "2020-09-22"}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
         self.assertIsNotNone(url)
 
     def test_view(self):
-        kwargs = {"period": "monthly", "date": "2020-08-22"}
+        kwargs = {"start_date": "2020-08-22", "end_date": "2020-09-22"}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
         self.assertEqual(response.status_code, 200, response.data)
 
     def test_view_invalid_date(self):
-        kwargs = {"period": "monthly", "date": "2020-999-22"}
+        kwargs = {"start_date": "2020-999-22", "end_date": "2020-999-22"}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
         self.assertEqual(response.status_code, 404, response.data)
-
-    def test_view_weekly(self):
-        kwargs = {"period": "weekly", "date": "2020-10-22"}
-        url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
-
-        response = self.client_1.get(url)
-        self.assertEqual(response.status_code, 200, response.data)
 
     def test_view_response(self):
         """
         dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_productivity --keepdb
         """
         start_period = "2020-08-22"
-        kwargs = {"period": "monthly", "date": start_period}
+        end_period = "2020-09-22"
+        kwargs = {"start_date": start_period, "end_date": end_period}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
 
-        expected_keys = ["period", "start_period", "end_period"]
+        expected_keys = ["start_period", "end_period"]
         data_keys = data.keys()
 
         valid_response = set(expected_keys).issubset(data_keys)
@@ -113,8 +112,10 @@ class OverviewTestView(BaseTestCase):
         self.assertNotEqual(data_end_period, start_period)
 
     def test_view_response_for_supplements(self):
-        start_period = self.end_period_date_string
-        kwargs = {"period": "monthly", "date": start_period}
+        kwargs = {
+            "start_date": self.start_period_date_string,
+            "end_date": self.end_period_date_string,
+        }
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
@@ -129,20 +130,30 @@ class OverviewTestView(BaseTestCase):
         start_period = get_time_relative_units_ago(self.end_period, days=7)
         start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
 
-        kwargs = {"period": "weekly", "date": start_period_string}
+        kwargs = {
+            "start_date": start_period_string,
+            "end_date": self.end_period_date_string,
+        }
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_1.get(url).data
         self.assertTrue("productivity" in data)
 
     def test_view_response_for_productivity(self):
+        """
+
+        dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_productivity --keepdb
+        """
         start_period = get_time_relative_units_ago(self.end_period, days=7)
         start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
 
         # make sure that the start_period is in this test fixtures
         DailyProductivityLogFactory(user=self.user_1, date=start_period)
 
-        kwargs = {"period": "weekly", "date": start_period_string}
+        kwargs = {
+            "start_date": start_period_string,
+            "end_date": self.end_period_date_string,
+        }
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
@@ -162,14 +173,15 @@ class OverviewTestView(BaseTestCase):
         self.assertTrue(start_period_string in dates_in_logs)
 
     def test_view_response_with_no_data(self):
-        start_period = "1998-08-22"
+        start_date = "1998-08-22"
+        end_date = "1998-09-22"
 
-        kwargs = {"period": "monthly", "date": start_period}
+        kwargs = {"start_date": start_date, "end_date": end_date}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         data = self.client_2.get(url).data
 
-        expected_keys = ["period", "start_period", "end_period"]
+        expected_keys = ["start_period", "end_period"]
         data_keys = data.keys()
 
         valid_response = set(expected_keys).issubset(data_keys)
@@ -179,8 +191,8 @@ class OverviewTestView(BaseTestCase):
         data_start_period = data["start_period"]
         data_end_period = data["end_period"]
 
-        self.assertEqual(data_start_period, start_period)
-        self.assertNotEqual(data_end_period, start_period)
+        self.assertEqual(data_start_period, start_date)
+        self.assertNotEqual(data_end_period, start_date)
 
     def test_sql_query_count(self):
         # dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_sql_query_count --keepdb
@@ -188,7 +200,10 @@ class OverviewTestView(BaseTestCase):
         start_period = get_time_relative_units_ago(self.end_period, years=1)
         start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
 
-        kwargs = {"period": "yearly", "date": start_period_string}
+        kwargs = {
+            "start_date": start_period_string,
+            "end_date": self.end_period_date_string,
+        }
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         with self.assertNumQueriesLessThan(15):
@@ -199,9 +214,11 @@ class OverviewTestView(BaseTestCase):
         dpy test open.core.betterself.tests.views.test_overview_view.OverviewTestView.test_view_response_for_sleep_data --keepdb
         """
         start_period = get_time_relative_units_ago(self.end_period, days=7)
-        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
 
-        kwargs = {"period": "weekly", "date": start_period_string}
+        start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
+        end_date_string = self.end_period.date().strftime(yyyy_mm_dd_format_1)
+
+        kwargs = {"start_date": start_period_string, "end_date": end_date_string}
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         response = self.client_1.get(url)
@@ -226,7 +243,10 @@ class OverviewTestView(BaseTestCase):
         start_period = get_time_relative_units_ago(self.end_period, days=30)
         start_period_string = start_period.date().strftime(yyyy_mm_dd_format_1)
 
-        kwargs = {"period": "weekly", "date": start_period_string}
+        kwargs = {
+            "start_date": start_period_string,
+            "end_date": self.end_period_date_string,
+        }
         url = reverse(BetterSelfResourceConstants.OVERVIEW, kwargs=kwargs)
 
         with self.assertNumQueriesLessThan(15):
