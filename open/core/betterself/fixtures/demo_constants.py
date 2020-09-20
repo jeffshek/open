@@ -135,8 +135,23 @@ NOTES_TO_USE = [
     "ANGRY I PLAYED VIDEO GAMES, WTF",
     "FOOD POISONING, THE PAIN, OW OW OW",
     "I'm going to crush it one day, but right now I feel like shit",
+    "I haven't been this productive in a while, I'm super pleased how much progress I made today",
+    "I felt really tired after the afternoon nap ... ",
+    "In hindsight, I drank way too much coffee earlier - it's been hard to sleep",
+    "Definitely been feeling a bit more anxious than normal, hoping this should fade by the end of the day",
+    "Trying to be a more productive person these days is quite an up hill battle. 1 step of hard work followed by 2 steps of YouTube, sigh."
+    "If I spend another 15 minutes on Reddit, I'm going to be so angry at myself",
+    "I will continue eating the right foods to focus better ....",
+    "I'm definitely allergic to cheese. I can't stop farting",
+    "Having that hour long meeting really drained me ... ",
+    "Today is really important for me to sleep the proper amount of hours",
+    "NO SOCIAL MEDIA AGAIN",
+    "I feel bad I haven't gone to the gym",
+    "I want a cheese burger ...",
 ]
 
 # most notes should be empty ... no one would write this much, so create a bunch of empty notes too
 EMPTY_SPACES_NOTES = [""] * len(NOTES_TO_USE) * 1
-NOTES_TO_USE_WITH_EMPTY_SPACES = NOTES_TO_USE + EMPTY_SPACES_NOTES
+
+# let's try without having a bunch of empty notes and see how well it looks for the demo
+NOTES_TO_USE_WITH_EMPTY_SPACES = NOTES_TO_USE + []
