@@ -35,6 +35,7 @@ from open.core.betterself.fixtures.demo_constants import (
     FOOD_NAMES,
     ACTIVITY_NAMES,
     NOTES_TO_USE_WITH_EMPTY_SPACES,
+    PRODUCTIVITY_NOTES_TO_USE,
 )
 from open.users.factories import UserFactory
 from open.utilities.date_and_time import (
@@ -168,7 +169,7 @@ class DailyProductivityLogFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     date = FuzzyDate(start_date=get_utc_date_relative_units_ago(years=2))
 
-    notes = FuzzyChoice(NOTES_TO_USE_WITH_EMPTY_SPACES)
+    notes = FuzzyChoice(PRODUCTIVITY_NOTES_TO_USE)
 
     class Meta:
         model = DailyProductivityLog

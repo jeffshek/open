@@ -78,7 +78,7 @@ FOOD_NAMES = [
     "Delivery",
 ]
 
-NOTES_TO_USE = [
+GENERIC_NOTES_TO_USE = [
     "Happy as a dog",
     "SO PUMPED IM GETTING A PUPPY",
     "Feel Good",
@@ -150,8 +150,25 @@ NOTES_TO_USE = [
     "I want a cheese burger ...",
 ]
 
-# most notes should be empty ... no one would write this much, so create a bunch of empty notes too
-EMPTY_SPACES_NOTES = [""] * len(NOTES_TO_USE) * 1
+PRODUCTIVITY_NOTES_TO_USE = [
+    "Been super productive for the whole day today. Started off on the right rhythm and made sure I didn't go on Reddit.",
+    "Didn't do as much as I wanted today - was feeling a bit tired from my hangover and the food from last night.",
+    "Been hard to focus, I started off the day reading news ... it didn't help, made me keep on checking those dopamine sites for new updates. BAD.",
+    "Been pretty decent - I've gotten a lot of work done. Coworkers are pushing me to finish this project.",
+    "Today I got a lot of work done because the deadlines were very soon.",
+    "Felt super lethargic, couldn't get as much work done as I wanted to today.",
+    "Today was a bad day, I wanted to go shopping and it distracted me really hard.",
+    "I had to do a lot of studying today, as a result ... I didn't do any studying. Bad day, but hopefully next week I'll be much better.",
+    "Thank god it's Friday, finally done with all my chores. I'll make sure I'm super productive in the next weeks to come.",
+    "Been trying to fight off some of my addictions ... as a result , I just could never get into a good rhythm that I was proud enough of what I could get done.",
+    "Been reading motivational quotes all throughout the day to keep me motivated. As a result, I've gotten a pretty good day of work done. Happy about that.",
+    "Some crappy fights w/spouse today, I couldn't focus throughout the day.",
+    "I ate a lot of junk food the night before, and so I was a little bit sluggish throughout the day.",
+    "I've been eating only clean foods the last few weeks, so I've been able to get so much done today and feel great doing so!",
+]
 
-# let's try without having a bunch of empty notes and see how well it looks for the demo
-NOTES_TO_USE_WITH_EMPTY_SPACES = NOTES_TO_USE + []
+# most notes should be empty ... no one would write this much, so create a bunch of empty notes too
+EMPTY_SPACES_NOTES = [""] * len(GENERIC_NOTES_TO_USE)
+
+# make it 50% filled, 50% blank
+NOTES_TO_USE_WITH_EMPTY_SPACES = GENERIC_NOTES_TO_USE + EMPTY_SPACES_NOTES
