@@ -1,6 +1,7 @@
 import logging
 
 from dateutil import relativedelta
+from factory.fuzzy import FuzzyDateTime
 
 from open.core.betterself.factories import (
     ActivityFactory,
@@ -64,6 +65,7 @@ def create_demo_fixtures_for_user(user):
     daily_logs_to_create = 30
     nested_models_logs_to_create = 10
     supplements_to_create = 15
+    supplement_logs_to_create_daily = 2
     sleep_logs_to_create = 90
 
     activities_to_create = 40
@@ -91,14 +93,19 @@ def create_demo_fixtures_for_user(user):
         )
         dates_to_create.append(relative_date)
 
+    supplements = SupplementFactory.create_batch(supplements_to_create, user=user)
     for date in dates_to_create:
         DailyProductivityLogFactory(date=date, user=user)
 
-    supplements = SupplementFactory.create_batch(supplements_to_create, user=user)
-    for supplement in supplements:
-        SupplementLogFactory.create_batch(
-            nested_models_logs_to_create, user=user, supplement=supplement
-        )
+        start_dt = date.replace(hour=0)
+        end_dt = date.replace(hour=23)
+
+        result = FuzzyDateTime(start_dt=start_dt, end_dt=end_dt).fuzz()
+
+        for supplement in supplements:
+            SupplementLogFactory.create_batch(
+                supplement_logs_to_create_daily, user=user, supplement=supplement, time=result
+            )
 
     # ingredients = IngredientFactory.create_batch(fixtures_to_create, user=user)
     #
