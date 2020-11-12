@@ -100,9 +100,9 @@ def create_demo_fixtures_for_user(user):
         start_dt = date.replace(hour=0)
         end_dt = date.replace(hour=23)
 
-        result = FuzzyDateTime(start_dt=start_dt, end_dt=end_dt).fuzz()
-
         for supplement in supplements:
+            result = FuzzyDateTime(start_dt=start_dt, end_dt=end_dt).fuzz()
+
             SupplementLogFactory.create_batch(
                 supplement_logs_to_create_daily, user=user, supplement=supplement, time=result
             )
