@@ -1,5 +1,6 @@
 import logging
 
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,6 +38,15 @@ class BaseCreateListView(APIView):
 
         if self.prefetch_related_models:
             instances = instances.prefetch_related(*self.prefetch_related_models)
+
+        limit_params = request.query_params.get("limit")
+        if limit_params:
+            try:
+                limit_params = int(limit_params)
+            except ValueError:
+                raise ValidationError("Invalid Limit Param Entered - Must Be An Integer")
+
+            instances = instances[:limit_params]
 
         serializer = self.read_serializer_class(instances, many=True)
         data = serializer.data

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from rest_framework.reverse import reverse
 
 from test_plus import TestCase
 
@@ -202,4 +203,21 @@ class TestSupplementLogGetUpdateDelete(
         data = {"supplement_uuid": str(stack.uuid)}
 
         response = self.client_1.post(update_url, data=data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_supplement_log_with_list_view_limit(self):
+        self.model_class_factory.create_batch(50, user=self.user_1)
+        url_with_params = self.url + "?limit=5"
+
+        response = self.client_1.get(url_with_params)
+        data = response.data
+
+        self.assertEqual(len(data), 5)
+
+    def test_supplement_log_with_list_view_invalid_limitparam(self):
+        self.model_class_factory.create_batch(50, user=self.user_1)
+        url_with_params = self.url + "?limit=DONKEYKONG"
+
+        response = self.client_1.get(url_with_params)
+        # invalid param should return 400
         self.assertEqual(response.status_code, 400)

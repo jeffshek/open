@@ -51,7 +51,7 @@ class SupplementStackTestGetUpdateView(
         )
 
         # sometimes the randomness makes it not quite equal to how many we wanted to create
-        created_comps_length = len(created_comps)
+        created_comps_length = len(set(created_comps))
 
         url = stack.get_update_url()
         response = self.client_1.get(url)

@@ -132,7 +132,7 @@ class SupplementStackCompositionCreateTestView(
         self.assertEqual(response.status_code, 200)
 
         # now create a composition with supplement 2
-        supplement_2 = SupplementFactory(user=self.user_1)
+        supplement_2 = SupplementFactory(user=self.user_1, name="Not Supplement 1")
         self.assertNotEqual(supplement_1, supplement_2)
 
         supplement_2_uuid = str(supplement_2.uuid)
