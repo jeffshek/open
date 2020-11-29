@@ -29,7 +29,7 @@ from open.core.betterself.models.supplement_stack_composition import (
     SupplementStackComposition,
 )
 from open.core.betterself.models.well_being_log import WellBeingLog
-from open.utilities.date_and_time import get_utc_now, get_time_relative_units_forward
+from open.utilities.date_and_time import get_utc_now
 
 logger = logging.getLogger(__name__)
 
@@ -81,9 +81,12 @@ def create_demo_fixtures_for_user(user):
     # do a week ahead of time, that way you don't really have to deal with constantly rerunning
     # this script for now on deployments
     utc_now = get_utc_now()
-    relative_end_date_of_fixtures_creation = get_time_relative_units_forward(
-        utc_now, days=7
-    )
+    # relative_end_date_of_fixtures_creation = get_time_relative_units_forward(
+    #     utc_now, days=7
+    # )
+
+    # don't create dates in the advance now that we run this celery script every 30 minutes
+    relative_end_date_of_fixtures_creation = utc_now
 
     dates_to_create = []
     for index in range(productivity_logs_to_create):
@@ -104,7 +107,10 @@ def create_demo_fixtures_for_user(user):
             result = FuzzyDateTime(start_dt=start_dt, end_dt=end_dt).fuzz()
 
             SupplementLogFactory.create_batch(
-                supplement_logs_to_create_daily, user=user, supplement=supplement, time=result
+                supplement_logs_to_create_daily,
+                user=user,
+                supplement=supplement,
+                time=result,
             )
 
     # ingredients = IngredientFactory.create_batch(fixtures_to_create, user=user)
