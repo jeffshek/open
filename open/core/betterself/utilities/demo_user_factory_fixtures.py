@@ -33,6 +33,12 @@ from open.utilities.date_and_time import get_utc_now
 
 logger = logging.getLogger(__name__)
 
+"""
+# prob want to run this
+
+dpy runscript betterself_create_demo_fixtures
+"""
+
 
 def create_demo_fixtures_for_user(user):
     username = user.username
@@ -104,7 +110,12 @@ def create_demo_fixtures_for_user(user):
         end_dt = date.replace(hour=23)
 
         for supplement in supplements:
+
             result = FuzzyDateTime(start_dt=start_dt, end_dt=end_dt).fuzz()
+
+            # nothing more than right now, that's just noisy
+            if result > utc_now:
+                continue
 
             SupplementLogFactory.create_batch(
                 supplement_logs_to_create_daily,
