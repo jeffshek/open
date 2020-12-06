@@ -30,7 +30,9 @@ class TokenInline(admin.TabularInline):
 class UserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
-    fieldsets = (("User", {"fields": ("name",)}),) + auth_admin.UserAdmin.fieldsets
+    fieldsets = (
+        ("User", {"fields": ("name", "signed_up_from")}),
+    ) + auth_admin.UserAdmin.fieldsets
     list_display = [
         "username",
         "email",
