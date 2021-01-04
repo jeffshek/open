@@ -41,7 +41,7 @@ msgpack==0.6.0
 multidict==4.5.2
 numpy==1.19.1
 pandas==0.25.1
-Pillow==6.2.0  # https://github.com/python-pillow/Pillow
+Pillow==8.1.0  # https://github.com/python-pillow/Pillow
 profilehooks==1.11.0
 PyHamcrest==1.9.0
 python-coveralls==2.9.3
