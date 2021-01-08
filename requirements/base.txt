@@ -32,7 +32,7 @@ django-templated-email==2.3.0
 djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.1
-hyperlink==19.0.0
+hyperlink==21.0.0
 idna-ssl==1.1.0
 immutables==0.14
 incremental==17.5.0
