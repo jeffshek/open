@@ -13,7 +13,7 @@ channels-redis==2.4.0
 constantly==15.1.0
 contextvars==2.4
 coreapi==2.3.3  # https://github.com/core-api/python-client
-cryptography==2.7
+cryptography==3.2
 daphne==2.5.0
 django==2.2.13  # https://www.djangoproject.com/
 django-allauth==0.42.0  # https://github.com/pennersr/django-allauth
