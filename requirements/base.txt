@@ -29,7 +29,7 @@ django-render-block==0.7
 django-rest-auth==0.9.5
 django-storages[google]==1.9.1  # https://github.com/jschneier/django-storages
 django-templated-email==2.3.0
-djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
+djangorestframework==3.11.2  # https://github.com/encode/django-rest-framework
 flower==0.9.3  # https://github.com/mher/flower
 hiredis==1.0.1
 hyperlink==19.0.0
