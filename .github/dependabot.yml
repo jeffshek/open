@@ -1,0 +1,30 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: pillow
+    versions:
+    - 8.1.0
+    - 8.1.1
+    - 8.1.2
+  - dependency-name: pandas
+    versions:
+    - 1.2.1
+    - 1.2.2
+    - 1.2.3
+  - dependency-name: django-crispy-forms
+    versions:
+    - 1.10.0
+    - 1.11.0
+    - 1.11.1
+  - dependency-name: mypy
+    versions:
+    - "0.800"
+  - dependency-name: txaio
+    versions:
+    - 20.12.1
