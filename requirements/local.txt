@@ -1,7 +1,7 @@
 -r ./base.txt
 black==19.3b0  # https://github.com/ambv/black
 coverage==4.5.4  # https://github.com/nedbat/coveragepy
-django-coverage-plugin==1.6.0  # https://github.com/nedbat/django_coverage_plugin
+django-coverage-plugin==2.0.0  # https://github.com/nedbat/django_coverage_plugin
 django-debug-toolbar==2.0  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==3.0.2  # https://github.com/django-extensions/django-extensions
 django-test-plus==1.4.0
