@@ -39,7 +39,7 @@ incremental==17.5.0
 # ERROR: channels-redis 2.4.0 has requirement msgpack~=0.6.0, but you'll have msgpack 1.0.0 which is incompatible.
 msgpack==0.6.0
 multidict==4.5.2
-numpy==1.19.1
+numpy==1.22.0
 pandas==0.25.1
 Pillow==6.2.0  # https://github.com/python-pillow/Pillow
 profilehooks==1.11.0
