@@ -165,6 +165,7 @@ PRODUCTIVITY_NOTES_TO_USE = [
     "Some crappy fights w/spouse today, I couldn't focus throughout the day.",
     "I ate a lot of junk food the night before, and so I was a little bit sluggish throughout the day.",
     "I've been eating only clean foods the last few weeks, so I've been able to get so much done today and feel great doing so!",
+    "Though I've had a stressful week, I was able to reach some of my goals for the week. I'm happy about that.",
 ]
 
 # most notes should be empty ... no one would write this much, so create a bunch of empty notes too
